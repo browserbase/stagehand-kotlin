@@ -1,19 +1,19 @@
-# Browserbase Kotlin API Library
+# Stagehand Kotlin API Library
 
 <!-- x-release-please-start-version -->
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.browserbase.api/browserbase-kotlin)](https://central.sonatype.com/artifact/com.browserbase.api/browserbase-kotlin/0.0.1)
-[![javadoc](https://javadoc.io/badge2/com.browserbase.api/browserbase-kotlin/0.0.1/javadoc.svg)](https://javadoc.io/doc/com.browserbase.api/browserbase-kotlin/0.0.1)
+[![Maven Central](https://img.shields.io/maven-central/v/com.browserbase.api/stagehand-kotlin)](https://central.sonatype.com/artifact/com.browserbase.api/stagehand-kotlin/0.0.1)
+[![javadoc](https://javadoc.io/badge2/com.browserbase.api/stagehand-kotlin/0.0.1/javadoc.svg)](https://javadoc.io/doc/com.browserbase.api/stagehand-kotlin/0.0.1)
 
 <!-- x-release-please-end -->
 
-The Browserbase Kotlin SDK provides convenient access to the [Browserbase REST API](https://browserbase.com) from applications written in Kotlin.
+The Stagehand Kotlin SDK provides convenient access to the [Stagehand REST API](https://docs.stagehand.dev) from applications written in Kotlin.
 
 It is generated with [Stainless](https://www.stainless.com/).
 
 <!-- x-release-please-start-version -->
 
-The REST API documentation can be found on [browserbase.com](https://browserbase.com). KDocs are available on [javadoc.io](https://javadoc.io/doc/com.browserbase.api/browserbase-kotlin/0.0.1).
+The REST API documentation can be found on [docs.stagehand.dev](https://docs.stagehand.dev). KDocs are available on [javadoc.io](https://javadoc.io/doc/com.browserbase.api/stagehand-kotlin/0.0.1).
 
 <!-- x-release-please-end -->
 
@@ -24,7 +24,7 @@ The REST API documentation can be found on [browserbase.com](https://browserbase
 ### Gradle
 
 ```kotlin
-implementation("com.browserbase.api:browserbase-kotlin:0.0.1")
+implementation("com.browserbase.api:stagehand-kotlin:0.0.1")
 ```
 
 ### Maven
@@ -32,7 +32,7 @@ implementation("com.browserbase.api:browserbase-kotlin:0.0.1")
 ```xml
 <dependency>
   <groupId>com.browserbase.api</groupId>
-  <artifactId>browserbase-kotlin</artifactId>
+  <artifactId>stagehand-kotlin</artifactId>
   <version>0.0.1</version>
 </dependency>
 ```
@@ -46,14 +46,14 @@ This library requires Java 8 or later.
 ## Usage
 
 ```kotlin
-import com.browserbase.api.client.BrowserbaseClient
-import com.browserbase.api.client.okhttp.BrowserbaseOkHttpClient
+import com.browserbase.api.client.StagehandClient
+import com.browserbase.api.client.okhttp.StagehandOkHttpClient
 import com.browserbase.api.models.sessions.SessionStartParams
 import com.browserbase.api.models.sessions.SessionStartResponse
 
-// Configures using the `browserbase.stagehandApiKey` and `browserbase.baseUrl` system properties
-// Or configures using the `STAGEHAND_API_KEY` and `BROWSERBASE_BASE_URL` environment variables
-val client: BrowserbaseClient = BrowserbaseOkHttpClient.fromEnv()
+// Configures using the `stagehand.apiKey` and `stagehand.baseUrl` system properties
+// Or configures using the `STAGEHAND_API_KEY` and `STAGEHAND_BASE_URL` environment variables
+val client: StagehandClient = StagehandOkHttpClient.fromEnv()
 
 val params: SessionStartParams = SessionStartParams.builder()
     .env(SessionStartParams.Env.LOCAL)
@@ -66,21 +66,21 @@ val response: SessionStartResponse = client.sessions().start(params)
 Configure the client using system properties or environment variables:
 
 ```kotlin
-import com.browserbase.api.client.BrowserbaseClient
-import com.browserbase.api.client.okhttp.BrowserbaseOkHttpClient
+import com.browserbase.api.client.StagehandClient
+import com.browserbase.api.client.okhttp.StagehandOkHttpClient
 
-// Configures using the `browserbase.stagehandApiKey` and `browserbase.baseUrl` system properties
-// Or configures using the `STAGEHAND_API_KEY` and `BROWSERBASE_BASE_URL` environment variables
-val client: BrowserbaseClient = BrowserbaseOkHttpClient.fromEnv()
+// Configures using the `stagehand.apiKey` and `stagehand.baseUrl` system properties
+// Or configures using the `STAGEHAND_API_KEY` and `STAGEHAND_BASE_URL` environment variables
+val client: StagehandClient = StagehandOkHttpClient.fromEnv()
 ```
 
 Or manually:
 
 ```kotlin
-import com.browserbase.api.client.BrowserbaseClient
-import com.browserbase.api.client.okhttp.BrowserbaseOkHttpClient
+import com.browserbase.api.client.StagehandClient
+import com.browserbase.api.client.okhttp.StagehandOkHttpClient
 
-val client: BrowserbaseClient = BrowserbaseOkHttpClient.builder()
+val client: StagehandClient = StagehandOkHttpClient.builder()
     .apiKey("My API Key")
     .build()
 ```
@@ -88,12 +88,12 @@ val client: BrowserbaseClient = BrowserbaseOkHttpClient.builder()
 Or using a combination of the two approaches:
 
 ```kotlin
-import com.browserbase.api.client.BrowserbaseClient
-import com.browserbase.api.client.okhttp.BrowserbaseOkHttpClient
+import com.browserbase.api.client.StagehandClient
+import com.browserbase.api.client.okhttp.StagehandOkHttpClient
 
-val client: BrowserbaseClient = BrowserbaseOkHttpClient.builder()
-    // Configures using the `browserbase.stagehandApiKey` and `browserbase.baseUrl` system properties
-    // Or configures using the `STAGEHAND_API_KEY` and `BROWSERBASE_BASE_URL` environment variables
+val client: StagehandClient = StagehandOkHttpClient.builder()
+    // Configures using the `stagehand.apiKey` and `stagehand.baseUrl` system properties
+    // Or configures using the `STAGEHAND_API_KEY` and `STAGEHAND_BASE_URL` environment variables
     .fromEnv()
     .apiKey("My API Key")
     .build()
@@ -101,10 +101,10 @@ val client: BrowserbaseClient = BrowserbaseOkHttpClient.builder()
 
 See this table for the available options:
 
-| Setter    | System property               | Environment variable   | Required | Default value                                |
-| --------- | ----------------------------- | ---------------------- | -------- | -------------------------------------------- |
-| `apiKey`  | `browserbase.stagehandApiKey` | `STAGEHAND_API_KEY`    | true     | -                                            |
-| `baseUrl` | `browserbase.baseUrl`         | `BROWSERBASE_BASE_URL` | true     | `"https://api.stagehand.browserbase.com/v1"` |
+| Setter    | System property     | Environment variable | Required | Default value                                |
+| --------- | ------------------- | -------------------- | -------- | -------------------------------------------- |
+| `apiKey`  | `stagehand.apiKey`  | `STAGEHAND_API_KEY`  | true     | -                                            |
+| `baseUrl` | `stagehand.baseUrl` | `STAGEHAND_BASE_URL` | true     | `"https://api.stagehand.browserbase.com/v1"` |
 
 System properties take precedence over environment variables.
 
@@ -117,9 +117,9 @@ System properties take precedence over environment variables.
 To temporarily use a modified client configuration, while reusing the same connection and thread pools, call `withOptions()` on any client or service:
 
 ```kotlin
-import com.browserbase.api.client.BrowserbaseClient
+import com.browserbase.api.client.StagehandClient
 
-val clientWithOptions: BrowserbaseClient = client.withOptions {
+val clientWithOptions: StagehandClient = client.withOptions {
     it.baseUrl("https://example.com")
     it.maxRetries(42)
 }
@@ -129,7 +129,7 @@ The `withOptions()` method does not affect the original client or service.
 
 ## Requests and responses
 
-To send a request to the Browserbase API, build an instance of some `Params` class and pass it to the corresponding client method. When the response is received, it will be deserialized into an instance of a Kotlin class.
+To send a request to the Stagehand API, build an instance of some `Params` class and pass it to the corresponding client method. When the response is received, it will be deserialized into an instance of a Kotlin class.
 
 For example, `client.sessions().start(...)` should be called with an instance of `SessionStartParams`, and it will return an instance of `SessionStartResponse`.
 
@@ -146,14 +146,14 @@ Because each class is immutable, builder modification will _never_ affect alread
 The default client is synchronous. To switch to asynchronous execution, call the `async()` method:
 
 ```kotlin
-import com.browserbase.api.client.BrowserbaseClient
-import com.browserbase.api.client.okhttp.BrowserbaseOkHttpClient
+import com.browserbase.api.client.StagehandClient
+import com.browserbase.api.client.okhttp.StagehandOkHttpClient
 import com.browserbase.api.models.sessions.SessionStartParams
 import com.browserbase.api.models.sessions.SessionStartResponse
 
-// Configures using the `browserbase.stagehandApiKey` and `browserbase.baseUrl` system properties
-// Or configures using the `STAGEHAND_API_KEY` and `BROWSERBASE_BASE_URL` environment variables
-val client: BrowserbaseClient = BrowserbaseOkHttpClient.fromEnv()
+// Configures using the `stagehand.apiKey` and `stagehand.baseUrl` system properties
+// Or configures using the `STAGEHAND_API_KEY` and `STAGEHAND_BASE_URL` environment variables
+val client: StagehandClient = StagehandOkHttpClient.fromEnv()
 
 val params: SessionStartParams = SessionStartParams.builder()
     .env(SessionStartParams.Env.LOCAL)
@@ -164,14 +164,14 @@ val response: SessionStartResponse = client.async().sessions().start(params)
 Or create an asynchronous client from the beginning:
 
 ```kotlin
-import com.browserbase.api.client.BrowserbaseClientAsync
-import com.browserbase.api.client.okhttp.BrowserbaseOkHttpClientAsync
+import com.browserbase.api.client.StagehandClientAsync
+import com.browserbase.api.client.okhttp.StagehandOkHttpClientAsync
 import com.browserbase.api.models.sessions.SessionStartParams
 import com.browserbase.api.models.sessions.SessionStartResponse
 
-// Configures using the `browserbase.stagehandApiKey` and `browserbase.baseUrl` system properties
-// Or configures using the `STAGEHAND_API_KEY` and `BROWSERBASE_BASE_URL` environment variables
-val client: BrowserbaseClientAsync = BrowserbaseOkHttpClientAsync.fromEnv()
+// Configures using the `stagehand.apiKey` and `stagehand.baseUrl` system properties
+// Or configures using the `STAGEHAND_API_KEY` and `STAGEHAND_BASE_URL` environment variables
+val client: StagehandClientAsync = StagehandOkHttpClientAsync.fromEnv()
 
 val params: SessionStartParams = SessionStartParams.builder()
     .env(SessionStartParams.Env.LOCAL)
@@ -214,46 +214,46 @@ val parsedResponse: SessionStartResponse = response.parse()
 
 The SDK throws custom unchecked exception types:
 
-- [`BrowserbaseServiceException`](browserbase-kotlin-core/src/main/kotlin/com/browserbase/api/errors/BrowserbaseServiceException.kt): Base class for HTTP errors. See this table for which exception subclass is thrown for each HTTP status code:
+- [`StagehandServiceException`](stagehand-kotlin-core/src/main/kotlin/com/browserbase/api/errors/StagehandServiceException.kt): Base class for HTTP errors. See this table for which exception subclass is thrown for each HTTP status code:
 
-  | Status | Exception                                                                                                                              |
-  | ------ | -------------------------------------------------------------------------------------------------------------------------------------- |
-  | 400    | [`BadRequestException`](browserbase-kotlin-core/src/main/kotlin/com/browserbase/api/errors/BadRequestException.kt)                     |
-  | 401    | [`UnauthorizedException`](browserbase-kotlin-core/src/main/kotlin/com/browserbase/api/errors/UnauthorizedException.kt)                 |
-  | 403    | [`PermissionDeniedException`](browserbase-kotlin-core/src/main/kotlin/com/browserbase/api/errors/PermissionDeniedException.kt)         |
-  | 404    | [`NotFoundException`](browserbase-kotlin-core/src/main/kotlin/com/browserbase/api/errors/NotFoundException.kt)                         |
-  | 422    | [`UnprocessableEntityException`](browserbase-kotlin-core/src/main/kotlin/com/browserbase/api/errors/UnprocessableEntityException.kt)   |
-  | 429    | [`RateLimitException`](browserbase-kotlin-core/src/main/kotlin/com/browserbase/api/errors/RateLimitException.kt)                       |
-  | 5xx    | [`InternalServerException`](browserbase-kotlin-core/src/main/kotlin/com/browserbase/api/errors/InternalServerException.kt)             |
-  | others | [`UnexpectedStatusCodeException`](browserbase-kotlin-core/src/main/kotlin/com/browserbase/api/errors/UnexpectedStatusCodeException.kt) |
+  | Status | Exception                                                                                                                            |
+  | ------ | ------------------------------------------------------------------------------------------------------------------------------------ |
+  | 400    | [`BadRequestException`](stagehand-kotlin-core/src/main/kotlin/com/browserbase/api/errors/BadRequestException.kt)                     |
+  | 401    | [`UnauthorizedException`](stagehand-kotlin-core/src/main/kotlin/com/browserbase/api/errors/UnauthorizedException.kt)                 |
+  | 403    | [`PermissionDeniedException`](stagehand-kotlin-core/src/main/kotlin/com/browserbase/api/errors/PermissionDeniedException.kt)         |
+  | 404    | [`NotFoundException`](stagehand-kotlin-core/src/main/kotlin/com/browserbase/api/errors/NotFoundException.kt)                         |
+  | 422    | [`UnprocessableEntityException`](stagehand-kotlin-core/src/main/kotlin/com/browserbase/api/errors/UnprocessableEntityException.kt)   |
+  | 429    | [`RateLimitException`](stagehand-kotlin-core/src/main/kotlin/com/browserbase/api/errors/RateLimitException.kt)                       |
+  | 5xx    | [`InternalServerException`](stagehand-kotlin-core/src/main/kotlin/com/browserbase/api/errors/InternalServerException.kt)             |
+  | others | [`UnexpectedStatusCodeException`](stagehand-kotlin-core/src/main/kotlin/com/browserbase/api/errors/UnexpectedStatusCodeException.kt) |
 
-- [`BrowserbaseIoException`](browserbase-kotlin-core/src/main/kotlin/com/browserbase/api/errors/BrowserbaseIoException.kt): I/O networking errors.
+- [`StagehandIoException`](stagehand-kotlin-core/src/main/kotlin/com/browserbase/api/errors/StagehandIoException.kt): I/O networking errors.
 
-- [`BrowserbaseRetryableException`](browserbase-kotlin-core/src/main/kotlin/com/browserbase/api/errors/BrowserbaseRetryableException.kt): Generic error indicating a failure that could be retried by the client.
+- [`StagehandRetryableException`](stagehand-kotlin-core/src/main/kotlin/com/browserbase/api/errors/StagehandRetryableException.kt): Generic error indicating a failure that could be retried by the client.
 
-- [`BrowserbaseInvalidDataException`](browserbase-kotlin-core/src/main/kotlin/com/browserbase/api/errors/BrowserbaseInvalidDataException.kt): Failure to interpret successfully parsed data. For example, when accessing a property that's supposed to be required, but the API unexpectedly omitted it from the response.
+- [`StagehandInvalidDataException`](stagehand-kotlin-core/src/main/kotlin/com/browserbase/api/errors/StagehandInvalidDataException.kt): Failure to interpret successfully parsed data. For example, when accessing a property that's supposed to be required, but the API unexpectedly omitted it from the response.
 
-- [`BrowserbaseException`](browserbase-kotlin-core/src/main/kotlin/com/browserbase/api/errors/BrowserbaseException.kt): Base class for all exceptions. Most errors will result in one of the previously mentioned ones, but completely generic errors may be thrown using the base class.
+- [`StagehandException`](stagehand-kotlin-core/src/main/kotlin/com/browserbase/api/errors/StagehandException.kt): Base class for all exceptions. Most errors will result in one of the previously mentioned ones, but completely generic errors may be thrown using the base class.
 
 ## Logging
 
 The SDK uses the standard [OkHttp logging interceptor](https://github.com/square/okhttp/tree/master/okhttp-logging-interceptor).
 
-Enable logging by setting the `BROWSERBASE_LOG` environment variable to `info`:
+Enable logging by setting the `STAGEHAND_LOG` environment variable to `info`:
 
 ```sh
-export BROWSERBASE_LOG=info
+export STAGEHAND_LOG=info
 ```
 
 Or to `debug` for more verbose logging:
 
 ```sh
-export BROWSERBASE_LOG=debug
+export STAGEHAND_LOG=debug
 ```
 
 ## ProGuard and R8
 
-Although the SDK uses reflection, it is still usable with [ProGuard](https://github.com/Guardsquare/proguard) and [R8](https://developer.android.com/topic/performance/app-optimization/enable-app-optimization) because `browserbase-kotlin-core` is published with a [configuration file](browserbase-kotlin-core/src/main/resources/META-INF/proguard/browserbase-kotlin-core.pro) containing [keep rules](https://www.guardsquare.com/manual/configuration/usage).
+Although the SDK uses reflection, it is still usable with [ProGuard](https://github.com/Guardsquare/proguard) and [R8](https://developer.android.com/topic/performance/app-optimization/enable-app-optimization) because `stagehand-kotlin-core` is published with a [configuration file](stagehand-kotlin-core/src/main/resources/META-INF/proguard/stagehand-kotlin-core.pro) containing [keep rules](https://www.guardsquare.com/manual/configuration/usage).
 
 ProGuard and R8 should automatically detect and use the published rules, but you can also manually copy the keep rules if necessary.
 
@@ -263,7 +263,7 @@ The SDK depends on [Jackson](https://github.com/FasterXML/jackson) for JSON seri
 
 The SDK throws an exception if it detects an incompatible Jackson version at runtime (e.g. if the default version was overridden in your Maven or Gradle config).
 
-If the SDK threw an exception, but you're _certain_ the version is compatible, then disable the version check using the `checkJacksonVersionCompatibility` on [`BrowserbaseOkHttpClient`](browserbase-kotlin-client-okhttp/src/main/kotlin/com/browserbase/api/client/okhttp/BrowserbaseOkHttpClient.kt) or [`BrowserbaseOkHttpClientAsync`](browserbase-kotlin-client-okhttp/src/main/kotlin/com/browserbase/api/client/okhttp/BrowserbaseOkHttpClientAsync.kt).
+If the SDK threw an exception, but you're _certain_ the version is compatible, then disable the version check using the `checkJacksonVersionCompatibility` on [`StagehandOkHttpClient`](stagehand-kotlin-client-okhttp/src/main/kotlin/com/browserbase/api/client/okhttp/StagehandOkHttpClient.kt) or [`StagehandOkHttpClientAsync`](stagehand-kotlin-client-okhttp/src/main/kotlin/com/browserbase/api/client/okhttp/StagehandOkHttpClientAsync.kt).
 
 > [!CAUTION]
 > We make no guarantee that the SDK works correctly when the Jackson version check is disabled.
@@ -287,10 +287,10 @@ The API may also explicitly instruct the SDK to retry or not retry a request.
 To set a custom number of retries, configure the client using the `maxRetries` method:
 
 ```kotlin
-import com.browserbase.api.client.BrowserbaseClient
-import com.browserbase.api.client.okhttp.BrowserbaseOkHttpClient
+import com.browserbase.api.client.StagehandClient
+import com.browserbase.api.client.okhttp.StagehandOkHttpClient
 
-val client: BrowserbaseClient = BrowserbaseOkHttpClient.builder()
+val client: StagehandClient = StagehandOkHttpClient.builder()
     .fromEnv()
     .maxRetries(4)
     .build()
@@ -313,11 +313,11 @@ val response: SessionStartResponse = client.sessions().start(
 Or configure the default for all method calls at the client level:
 
 ```kotlin
-import com.browserbase.api.client.BrowserbaseClient
-import com.browserbase.api.client.okhttp.BrowserbaseOkHttpClient
+import com.browserbase.api.client.StagehandClient
+import com.browserbase.api.client.okhttp.StagehandOkHttpClient
 import java.time.Duration
 
-val client: BrowserbaseClient = BrowserbaseOkHttpClient.builder()
+val client: StagehandClient = StagehandOkHttpClient.builder()
     .fromEnv()
     .timeout(Duration.ofSeconds(30))
     .build()
@@ -328,12 +328,12 @@ val client: BrowserbaseClient = BrowserbaseOkHttpClient.builder()
 To route requests through a proxy, configure the client using the `proxy` method:
 
 ```kotlin
-import com.browserbase.api.client.BrowserbaseClient
-import com.browserbase.api.client.okhttp.BrowserbaseOkHttpClient
+import com.browserbase.api.client.StagehandClient
+import com.browserbase.api.client.okhttp.StagehandOkHttpClient
 import java.net.InetSocketAddress
 import java.net.Proxy
 
-val client: BrowserbaseClient = BrowserbaseOkHttpClient.builder()
+val client: StagehandClient = StagehandOkHttpClient.builder()
     .fromEnv()
     .proxy(Proxy(
       Proxy.Type.HTTP, InetSocketAddress(
@@ -352,10 +352,10 @@ val client: BrowserbaseClient = BrowserbaseOkHttpClient.builder()
 To configure how HTTPS connections are secured, configure the client using the `sslSocketFactory`, `trustManager`, and `hostnameVerifier` methods:
 
 ```kotlin
-import com.browserbase.api.client.BrowserbaseClient
-import com.browserbase.api.client.okhttp.BrowserbaseOkHttpClient
+import com.browserbase.api.client.StagehandClient
+import com.browserbase.api.client.okhttp.StagehandOkHttpClient
 
-val client: BrowserbaseClient = BrowserbaseOkHttpClient.builder()
+val client: StagehandClient = StagehandOkHttpClient.builder()
     .fromEnv()
     // If `sslSocketFactory` is set, then `trustManager` must be set, and vice versa.
     .sslSocketFactory(yourSSLSocketFactory)
@@ -369,10 +369,10 @@ val client: BrowserbaseClient = BrowserbaseOkHttpClient.builder()
 The SDK sends requests to the production by default. To send requests to a different environment, configure the client like so:
 
 ```kotlin
-import com.browserbase.api.client.BrowserbaseClient
-import com.browserbase.api.client.okhttp.BrowserbaseOkHttpClient
+import com.browserbase.api.client.StagehandClient
+import com.browserbase.api.client.okhttp.StagehandOkHttpClient
 
-val client: BrowserbaseClient = BrowserbaseOkHttpClient.builder()
+val client: StagehandClient = StagehandOkHttpClient.builder()
     .fromEnv()
     // Other options include `local`
     .dev()
@@ -383,15 +383,15 @@ val client: BrowserbaseClient = BrowserbaseOkHttpClient.builder()
 
 The SDK consists of three artifacts:
 
-- `browserbase-kotlin-core`
+- `stagehand-kotlin-core`
   - Contains core SDK logic
   - Does not depend on [OkHttp](https://square.github.io/okhttp)
-  - Exposes [`BrowserbaseClient`](browserbase-kotlin-core/src/main/kotlin/com/browserbase/api/client/BrowserbaseClient.kt), [`BrowserbaseClientAsync`](browserbase-kotlin-core/src/main/kotlin/com/browserbase/api/client/BrowserbaseClientAsync.kt), [`BrowserbaseClientImpl`](browserbase-kotlin-core/src/main/kotlin/com/browserbase/api/client/BrowserbaseClientImpl.kt), and [`BrowserbaseClientAsyncImpl`](browserbase-kotlin-core/src/main/kotlin/com/browserbase/api/client/BrowserbaseClientAsyncImpl.kt), all of which can work with any HTTP client
-- `browserbase-kotlin-client-okhttp`
+  - Exposes [`StagehandClient`](stagehand-kotlin-core/src/main/kotlin/com/browserbase/api/client/StagehandClient.kt), [`StagehandClientAsync`](stagehand-kotlin-core/src/main/kotlin/com/browserbase/api/client/StagehandClientAsync.kt), [`StagehandClientImpl`](stagehand-kotlin-core/src/main/kotlin/com/browserbase/api/client/StagehandClientImpl.kt), and [`StagehandClientAsyncImpl`](stagehand-kotlin-core/src/main/kotlin/com/browserbase/api/client/StagehandClientAsyncImpl.kt), all of which can work with any HTTP client
+- `stagehand-kotlin-client-okhttp`
   - Depends on [OkHttp](https://square.github.io/okhttp)
-  - Exposes [`BrowserbaseOkHttpClient`](browserbase-kotlin-client-okhttp/src/main/kotlin/com/browserbase/api/client/okhttp/BrowserbaseOkHttpClient.kt) and [`BrowserbaseOkHttpClientAsync`](browserbase-kotlin-client-okhttp/src/main/kotlin/com/browserbase/api/client/okhttp/BrowserbaseOkHttpClientAsync.kt), which provide a way to construct [`BrowserbaseClientImpl`](browserbase-kotlin-core/src/main/kotlin/com/browserbase/api/client/BrowserbaseClientImpl.kt) and [`BrowserbaseClientAsyncImpl`](browserbase-kotlin-core/src/main/kotlin/com/browserbase/api/client/BrowserbaseClientAsyncImpl.kt), respectively, using OkHttp
-- `browserbase-kotlin`
-  - Depends on and exposes the APIs of both `browserbase-kotlin-core` and `browserbase-kotlin-client-okhttp`
+  - Exposes [`StagehandOkHttpClient`](stagehand-kotlin-client-okhttp/src/main/kotlin/com/browserbase/api/client/okhttp/StagehandOkHttpClient.kt) and [`StagehandOkHttpClientAsync`](stagehand-kotlin-client-okhttp/src/main/kotlin/com/browserbase/api/client/okhttp/StagehandOkHttpClientAsync.kt), which provide a way to construct [`StagehandClientImpl`](stagehand-kotlin-core/src/main/kotlin/com/browserbase/api/client/StagehandClientImpl.kt) and [`StagehandClientAsyncImpl`](stagehand-kotlin-core/src/main/kotlin/com/browserbase/api/client/StagehandClientAsyncImpl.kt), respectively, using OkHttp
+- `stagehand-kotlin`
+  - Depends on and exposes the APIs of both `stagehand-kotlin-core` and `stagehand-kotlin-client-okhttp`
   - Does not have its own logic
 
 This structure allows replacing the SDK's default HTTP client without pulling in unnecessary dependencies.
@@ -403,17 +403,17 @@ This structure allows replacing the SDK's default HTTP client without pulling in
 
 To use a customized `OkHttpClient`:
 
-1. Replace your [`browserbase-kotlin` dependency](#installation) with `browserbase-kotlin-core`
-2. Copy `browserbase-kotlin-client-okhttp`'s [`OkHttpClient`](browserbase-kotlin-client-okhttp/src/main/kotlin/com/browserbase/api/client/okhttp/OkHttpClient.kt) class into your code and customize it
-3. Construct [`BrowserbaseClientImpl`](browserbase-kotlin-core/src/main/kotlin/com/browserbase/api/client/BrowserbaseClientImpl.kt) or [`BrowserbaseClientAsyncImpl`](browserbase-kotlin-core/src/main/kotlin/com/browserbase/api/client/BrowserbaseClientAsyncImpl.kt), similarly to [`BrowserbaseOkHttpClient`](browserbase-kotlin-client-okhttp/src/main/kotlin/com/browserbase/api/client/okhttp/BrowserbaseOkHttpClient.kt) or [`BrowserbaseOkHttpClientAsync`](browserbase-kotlin-client-okhttp/src/main/kotlin/com/browserbase/api/client/okhttp/BrowserbaseOkHttpClientAsync.kt), using your customized client
+1. Replace your [`stagehand-kotlin` dependency](#installation) with `stagehand-kotlin-core`
+2. Copy `stagehand-kotlin-client-okhttp`'s [`OkHttpClient`](stagehand-kotlin-client-okhttp/src/main/kotlin/com/browserbase/api/client/okhttp/OkHttpClient.kt) class into your code and customize it
+3. Construct [`StagehandClientImpl`](stagehand-kotlin-core/src/main/kotlin/com/browserbase/api/client/StagehandClientImpl.kt) or [`StagehandClientAsyncImpl`](stagehand-kotlin-core/src/main/kotlin/com/browserbase/api/client/StagehandClientAsyncImpl.kt), similarly to [`StagehandOkHttpClient`](stagehand-kotlin-client-okhttp/src/main/kotlin/com/browserbase/api/client/okhttp/StagehandOkHttpClient.kt) or [`StagehandOkHttpClientAsync`](stagehand-kotlin-client-okhttp/src/main/kotlin/com/browserbase/api/client/okhttp/StagehandOkHttpClientAsync.kt), using your customized client
 
 ### Completely custom HTTP client
 
 To use a completely custom HTTP client:
 
-1. Replace your [`browserbase-kotlin` dependency](#installation) with `browserbase-kotlin-core`
-2. Write a class that implements the [`HttpClient`](browserbase-kotlin-core/src/main/kotlin/com/browserbase/api/core/http/HttpClient.kt) interface
-3. Construct [`BrowserbaseClientImpl`](browserbase-kotlin-core/src/main/kotlin/com/browserbase/api/client/BrowserbaseClientImpl.kt) or [`BrowserbaseClientAsyncImpl`](browserbase-kotlin-core/src/main/kotlin/com/browserbase/api/client/BrowserbaseClientAsyncImpl.kt), similarly to [`BrowserbaseOkHttpClient`](browserbase-kotlin-client-okhttp/src/main/kotlin/com/browserbase/api/client/okhttp/BrowserbaseOkHttpClient.kt) or [`BrowserbaseOkHttpClientAsync`](browserbase-kotlin-client-okhttp/src/main/kotlin/com/browserbase/api/client/okhttp/BrowserbaseOkHttpClientAsync.kt), using your new client class
+1. Replace your [`stagehand-kotlin` dependency](#installation) with `stagehand-kotlin-core`
+2. Write a class that implements the [`HttpClient`](stagehand-kotlin-core/src/main/kotlin/com/browserbase/api/core/http/HttpClient.kt) interface
+3. Construct [`StagehandClientImpl`](stagehand-kotlin-core/src/main/kotlin/com/browserbase/api/client/StagehandClientImpl.kt) or [`StagehandClientAsyncImpl`](stagehand-kotlin-core/src/main/kotlin/com/browserbase/api/client/StagehandClientAsyncImpl.kt), similarly to [`StagehandOkHttpClient`](stagehand-kotlin-client-okhttp/src/main/kotlin/com/browserbase/api/client/okhttp/StagehandOkHttpClient.kt) or [`StagehandOkHttpClientAsync`](stagehand-kotlin-client-okhttp/src/main/kotlin/com/browserbase/api/client/okhttp/StagehandOkHttpClientAsync.kt), using your new client class
 
 ## Undocumented API functionality
 
@@ -451,7 +451,7 @@ val params: SessionStartParams = SessionStartParams.builder()
 
 These properties can be accessed on the nested built object later using the `_additionalProperties()` method.
 
-To set a documented parameter or property to an undocumented or not yet supported _value_, pass a [`JsonValue`](browserbase-kotlin-core/src/main/kotlin/com/browserbase/api/core/Values.kt) object to its setter:
+To set a documented parameter or property to an undocumented or not yet supported _value_, pass a [`JsonValue`](stagehand-kotlin-core/src/main/kotlin/com/browserbase/api/core/Values.kt) object to its setter:
 
 ```kotlin
 import com.browserbase.api.core.JsonValue
@@ -462,7 +462,7 @@ val params: SessionStartParams = SessionStartParams.builder()
     .build()
 ```
 
-The most straightforward way to create a [`JsonValue`](browserbase-kotlin-core/src/main/kotlin/com/browserbase/api/core/Values.kt) is using its `from(...)` method:
+The most straightforward way to create a [`JsonValue`](stagehand-kotlin-core/src/main/kotlin/com/browserbase/api/core/Values.kt) is using its `from(...)` method:
 
 ```kotlin
 import com.browserbase.api.core.JsonValue
@@ -499,7 +499,7 @@ val complexValue: JsonValue = JsonValue.from(mapOf(
 
 Normally a `Builder` class's `build` method will throw [`IllegalStateException`](https://docs.oracle.com/javase/8/docs/api/java/lang/IllegalStateException.html) if any required parameter or property is unset.
 
-To forcibly omit a required parameter or property, pass [`JsonMissing`](browserbase-kotlin-core/src/main/kotlin/com/browserbase/api/core/Values.kt):
+To forcibly omit a required parameter or property, pass [`JsonMissing`](stagehand-kotlin-core/src/main/kotlin/com/browserbase/api/core/Values.kt):
 
 ```kotlin
 import com.browserbase.api.core.JsonMissing
@@ -558,7 +558,7 @@ if (env.isMissing()) {
 
 In rare cases, the API may return a response that doesn't match the expected type. For example, the SDK may expect a property to contain a `String`, but the API could return something else.
 
-By default, the SDK will not throw an exception in this case. It will throw [`BrowserbaseInvalidDataException`](browserbase-kotlin-core/src/main/kotlin/com/browserbase/api/errors/BrowserbaseInvalidDataException.kt) only if you directly access the property.
+By default, the SDK will not throw an exception in this case. It will throw [`StagehandInvalidDataException`](stagehand-kotlin-core/src/main/kotlin/com/browserbase/api/errors/StagehandInvalidDataException.kt) only if you directly access the property.
 
 If you would prefer to check that the response is completely well-typed upfront, then either call `validate()`:
 
@@ -581,10 +581,10 @@ val response: SessionStartResponse = client.sessions().start(
 Or configure the default for all method calls at the client level:
 
 ```kotlin
-import com.browserbase.api.client.BrowserbaseClient
-import com.browserbase.api.client.okhttp.BrowserbaseOkHttpClient
+import com.browserbase.api.client.StagehandClient
+import com.browserbase.api.client.okhttp.StagehandOkHttpClient
 
-val client: BrowserbaseClient = BrowserbaseOkHttpClient.builder()
+val client: StagehandClient = StagehandOkHttpClient.builder()
     .fromEnv()
     .responseValidation(true)
     .build()
