@@ -201,8 +201,8 @@ import com.browserbase.api.models.sessions.SessionStartParams
 import com.browserbase.api.models.sessions.SessionStartResponse
 
 val params: SessionStartParams = SessionStartParams.builder()
-    .browserbaseApiKey("<your API key here>")
-    .browserbaseProjectId("<your project ID here>")
+    .browserbaseApiKey("BROWSERBASE_API_KEY")
+    .browserbaseProjectId("BROWSERBASE_PROJECT_ID")
     .build()
 val response: HttpResponseFor<SessionStartResponse> = client.sessions().withRawResponse().start(params)
 
