@@ -128,18 +128,8 @@ class StagehandOkHttpClientAsync private constructor() {
          * The base URL to use for every request.
          *
          * Defaults to the production environment: `https://api.stagehand.browserbase.com/v1`.
-         *
-         * The following other environments, with dedicated builder methods, are available:
-         * - dev: `https://api.stagehand.dev.browserbase.com/v1`
-         * - local: `http://localhost:5000/v1`
          */
         fun baseUrl(baseUrl: String?) = apply { clientOptions.baseUrl(baseUrl) }
-
-        /** Sets [baseUrl] to `https://api.stagehand.dev.browserbase.com/v1`. */
-        fun dev() = apply { clientOptions.dev() }
-
-        /** Sets [baseUrl] to `http://localhost:5000/v1`. */
-        fun local() = apply { clientOptions.local() }
 
         /**
          * Whether to call `validate` on every response before returning it.
@@ -185,7 +175,15 @@ class StagehandOkHttpClientAsync private constructor() {
          */
         fun maxRetries(maxRetries: Int) = apply { clientOptions.maxRetries(maxRetries) }
 
-        fun apiKey(apiKey: String) = apply { clientOptions.apiKey(apiKey) }
+        fun browserbaseApiKey(browserbaseApiKey: String) = apply {
+            clientOptions.browserbaseApiKey(browserbaseApiKey)
+        }
+
+        fun browserbaseProjectId(browserbaseProjectId: String) = apply {
+            clientOptions.browserbaseProjectId(browserbaseProjectId)
+        }
+
+        fun modelApiKey(modelApiKey: String?) = apply { clientOptions.modelApiKey(modelApiKey) }
 
         fun headers(headers: Headers) = apply { clientOptions.headers(headers) }
 

@@ -51,8 +51,8 @@ import com.browserbase.api.client.okhttp.StagehandOkHttpClient
 import com.browserbase.api.models.sessions.SessionActParams
 import com.browserbase.api.models.sessions.SessionActResponse
 
-// Configures using the `stagehand.apiKey` and `stagehand.baseUrl` system properties
-// Or configures using the `STAGEHAND_API_KEY` and `STAGEHAND_BASE_URL` environment variables
+// Configures using the `stagehand.browserbaseApiKey`, `stagehand.browserbaseProjectId`, `stagehand.modelApiKey` and `stagehand.baseUrl` system properties
+// Or configures using the `BROWSERBASE_API_KEY`, `BROWSERBASE_PROJECT_ID`, `MODEL_API_KEY` and `STAGEHAND_BASE_URL` environment variables
 val client: StagehandClient = StagehandOkHttpClient.fromEnv()
 
 val params: SessionActParams = SessionActParams.builder()
@@ -70,8 +70,8 @@ Configure the client using system properties or environment variables:
 import com.browserbase.api.client.StagehandClient
 import com.browserbase.api.client.okhttp.StagehandOkHttpClient
 
-// Configures using the `stagehand.apiKey` and `stagehand.baseUrl` system properties
-// Or configures using the `STAGEHAND_API_KEY` and `STAGEHAND_BASE_URL` environment variables
+// Configures using the `stagehand.browserbaseApiKey`, `stagehand.browserbaseProjectId`, `stagehand.modelApiKey` and `stagehand.baseUrl` system properties
+// Or configures using the `BROWSERBASE_API_KEY`, `BROWSERBASE_PROJECT_ID`, `MODEL_API_KEY` and `STAGEHAND_BASE_URL` environment variables
 val client: StagehandClient = StagehandOkHttpClient.fromEnv()
 ```
 
@@ -82,7 +82,9 @@ import com.browserbase.api.client.StagehandClient
 import com.browserbase.api.client.okhttp.StagehandOkHttpClient
 
 val client: StagehandClient = StagehandOkHttpClient.builder()
-    .apiKey("My API Key")
+    .browserbaseApiKey("My Browserbase API Key")
+    .browserbaseProjectId("My Browserbase Project ID")
+    .modelApiKey("My Model API Key")
     .build()
 ```
 
@@ -93,19 +95,21 @@ import com.browserbase.api.client.StagehandClient
 import com.browserbase.api.client.okhttp.StagehandOkHttpClient
 
 val client: StagehandClient = StagehandOkHttpClient.builder()
-    // Configures using the `stagehand.apiKey` and `stagehand.baseUrl` system properties
-    // Or configures using the `STAGEHAND_API_KEY` and `STAGEHAND_BASE_URL` environment variables
+    // Configures using the `stagehand.browserbaseApiKey`, `stagehand.browserbaseProjectId`, `stagehand.modelApiKey` and `stagehand.baseUrl` system properties
+    // Or configures using the `BROWSERBASE_API_KEY`, `BROWSERBASE_PROJECT_ID`, `MODEL_API_KEY` and `STAGEHAND_BASE_URL` environment variables
     .fromEnv()
-    .apiKey("My API Key")
+    .browserbaseApiKey("My Browserbase API Key")
     .build()
 ```
 
 See this table for the available options:
 
-| Setter    | System property     | Environment variable | Required | Default value                                |
-| --------- | ------------------- | -------------------- | -------- | -------------------------------------------- |
-| `apiKey`  | `stagehand.apiKey`  | `STAGEHAND_API_KEY`  | true     | -                                            |
-| `baseUrl` | `stagehand.baseUrl` | `STAGEHAND_BASE_URL` | true     | `"https://api.stagehand.browserbase.com/v1"` |
+| Setter                 | System property                  | Environment variable     | Required | Default value                                |
+| ---------------------- | -------------------------------- | ------------------------ | -------- | -------------------------------------------- |
+| `browserbaseApiKey`    | `stagehand.browserbaseApiKey`    | `BROWSERBASE_API_KEY`    | true     | -                                            |
+| `browserbaseProjectId` | `stagehand.browserbaseProjectId` | `BROWSERBASE_PROJECT_ID` | true     | -                                            |
+| `modelApiKey`          | `stagehand.modelApiKey`          | `MODEL_API_KEY`          | false    | -                                            |
+| `baseUrl`              | `stagehand.baseUrl`              | `STAGEHAND_BASE_URL`     | true     | `"https://api.stagehand.browserbase.com/v1"` |
 
 System properties take precedence over environment variables.
 
@@ -152,8 +156,8 @@ import com.browserbase.api.client.okhttp.StagehandOkHttpClient
 import com.browserbase.api.models.sessions.SessionActParams
 import com.browserbase.api.models.sessions.SessionActResponse
 
-// Configures using the `stagehand.apiKey` and `stagehand.baseUrl` system properties
-// Or configures using the `STAGEHAND_API_KEY` and `STAGEHAND_BASE_URL` environment variables
+// Configures using the `stagehand.browserbaseApiKey`, `stagehand.browserbaseProjectId`, `stagehand.modelApiKey` and `stagehand.baseUrl` system properties
+// Or configures using the `BROWSERBASE_API_KEY`, `BROWSERBASE_PROJECT_ID`, `MODEL_API_KEY` and `STAGEHAND_BASE_URL` environment variables
 val client: StagehandClient = StagehandOkHttpClient.fromEnv()
 
 val params: SessionActParams = SessionActParams.builder()
@@ -171,8 +175,8 @@ import com.browserbase.api.client.okhttp.StagehandOkHttpClientAsync
 import com.browserbase.api.models.sessions.SessionActParams
 import com.browserbase.api.models.sessions.SessionActResponse
 
-// Configures using the `stagehand.apiKey` and `stagehand.baseUrl` system properties
-// Or configures using the `STAGEHAND_API_KEY` and `STAGEHAND_BASE_URL` environment variables
+// Configures using the `stagehand.browserbaseApiKey`, `stagehand.browserbaseProjectId`, `stagehand.modelApiKey` and `stagehand.baseUrl` system properties
+// Or configures using the `BROWSERBASE_API_KEY`, `BROWSERBASE_PROJECT_ID`, `MODEL_API_KEY` and `STAGEHAND_BASE_URL` environment variables
 val client: StagehandClientAsync = StagehandOkHttpClientAsync.fromEnv()
 
 val params: SessionActParams = SessionActParams.builder()
@@ -365,21 +369,6 @@ val client: StagehandClient = StagehandOkHttpClient.builder()
     .sslSocketFactory(yourSSLSocketFactory)
     .trustManager(yourTrustManager)
     .hostnameVerifier(yourHostnameVerifier)
-    .build()
-```
-
-### Environments
-
-The SDK sends requests to the production by default. To send requests to a different environment, configure the client like so:
-
-```kotlin
-import com.browserbase.api.client.StagehandClient
-import com.browserbase.api.client.okhttp.StagehandOkHttpClient
-
-val client: StagehandClient = StagehandOkHttpClient.builder()
-    .fromEnv()
-    // Other options include `local`
-    .dev()
     .build()
 ```
 

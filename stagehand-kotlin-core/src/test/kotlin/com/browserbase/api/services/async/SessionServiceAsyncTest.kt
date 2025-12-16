@@ -25,7 +25,9 @@ internal class SessionServiceAsyncTest {
         val client =
             StagehandOkHttpClientAsync.builder()
                 .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
+                .browserbaseApiKey("My Browserbase API Key")
+                .browserbaseProjectId("My Browserbase Project ID")
+                .modelApiKey("My Model API Key")
                 .build()
         val sessionServiceAsync = client.sessions()
 
@@ -66,7 +68,9 @@ internal class SessionServiceAsyncTest {
         val client =
             StagehandOkHttpClientAsync.builder()
                 .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
+                .browserbaseApiKey("My Browserbase API Key")
+                .browserbaseProjectId("My Browserbase Project ID")
+                .modelApiKey("My Model API Key")
                 .build()
         val sessionServiceAsync = client.sessions()
 
@@ -81,7 +85,9 @@ internal class SessionServiceAsyncTest {
         val client =
             StagehandOkHttpClientAsync.builder()
                 .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
+                .browserbaseApiKey("My Browserbase API Key")
+                .browserbaseProjectId("My Browserbase Project ID")
+                .modelApiKey("My Model API Key")
                 .build()
         val sessionServiceAsync = client.sessions()
 
@@ -118,7 +124,9 @@ internal class SessionServiceAsyncTest {
         val client =
             StagehandOkHttpClientAsync.builder()
                 .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
+                .browserbaseApiKey("My Browserbase API Key")
+                .browserbaseProjectId("My Browserbase Project ID")
+                .modelApiKey("My Model API Key")
                 .build()
         val sessionServiceAsync = client.sessions()
 
@@ -160,7 +168,9 @@ internal class SessionServiceAsyncTest {
         val client =
             StagehandOkHttpClientAsync.builder()
                 .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
+                .browserbaseApiKey("My Browserbase API Key")
+                .browserbaseProjectId("My Browserbase Project ID")
+                .modelApiKey("My Model API Key")
                 .build()
         val sessionServiceAsync = client.sessions()
 
@@ -188,7 +198,9 @@ internal class SessionServiceAsyncTest {
         val client =
             StagehandOkHttpClientAsync.builder()
                 .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
+                .browserbaseApiKey("My Browserbase API Key")
+                .browserbaseProjectId("My Browserbase Project ID")
+                .modelApiKey("My Model API Key")
                 .build()
         val sessionServiceAsync = client.sessions()
 
@@ -225,7 +237,9 @@ internal class SessionServiceAsyncTest {
         val client =
             StagehandOkHttpClientAsync.builder()
                 .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
+                .browserbaseApiKey("My Browserbase API Key")
+                .browserbaseProjectId("My Browserbase Project ID")
+                .modelApiKey("My Model API Key")
                 .build()
         val sessionServiceAsync = client.sessions()
 
