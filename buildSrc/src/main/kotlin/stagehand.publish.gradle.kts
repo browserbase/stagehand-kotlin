@@ -26,9 +26,9 @@ configure<PublishingExtension> {
                 }
 
                 scm {
-                    connection.set("scm:git:git://github.com/stainless-sdks/stagehand-kotlin.git")
-                    developerConnection.set("scm:git:git://github.com/stainless-sdks/stagehand-kotlin.git")
-                    url.set("https://github.com/stainless-sdks/stagehand-kotlin")
+                    connection.set("scm:git:git://github.com/browserbase/stagehand-kotlin.git")
+                    developerConnection.set("scm:git:git://github.com/browserbase/stagehand-kotlin.git")
+                    url.set("https://github.com/browserbase/stagehand-kotlin")
                 }
 
                 versionMapping {
