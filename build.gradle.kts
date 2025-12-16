@@ -32,7 +32,7 @@ subprojects {
 // Avoid race conditions between `dokkaHtmlCollector` and `dokkaJavadocJar` tasks
 tasks.named("dokkaHtmlCollector").configure {
     subprojects.flatMap { it.tasks }
-        .filter { it.project.name != "stagehand-kotlin" && it.name == "dokkaJavadocJar" }
+        .filter { it.project.name != "browserbase-kotlin" && it.name == "dokkaJavadocJar" }
         .forEach { mustRunAfter(it) }
 }
 
