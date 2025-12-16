@@ -183,7 +183,7 @@ class StagehandOkHttpClient private constructor() {
             clientOptions.browserbaseProjectId(browserbaseProjectId)
         }
 
-        fun modelApiKey(modelApiKey: String?) = apply { clientOptions.modelApiKey(modelApiKey) }
+        fun modelApiKey(modelApiKey: String) = apply { clientOptions.modelApiKey(modelApiKey) }
 
         fun headers(headers: Headers) = apply { clientOptions.headers(headers) }
 
