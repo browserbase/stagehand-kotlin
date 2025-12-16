@@ -32,7 +32,7 @@ import java.util.Objects
 class SessionExtractResponse
 private constructor(
     private val extraction: Extraction? = null,
-    private val unionMember1: UnionMember1? = null,
+    private val custom: Custom? = null,
     private val _json: JsonValue? = null,
 ) {
 
@@ -40,24 +40,24 @@ private constructor(
     fun extraction(): Extraction? = extraction
 
     /** Structured data matching provided schema */
-    fun unionMember1(): UnionMember1? = unionMember1
+    fun custom(): Custom? = custom
 
     fun isExtraction(): Boolean = extraction != null
 
-    fun isUnionMember1(): Boolean = unionMember1 != null
+    fun isCustom(): Boolean = custom != null
 
     /** Default extraction result */
     fun asExtraction(): Extraction = extraction.getOrThrow("extraction")
 
     /** Structured data matching provided schema */
-    fun asUnionMember1(): UnionMember1 = unionMember1.getOrThrow("unionMember1")
+    fun asCustom(): Custom = custom.getOrThrow("custom")
 
     fun _json(): JsonValue? = _json
 
     fun <T> accept(visitor: Visitor<T>): T =
         when {
             extraction != null -> visitor.visitExtraction(extraction)
-            unionMember1 != null -> visitor.visitUnionMember1(unionMember1)
+            custom != null -> visitor.visitCustom(custom)
             else -> visitor.unknown(_json)
         }
 
@@ -74,8 +74,8 @@ private constructor(
                     extraction.validate()
                 }
 
-                override fun visitUnionMember1(unionMember1: UnionMember1) {
-                    unionMember1.validate()
+                override fun visitCustom(custom: Custom) {
+                    custom.validate()
                 }
             }
         )
@@ -100,7 +100,7 @@ private constructor(
             object : Visitor<Int> {
                 override fun visitExtraction(extraction: Extraction) = extraction.validity()
 
-                override fun visitUnionMember1(unionMember1: UnionMember1) = unionMember1.validity()
+                override fun visitCustom(custom: Custom) = custom.validity()
 
                 override fun unknown(json: JsonValue?) = 0
             }
@@ -113,15 +113,15 @@ private constructor(
 
         return other is SessionExtractResponse &&
             extraction == other.extraction &&
-            unionMember1 == other.unionMember1
+            custom == other.custom
     }
 
-    override fun hashCode(): Int = Objects.hash(extraction, unionMember1)
+    override fun hashCode(): Int = Objects.hash(extraction, custom)
 
     override fun toString(): String =
         when {
             extraction != null -> "SessionExtractResponse{extraction=$extraction}"
-            unionMember1 != null -> "SessionExtractResponse{unionMember1=$unionMember1}"
+            custom != null -> "SessionExtractResponse{custom=$custom}"
             _json != null -> "SessionExtractResponse{_unknown=$_json}"
             else -> throw IllegalStateException("Invalid SessionExtractResponse")
         }
@@ -132,8 +132,7 @@ private constructor(
         fun ofExtraction(extraction: Extraction) = SessionExtractResponse(extraction = extraction)
 
         /** Structured data matching provided schema */
-        fun ofUnionMember1(unionMember1: UnionMember1) =
-            SessionExtractResponse(unionMember1 = unionMember1)
+        fun ofCustom(custom: Custom) = SessionExtractResponse(custom = custom)
     }
 
     /**
@@ -146,7 +145,7 @@ private constructor(
         fun visitExtraction(extraction: Extraction): T
 
         /** Structured data matching provided schema */
-        fun visitUnionMember1(unionMember1: UnionMember1): T
+        fun visitCustom(custom: Custom): T
 
         /**
          * Maps an unknown variant of [SessionExtractResponse] to a value of type [T].
@@ -174,8 +173,8 @@ private constructor(
                         tryDeserialize(node, jacksonTypeRef<Extraction>())?.let {
                             SessionExtractResponse(extraction = it, _json = json)
                         },
-                        tryDeserialize(node, jacksonTypeRef<UnionMember1>())?.let {
-                            SessionExtractResponse(unionMember1 = it, _json = json)
+                        tryDeserialize(node, jacksonTypeRef<Custom>())?.let {
+                            SessionExtractResponse(custom = it, _json = json)
                         },
                     )
                     .filterNotNull()
@@ -203,7 +202,7 @@ private constructor(
         ) {
             when {
                 value.extraction != null -> generator.writeObject(value.extraction)
-                value.unionMember1 != null -> generator.writeObject(value.unionMember1)
+                value.custom != null -> generator.writeObject(value.custom)
                 value._json != null -> generator.writeObject(value._json)
                 else -> throw IllegalStateException("Invalid SessionExtractResponse")
             }
@@ -353,7 +352,7 @@ private constructor(
     }
 
     /** Structured data matching provided schema */
-    class UnionMember1
+    class Custom
     @JsonCreator
     private constructor(
         @com.fasterxml.jackson.annotation.JsonValue
@@ -368,17 +367,17 @@ private constructor(
 
         companion object {
 
-            /** Returns a mutable builder for constructing an instance of [UnionMember1]. */
+            /** Returns a mutable builder for constructing an instance of [Custom]. */
             fun builder() = Builder()
         }
 
-        /** A builder for [UnionMember1]. */
+        /** A builder for [Custom]. */
         class Builder internal constructor() {
 
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
-            internal fun from(unionMember1: UnionMember1) = apply {
-                additionalProperties = unionMember1.additionalProperties.toMutableMap()
+            internal fun from(custom: Custom) = apply {
+                additionalProperties = custom.additionalProperties.toMutableMap()
             }
 
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
@@ -401,16 +400,16 @@ private constructor(
             }
 
             /**
-             * Returns an immutable instance of [UnionMember1].
+             * Returns an immutable instance of [Custom].
              *
              * Further updates to this [Builder] will not mutate the returned instance.
              */
-            fun build(): UnionMember1 = UnionMember1(additionalProperties.toImmutable())
+            fun build(): Custom = Custom(additionalProperties.toImmutable())
         }
 
         private var validated: Boolean = false
 
-        fun validate(): UnionMember1 = apply {
+        fun validate(): Custom = apply {
             if (validated) {
                 return@apply
             }
@@ -440,13 +439,13 @@ private constructor(
                 return true
             }
 
-            return other is UnionMember1 && additionalProperties == other.additionalProperties
+            return other is Custom && additionalProperties == other.additionalProperties
         }
 
         private val hashCode: Int by lazy { Objects.hash(additionalProperties) }
 
         override fun hashCode(): Int = hashCode
 
-        override fun toString() = "UnionMember1{additionalProperties=$additionalProperties}"
+        override fun toString() = "Custom{additionalProperties=$additionalProperties}"
     }
 }
