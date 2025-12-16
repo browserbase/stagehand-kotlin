@@ -48,17 +48,18 @@ This library requires Java 8 or later.
 ```kotlin
 import com.browserbase.api.client.StagehandClient
 import com.browserbase.api.client.okhttp.StagehandOkHttpClient
-import com.browserbase.api.models.sessions.SessionStartParams
-import com.browserbase.api.models.sessions.SessionStartResponse
+import com.browserbase.api.models.sessions.SessionActParams
+import com.browserbase.api.models.sessions.SessionActResponse
 
 // Configures using the `stagehand.apiKey` and `stagehand.baseUrl` system properties
 // Or configures using the `STAGEHAND_API_KEY` and `STAGEHAND_BASE_URL` environment variables
 val client: StagehandClient = StagehandOkHttpClient.fromEnv()
 
-val params: SessionStartParams = SessionStartParams.builder()
-    .env(SessionStartParams.Env.LOCAL)
+val params: SessionActParams = SessionActParams.builder()
+    .sessionId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+    .input("click the first link on the page")
     .build()
-val response: SessionStartResponse = client.sessions().start(params)
+val response: SessionActResponse = client.sessions().act(params)
 ```
 
 ## Client configuration
@@ -131,7 +132,7 @@ The `withOptions()` method does not affect the original client or service.
 
 To send a request to the Stagehand API, build an instance of some `Params` class and pass it to the corresponding client method. When the response is received, it will be deserialized into an instance of a Kotlin class.
 
-For example, `client.sessions().start(...)` should be called with an instance of `SessionStartParams`, and it will return an instance of `SessionStartResponse`.
+For example, `client.sessions().act(...)` should be called with an instance of `SessionActParams`, and it will return an instance of `SessionActResponse`.
 
 ## Immutability
 
@@ -148,17 +149,18 @@ The default client is synchronous. To switch to asynchronous execution, call the
 ```kotlin
 import com.browserbase.api.client.StagehandClient
 import com.browserbase.api.client.okhttp.StagehandOkHttpClient
-import com.browserbase.api.models.sessions.SessionStartParams
-import com.browserbase.api.models.sessions.SessionStartResponse
+import com.browserbase.api.models.sessions.SessionActParams
+import com.browserbase.api.models.sessions.SessionActResponse
 
 // Configures using the `stagehand.apiKey` and `stagehand.baseUrl` system properties
 // Or configures using the `STAGEHAND_API_KEY` and `STAGEHAND_BASE_URL` environment variables
 val client: StagehandClient = StagehandOkHttpClient.fromEnv()
 
-val params: SessionStartParams = SessionStartParams.builder()
-    .env(SessionStartParams.Env.LOCAL)
+val params: SessionActParams = SessionActParams.builder()
+    .sessionId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+    .input("click the first link on the page")
     .build()
-val response: SessionStartResponse = client.async().sessions().start(params)
+val response: SessionActResponse = client.async().sessions().act(params)
 ```
 
 Or create an asynchronous client from the beginning:
@@ -166,17 +168,18 @@ Or create an asynchronous client from the beginning:
 ```kotlin
 import com.browserbase.api.client.StagehandClientAsync
 import com.browserbase.api.client.okhttp.StagehandOkHttpClientAsync
-import com.browserbase.api.models.sessions.SessionStartParams
-import com.browserbase.api.models.sessions.SessionStartResponse
+import com.browserbase.api.models.sessions.SessionActParams
+import com.browserbase.api.models.sessions.SessionActResponse
 
 // Configures using the `stagehand.apiKey` and `stagehand.baseUrl` system properties
 // Or configures using the `STAGEHAND_API_KEY` and `STAGEHAND_BASE_URL` environment variables
 val client: StagehandClientAsync = StagehandOkHttpClientAsync.fromEnv()
 
-val params: SessionStartParams = SessionStartParams.builder()
-    .env(SessionStartParams.Env.LOCAL)
+val params: SessionActParams = SessionActParams.builder()
+    .sessionId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+    .input("click the first link on the page")
     .build()
-val response: SessionStartResponse = client.sessions().start(params)
+val response: SessionActResponse = client.sessions().act(params)
 ```
 
 The asynchronous client supports the same options as the synchronous one, except most methods are [suspending](https://kotlinlang.org/docs/coroutines-guide.html).
@@ -194,7 +197,8 @@ import com.browserbase.api.models.sessions.SessionStartParams
 import com.browserbase.api.models.sessions.SessionStartResponse
 
 val params: SessionStartParams = SessionStartParams.builder()
-    .env(SessionStartParams.Env.LOCAL)
+    .browserbaseApiKey("BROWSERBASE_API_KEY")
+    .browserbaseProjectId("BROWSERBASE_PROJECT_ID")
     .build()
 val response: HttpResponseFor<SessionStartResponse> = client.sessions().withRawResponse().start(params)
 
@@ -425,9 +429,9 @@ To set undocumented parameters, call the `putAdditionalHeader`, `putAdditionalQu
 
 ```kotlin
 import com.browserbase.api.core.JsonValue
-import com.browserbase.api.models.sessions.SessionStartParams
+import com.browserbase.api.models.sessions.SessionActParams
 
-val params: SessionStartParams = SessionStartParams.builder()
+val params: SessionActParams = SessionActParams.builder()
     .putAdditionalHeader("Secret-Header", "42")
     .putAdditionalQueryParam("secret_query_param", "42")
     .putAdditionalBodyProperty("secretProperty", JsonValue.from("42"))
@@ -440,10 +444,10 @@ To set undocumented parameters on _nested_ headers, query params, or body classe
 
 ```kotlin
 import com.browserbase.api.core.JsonValue
-import com.browserbase.api.models.sessions.SessionStartParams
+import com.browserbase.api.models.sessions.SessionActParams
 
-val params: SessionStartParams = SessionStartParams.builder()
-    .localBrowserLaunchOptions(SessionStartParams.LocalBrowserLaunchOptions.builder()
+val params: SessionActParams = SessionActParams.builder()
+    .options(SessionActParams.Options.builder()
         .putAdditionalProperty("secretProperty", JsonValue.from("42"))
         .build())
     .build()
@@ -455,10 +459,10 @@ To set a documented parameter or property to an undocumented or not yet supporte
 
 ```kotlin
 import com.browserbase.api.core.JsonValue
-import com.browserbase.api.models.sessions.SessionStartParams
+import com.browserbase.api.models.sessions.SessionActParams
 
-val params: SessionStartParams = SessionStartParams.builder()
-    .env(JsonValue.from(42))
+val params: SessionActParams = SessionActParams.builder()
+    .input(JsonValue.from(42))
     .build()
 ```
 
@@ -503,10 +507,11 @@ To forcibly omit a required parameter or property, pass [`JsonMissing`](stagehan
 
 ```kotlin
 import com.browserbase.api.core.JsonMissing
-import com.browserbase.api.models.sessions.SessionStartParams
+import com.browserbase.api.models.sessions.SessionActParams
 
-val params: SessionStartParams = SessionStartParams.builder()
-    .env(JsonMissing.of())
+val params: SessionActParams = SessionActParams.builder()
+    .input("click the sign in button")
+    .sessionId(JsonMissing.of())
     .build()
 ```
 
@@ -520,7 +525,7 @@ import com.browserbase.api.core.JsonNull
 import com.browserbase.api.core.JsonNumber
 import com.browserbase.api.core.JsonValue
 
-val additionalProperties: Map<String, JsonValue> = client.sessions().start(params)._additionalProperties()
+val additionalProperties: Map<String, JsonValue> = client.sessions().act(params)._additionalProperties()
 val secretPropertyValue: JsonValue = additionalProperties.get("secretProperty")
 
 val result = when (secretPropertyValue) {
@@ -536,21 +541,21 @@ To access a property's raw JSON value, which may be undocumented, call its `_` p
 
 ```kotlin
 import com.browserbase.api.core.JsonField
-import com.browserbase.api.models.sessions.SessionStartParams
+import com.browserbase.api.models.sessions.SessionActParams
 
-val env: JsonField<SessionStartParams.Env> = client.sessions().start(params)._env()
+val input: JsonField<SessionActParams.Input> = client.sessions().act(params)._input()
 
-if (env.isMissing()) {
+if (input.isMissing()) {
   // The property is absent from the JSON response
-} else if (env.isNull()) {
+} else if (input.isNull()) {
   // The property was set to literal null
 } else {
   // Check if value was provided as a string
   // Other methods include `asNumber()`, `asBoolean()`, etc.
-  val jsonString: String? = env.asString();
+  val jsonString: String? = input.asString();
 
   // Try to deserialize into a custom type
-  val myObject: MyClass = env.asUnknown()!!.convert(MyClass::class.java)
+  val myObject: MyClass = input.asUnknown()!!.convert(MyClass::class.java)
 }
 ```
 
@@ -563,17 +568,17 @@ By default, the SDK will not throw an exception in this case. It will throw [`St
 If you would prefer to check that the response is completely well-typed upfront, then either call `validate()`:
 
 ```kotlin
-import com.browserbase.api.models.sessions.SessionStartResponse
+import com.browserbase.api.models.sessions.SessionActResponse
 
-val response: SessionStartResponse = client.sessions().start(params).validate()
+val response: SessionActResponse = client.sessions().act(params).validate()
 ```
 
 Or configure the method call to validate the response using the `responseValidation` method:
 
 ```kotlin
-import com.browserbase.api.models.sessions.SessionStartResponse
+import com.browserbase.api.models.sessions.SessionActResponse
 
-val response: SessionStartResponse = client.sessions().start(
+val response: SessionActResponse = client.sessions().act(
   params, RequestOptions.builder().responseValidation(true).build()
 )
 ```

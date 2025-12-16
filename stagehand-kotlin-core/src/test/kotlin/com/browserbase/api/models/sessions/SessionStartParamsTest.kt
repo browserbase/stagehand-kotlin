@@ -10,14 +10,10 @@ internal class SessionStartParamsTest {
     @Test
     fun create() {
         SessionStartParams.builder()
-            .env(SessionStartParams.Env.LOCAL)
-            .apiKey("apiKey")
+            .browserbaseApiKey("BROWSERBASE_API_KEY")
+            .browserbaseProjectId("BROWSERBASE_PROJECT_ID")
             .domSettleTimeout(0L)
-            .localBrowserLaunchOptions(
-                SessionStartParams.LocalBrowserLaunchOptions.builder().headless(true).build()
-            )
             .model("openai/gpt-4o")
-            .projectId("projectId")
             .selfHeal(true)
             .systemPrompt("systemPrompt")
             .verbose(1L)
@@ -28,14 +24,10 @@ internal class SessionStartParamsTest {
     fun body() {
         val params =
             SessionStartParams.builder()
-                .env(SessionStartParams.Env.LOCAL)
-                .apiKey("apiKey")
+                .browserbaseApiKey("BROWSERBASE_API_KEY")
+                .browserbaseProjectId("BROWSERBASE_PROJECT_ID")
                 .domSettleTimeout(0L)
-                .localBrowserLaunchOptions(
-                    SessionStartParams.LocalBrowserLaunchOptions.builder().headless(true).build()
-                )
                 .model("openai/gpt-4o")
-                .projectId("projectId")
                 .selfHeal(true)
                 .systemPrompt("systemPrompt")
                 .verbose(1L)
@@ -43,15 +35,10 @@ internal class SessionStartParamsTest {
 
         val body = params._body()
 
-        assertThat(body.env()).isEqualTo(SessionStartParams.Env.LOCAL)
-        assertThat(body.apiKey()).isEqualTo("apiKey")
+        assertThat(body.browserbaseApiKey()).isEqualTo("BROWSERBASE_API_KEY")
+        assertThat(body.browserbaseProjectId()).isEqualTo("BROWSERBASE_PROJECT_ID")
         assertThat(body.domSettleTimeout()).isEqualTo(0L)
-        assertThat(body.localBrowserLaunchOptions())
-            .isEqualTo(
-                SessionStartParams.LocalBrowserLaunchOptions.builder().headless(true).build()
-            )
         assertThat(body.model()).isEqualTo("openai/gpt-4o")
-        assertThat(body.projectId()).isEqualTo("projectId")
         assertThat(body.selfHeal()).isEqualTo(true)
         assertThat(body.systemPrompt()).isEqualTo("systemPrompt")
         assertThat(body.verbose()).isEqualTo(1L)
@@ -59,10 +46,15 @@ internal class SessionStartParamsTest {
 
     @Test
     fun bodyWithoutOptionalFields() {
-        val params = SessionStartParams.builder().env(SessionStartParams.Env.LOCAL).build()
+        val params =
+            SessionStartParams.builder()
+                .browserbaseApiKey("BROWSERBASE_API_KEY")
+                .browserbaseProjectId("BROWSERBASE_PROJECT_ID")
+                .build()
 
         val body = params._body()
 
-        assertThat(body.env()).isEqualTo(SessionStartParams.Env.LOCAL)
+        assertThat(body.browserbaseApiKey()).isEqualTo("BROWSERBASE_API_KEY")
+        assertThat(body.browserbaseProjectId()).isEqualTo("BROWSERBASE_PROJECT_ID")
     }
 }
