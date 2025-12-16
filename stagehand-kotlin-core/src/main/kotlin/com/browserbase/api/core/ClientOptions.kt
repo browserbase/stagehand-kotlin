@@ -91,7 +91,9 @@ private constructor(
      * Defaults to 2.
      */
     val maxRetries: Int,
-    val apiKey: String,
+    val browserbaseApiKey: String,
+    val browserbaseProjectId: String,
+    val modelApiKey: String?,
 ) {
 
     init {
@@ -104,10 +106,6 @@ private constructor(
      * The base URL to use for every request.
      *
      * Defaults to the production environment: `https://api.stagehand.browserbase.com/v1`.
-     *
-     * The following other environments, with dedicated builder methods, are available:
-     * - dev: `https://api.stagehand.dev.browserbase.com/v1`
-     * - local: `http://localhost:5000/v1`
      */
     fun baseUrl(): String = baseUrl ?: PRODUCTION_URL
 
@@ -117,17 +115,14 @@ private constructor(
 
         const val PRODUCTION_URL = "https://api.stagehand.browserbase.com/v1"
 
-        const val DEV_URL = "https://api.stagehand.dev.browserbase.com/v1"
-
-        const val LOCAL_URL = "http://localhost:5000/v1"
-
         /**
          * Returns a mutable builder for constructing an instance of [ClientOptions].
          *
          * The following fields are required:
          * ```kotlin
          * .httpClient()
-         * .apiKey()
+         * .browserbaseApiKey()
+         * .browserbaseProjectId()
          * ```
          */
         fun builder() = Builder()
@@ -154,7 +149,9 @@ private constructor(
         private var responseValidation: Boolean = false
         private var timeout: Timeout = Timeout.default()
         private var maxRetries: Int = 2
-        private var apiKey: String? = null
+        private var browserbaseApiKey: String? = null
+        private var browserbaseProjectId: String? = null
+        private var modelApiKey: String? = null
 
         internal fun from(clientOptions: ClientOptions) = apply {
             httpClient = clientOptions.originalHttpClient
@@ -168,7 +165,9 @@ private constructor(
             responseValidation = clientOptions.responseValidation
             timeout = clientOptions.timeout
             maxRetries = clientOptions.maxRetries
-            apiKey = clientOptions.apiKey
+            browserbaseApiKey = clientOptions.browserbaseApiKey
+            browserbaseProjectId = clientOptions.browserbaseProjectId
+            modelApiKey = clientOptions.modelApiKey
         }
 
         /**
@@ -225,18 +224,8 @@ private constructor(
          * The base URL to use for every request.
          *
          * Defaults to the production environment: `https://api.stagehand.browserbase.com/v1`.
-         *
-         * The following other environments, with dedicated builder methods, are available:
-         * - dev: `https://api.stagehand.dev.browserbase.com/v1`
-         * - local: `http://localhost:5000/v1`
          */
         fun baseUrl(baseUrl: String?) = apply { this.baseUrl = baseUrl }
-
-        /** Sets [baseUrl] to `https://api.stagehand.dev.browserbase.com/v1`. */
-        fun dev() = baseUrl(DEV_URL)
-
-        /** Sets [baseUrl] to `http://localhost:5000/v1`. */
-        fun local() = baseUrl(LOCAL_URL)
 
         /**
          * Whether to call `validate` on every response before returning it.
@@ -282,7 +271,15 @@ private constructor(
          */
         fun maxRetries(maxRetries: Int) = apply { this.maxRetries = maxRetries }
 
-        fun apiKey(apiKey: String) = apply { this.apiKey = apiKey }
+        fun browserbaseApiKey(browserbaseApiKey: String) = apply {
+            this.browserbaseApiKey = browserbaseApiKey
+        }
+
+        fun browserbaseProjectId(browserbaseProjectId: String) = apply {
+            this.browserbaseProjectId = browserbaseProjectId
+        }
+
+        fun modelApiKey(modelApiKey: String?) = apply { this.modelApiKey = modelApiKey }
 
         fun headers(headers: Headers) = apply {
             this.headers.clear()
@@ -371,10 +368,12 @@ private constructor(
          *
          * See this table for the available options:
          *
-         * |Setter   |System property    |Environment variable|Required|Default value                               |
-         * |---------|-------------------|--------------------|--------|--------------------------------------------|
-         * |`apiKey` |`stagehand.apiKey` |`STAGEHAND_API_KEY` |true    |-                                           |
-         * |`baseUrl`|`stagehand.baseUrl`|`STAGEHAND_BASE_URL`|true    |`"https://api.stagehand.browserbase.com/v1"`|
+         * |Setter                |System property                 |Environment variable    |Required|Default value                               |
+         * |----------------------|--------------------------------|------------------------|--------|--------------------------------------------|
+         * |`browserbaseApiKey`   |`stagehand.browserbaseApiKey`   |`BROWSERBASE_API_KEY`   |true    |-                                           |
+         * |`browserbaseProjectId`|`stagehand.browserbaseProjectId`|`BROWSERBASE_PROJECT_ID`|true    |-                                           |
+         * |`modelApiKey`         |`stagehand.modelApiKey`         |`MODEL_API_KEY`         |false   |-                                           |
+         * |`baseUrl`             |`stagehand.baseUrl`             |`STAGEHAND_BASE_URL`    |true    |`"https://api.stagehand.browserbase.com/v1"`|
          *
          * System properties take precedence over environment variables.
          */
@@ -382,8 +381,14 @@ private constructor(
             (System.getProperty("stagehand.baseUrl") ?: System.getenv("STAGEHAND_BASE_URL"))?.let {
                 baseUrl(it)
             }
-            (System.getProperty("stagehand.apiKey") ?: System.getenv("STAGEHAND_API_KEY"))?.let {
-                apiKey(it)
+            (System.getProperty("stagehand.browserbaseApiKey")
+                    ?: System.getenv("BROWSERBASE_API_KEY"))
+                ?.let { browserbaseApiKey(it) }
+            (System.getProperty("stagehand.browserbaseProjectId")
+                    ?: System.getenv("BROWSERBASE_PROJECT_ID"))
+                ?.let { browserbaseProjectId(it) }
+            (System.getProperty("stagehand.modelApiKey") ?: System.getenv("MODEL_API_KEY"))?.let {
+                modelApiKey(it)
             }
         }
 
@@ -395,7 +400,8 @@ private constructor(
          * The following fields are required:
          * ```kotlin
          * .httpClient()
-         * .apiKey()
+         * .browserbaseApiKey()
+         * .browserbaseProjectId()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
@@ -403,7 +409,8 @@ private constructor(
         fun build(): ClientOptions {
             val httpClient = checkRequired("httpClient", httpClient)
             val sleeper = sleeper ?: PhantomReachableSleeper(DefaultSleeper())
-            val apiKey = checkRequired("apiKey", apiKey)
+            val browserbaseApiKey = checkRequired("browserbaseApiKey", browserbaseApiKey)
+            val browserbaseProjectId = checkRequired("browserbaseProjectId", browserbaseProjectId)
 
             val headers = Headers.builder()
             val queryParams = QueryParams.builder()
@@ -414,9 +421,19 @@ private constructor(
             headers.put("X-Stainless-Package-Version", getPackageVersion())
             headers.put("X-Stainless-Runtime", "JRE")
             headers.put("X-Stainless-Runtime-Version", getJavaVersion())
-            apiKey.let {
+            browserbaseApiKey.let {
                 if (!it.isEmpty()) {
-                    headers.put("Authorization", "Bearer $it")
+                    headers.put("x-bb-api-key", it)
+                }
+            }
+            browserbaseProjectId.let {
+                if (!it.isEmpty()) {
+                    headers.put("x-bb-project-id", it)
+                }
+            }
+            modelApiKey?.let {
+                if (!it.isEmpty()) {
+                    headers.put("x-model-api-key", it)
                 }
             }
             headers.replaceAll(this.headers.build())
@@ -440,7 +457,9 @@ private constructor(
                 responseValidation,
                 timeout,
                 maxRetries,
-                apiKey,
+                browserbaseApiKey,
+                browserbaseProjectId,
+                modelApiKey,
             )
         }
     }

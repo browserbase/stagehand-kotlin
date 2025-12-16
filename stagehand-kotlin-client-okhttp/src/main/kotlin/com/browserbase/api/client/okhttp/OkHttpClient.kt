@@ -76,7 +76,11 @@ class OkHttpClient private constructor(private val okHttpClient: okhttp3.OkHttpC
             }
         if (logLevel != null) {
             clientBuilder.addNetworkInterceptor(
-                HttpLoggingInterceptor().setLevel(logLevel).apply { redactHeader("Authorization") }
+                HttpLoggingInterceptor().setLevel(logLevel).apply {
+                    redactHeader("x-bb-api-key")
+                    redactHeader("x-bb-project-id")
+                    redactHeader("x-model-api-key")
+                }
             )
         }
 
