@@ -1,15 +1,25 @@
 # Stagehand Kotlin API Library
 
+<!-- x-release-please-start-version -->
+
 [![Maven Central](https://img.shields.io/maven-central/v/com.stagehand.api/stagehand-kotlin)](https://central.sonatype.com/artifact/com.stagehand.api/stagehand-kotlin/0.0.1)
 [![javadoc](https://javadoc.io/badge2/com.stagehand.api/stagehand-kotlin/0.0.1/javadoc.svg)](https://javadoc.io/doc/com.stagehand.api/stagehand-kotlin/0.0.1)
+
+<!-- x-release-please-end -->
 
 The Stagehand Kotlin SDK provides convenient access to the [Stagehand REST API](https://browserbase.com) from applications written in Kotlin.
 
 It is generated with [Stainless](https://www.stainless.com/).
 
+<!-- x-release-please-start-version -->
+
 The REST API documentation can be found on [browserbase.com](https://browserbase.com). KDocs are available on [javadoc.io](https://javadoc.io/doc/com.stagehand.api/stagehand-kotlin/0.0.1).
 
+<!-- x-release-please-end -->
+
 ## Installation
+
+<!-- x-release-please-start-version -->
 
 ### Gradle
 
@@ -26,6 +36,8 @@ implementation("com.stagehand.api:stagehand-kotlin:0.0.1")
   <version>0.0.1</version>
 </dependency>
 ```
+
+<!-- x-release-please-end -->
 
 ## Requirements
 
@@ -615,4 +627,4 @@ This package generally follows [SemVer](https://semver.org/spec/v2.0.0.html) con
 
 We take backwards-compatibility seriously and work hard to ensure you can rely on a smooth upgrade experience.
 
-We are keen for your feedback; please open an [issue](https://www.github.com/stainless-sdks/stagehand-kotlin/issues) with questions, bugs, or suggestions.
+We are keen for your feedback; please open an [issue](https://www.github.com/browserbase/stagehand-kotlin/issues) with questions, bugs, or suggestions.
