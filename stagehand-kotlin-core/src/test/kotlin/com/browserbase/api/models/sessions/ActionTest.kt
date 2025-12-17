@@ -13,18 +13,16 @@ internal class ActionTest {
     fun create() {
         val action =
             Action.builder()
-                .addArgument("string")
-                .description("description")
-                .method("method")
-                .selector("selector")
-                .backendNodeId(0L)
+                .description("Click the submit button")
+                .selector("[data-testid='submit-button']")
+                .addArgument("Hello World")
+                .method("click")
                 .build()
 
-        assertThat(action.arguments()).containsExactly("string")
-        assertThat(action.description()).isEqualTo("description")
-        assertThat(action.method()).isEqualTo("method")
-        assertThat(action.selector()).isEqualTo("selector")
-        assertThat(action.backendNodeId()).isEqualTo(0L)
+        assertThat(action.description()).isEqualTo("Click the submit button")
+        assertThat(action.selector()).isEqualTo("[data-testid='submit-button']")
+        assertThat(action.arguments()).containsExactly("Hello World")
+        assertThat(action.method()).isEqualTo("click")
     }
 
     @Test
@@ -32,11 +30,10 @@ internal class ActionTest {
         val jsonMapper = jsonMapper()
         val action =
             Action.builder()
-                .addArgument("string")
-                .description("description")
-                .method("method")
-                .selector("selector")
-                .backendNodeId(0L)
+                .description("Click the submit button")
+                .selector("[data-testid='submit-button']")
+                .addArgument("Hello World")
+                .method("click")
                 .build()
 
         val roundtrippedAction =
