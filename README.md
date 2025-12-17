@@ -57,7 +57,7 @@ val client: StagehandClient = StagehandOkHttpClient.fromEnv()
 
 val params: SessionActParams = SessionActParams.builder()
     .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
-    .input("Click the login button")
+    .input("click the first link on the page")
     .build()
 val response: SessionActResponse = client.sessions().act(params)
 ```
@@ -162,7 +162,7 @@ val client: StagehandClient = StagehandOkHttpClient.fromEnv()
 
 val params: SessionActParams = SessionActParams.builder()
     .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
-    .input("Click the login button")
+    .input("click the first link on the page")
     .build()
 val response: SessionActResponse = client.async().sessions().act(params)
 ```
@@ -181,7 +181,7 @@ val client: StagehandClientAsync = StagehandOkHttpClientAsync.fromEnv()
 
 val params: SessionActParams = SessionActParams.builder()
     .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
-    .input("Click the login button")
+    .input("click the first link on the page")
     .build()
 val response: SessionActResponse = client.sessions().act(params)
 ```
@@ -197,14 +197,13 @@ To access this data, prefix any HTTP method call on a client or service with `wi
 ```kotlin
 import com.browserbase.api.core.http.Headers
 import com.browserbase.api.core.http.HttpResponseFor
-import com.browserbase.api.models.sessions.SessionActParams
-import com.browserbase.api.models.sessions.SessionActResponse
+import com.browserbase.api.models.sessions.SessionStartParams
+import com.browserbase.api.models.sessions.SessionStartResponse
 
-val params: SessionActParams = SessionActParams.builder()
-    .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
-    .input("Click the login button")
+val params: SessionStartParams = SessionStartParams.builder()
+    .modelName("gpt-4o")
     .build()
-val response: HttpResponseFor<SessionActResponse> = client.sessions().withRawResponse().act(params)
+val response: HttpResponseFor<SessionStartResponse> = client.sessions().withRawResponse().start(params)
 
 val statusCode: Int = response.statusCode()
 val headers: Headers = response.headers()
@@ -213,9 +212,9 @@ val headers: Headers = response.headers()
 You can still deserialize the response into an instance of a Kotlin class if needed:
 
 ```kotlin
-import com.browserbase.api.models.sessions.SessionActResponse
+import com.browserbase.api.models.sessions.SessionStartResponse
 
-val parsedResponse: SessionActResponse = response.parse()
+val parsedResponse: SessionStartResponse = response.parse()
 ```
 
 ## Error handling
@@ -311,9 +310,9 @@ Requests time out after 1 minute by default.
 To set a custom timeout, configure the method call using the `timeout` method:
 
 ```kotlin
-import com.browserbase.api.models.sessions.SessionActResponse
+import com.browserbase.api.models.sessions.SessionStartResponse
 
-val response: SessionActResponse = client.sessions().act(
+val response: SessionStartResponse = client.sessions().start(
   params, RequestOptions.builder().timeout(Duration.ofSeconds(30)).build()
 )
 ```
@@ -447,10 +446,11 @@ These properties can be accessed on the nested built object later using the `_ad
 To set a documented parameter or property to an undocumented or not yet supported _value_, pass a [`JsonValue`](stagehand-kotlin-core/src/main/kotlin/com/browserbase/api/core/Values.kt) object to its setter:
 
 ```kotlin
+import com.browserbase.api.core.JsonValue
 import com.browserbase.api.models.sessions.SessionActParams
 
 val params: SessionActParams = SessionActParams.builder()
-    .input("Click the login button")
+    .input(JsonValue.from(42))
     .build()
 ```
 
