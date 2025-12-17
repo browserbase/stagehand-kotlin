@@ -16,28 +16,41 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
+import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Collections
 import java.util.Objects
 
-/**
- * Extracts data from the current page using natural language instructions and optional JSON schema
- * for structured output.
- */
+/** Extracts structured data from the current page using AI-powered analysis. */
 class SessionExtractParams
 private constructor(
-    private val sessionId: String?,
+    private val id: String?,
+    private val xLanguage: XLanguage?,
+    private val xSdkVersion: String?,
+    private val xSentAt: OffsetDateTime?,
     private val xStreamResponse: XStreamResponse?,
     private val body: Body,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
-    fun sessionId(): String? = sessionId
+    /** Unique session identifier */
+    fun id(): String? = id
 
+    /** Client SDK language */
+    fun xLanguage(): XLanguage? = xLanguage
+
+    /** Version of the Stagehand SDK */
+    fun xSdkVersion(): String? = xSdkVersion
+
+    /** ISO timestamp when request was sent */
+    fun xSentAt(): OffsetDateTime? = xSentAt
+
+    /** Whether to stream the response via SSE */
     fun xStreamResponse(): XStreamResponse? = xStreamResponse
 
     /**
-     * Frame ID to extract from
+     * Target frame ID for the extraction
      *
      * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -45,7 +58,7 @@ private constructor(
     fun frameId(): String? = body.frameId()
 
     /**
-     * Natural language instruction for extraction
+     * Natural language instruction for what to extract
      *
      * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -59,7 +72,7 @@ private constructor(
     fun options(): Options? = body.options()
 
     /**
-     * JSON Schema for structured output
+     * JSON Schema defining the structure of data to extract
      *
      * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -115,22 +128,39 @@ private constructor(
     /** A builder for [SessionExtractParams]. */
     class Builder internal constructor() {
 
-        private var sessionId: String? = null
+        private var id: String? = null
+        private var xLanguage: XLanguage? = null
+        private var xSdkVersion: String? = null
+        private var xSentAt: OffsetDateTime? = null
         private var xStreamResponse: XStreamResponse? = null
         private var body: Body.Builder = Body.builder()
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
         internal fun from(sessionExtractParams: SessionExtractParams) = apply {
-            sessionId = sessionExtractParams.sessionId
+            id = sessionExtractParams.id
+            xLanguage = sessionExtractParams.xLanguage
+            xSdkVersion = sessionExtractParams.xSdkVersion
+            xSentAt = sessionExtractParams.xSentAt
             xStreamResponse = sessionExtractParams.xStreamResponse
             body = sessionExtractParams.body.toBuilder()
             additionalHeaders = sessionExtractParams.additionalHeaders.toBuilder()
             additionalQueryParams = sessionExtractParams.additionalQueryParams.toBuilder()
         }
 
-        fun sessionId(sessionId: String?) = apply { this.sessionId = sessionId }
+        /** Unique session identifier */
+        fun id(id: String?) = apply { this.id = id }
 
+        /** Client SDK language */
+        fun xLanguage(xLanguage: XLanguage?) = apply { this.xLanguage = xLanguage }
+
+        /** Version of the Stagehand SDK */
+        fun xSdkVersion(xSdkVersion: String?) = apply { this.xSdkVersion = xSdkVersion }
+
+        /** ISO timestamp when request was sent */
+        fun xSentAt(xSentAt: OffsetDateTime?) = apply { this.xSentAt = xSentAt }
+
+        /** Whether to stream the response via SSE */
         fun xStreamResponse(xStreamResponse: XStreamResponse?) = apply {
             this.xStreamResponse = xStreamResponse
         }
@@ -147,7 +177,7 @@ private constructor(
          */
         fun body(body: Body) = apply { this.body = body.toBuilder() }
 
-        /** Frame ID to extract from */
+        /** Target frame ID for the extraction */
         fun frameId(frameId: String) = apply { body.frameId(frameId) }
 
         /**
@@ -158,7 +188,7 @@ private constructor(
          */
         fun frameId(frameId: JsonField<String>) = apply { body.frameId(frameId) }
 
-        /** Natural language instruction for extraction */
+        /** Natural language instruction for what to extract */
         fun instruction(instruction: String) = apply { body.instruction(instruction) }
 
         /**
@@ -180,7 +210,7 @@ private constructor(
          */
         fun options(options: JsonField<Options>) = apply { body.options(options) }
 
-        /** JSON Schema for structured output */
+        /** JSON Schema defining the structure of data to extract */
         fun schema(schema: Schema) = apply { body.schema(schema) }
 
         /**
@@ -315,7 +345,10 @@ private constructor(
          */
         fun build(): SessionExtractParams =
             SessionExtractParams(
-                sessionId,
+                id,
+                xLanguage,
+                xSdkVersion,
+                xSentAt,
                 xStreamResponse,
                 body.build(),
                 additionalHeaders.build(),
@@ -327,13 +360,16 @@ private constructor(
 
     fun _pathParam(index: Int): String =
         when (index) {
-            0 -> sessionId ?: ""
+            0 -> id ?: ""
             else -> ""
         }
 
     override fun _headers(): Headers =
         Headers.builder()
             .apply {
+                xLanguage?.let { put("x-language", it.toString()) }
+                xSdkVersion?.let { put("x-sdk-version", it) }
+                xSentAt?.let { put("x-sent-at", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(it)) }
                 xStreamResponse?.let { put("x-stream-response", it.toString()) }
                 putAll(additionalHeaders)
             }
@@ -362,7 +398,7 @@ private constructor(
         ) : this(frameId, instruction, options, schema, mutableMapOf())
 
         /**
-         * Frame ID to extract from
+         * Target frame ID for the extraction
          *
          * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -370,7 +406,7 @@ private constructor(
         fun frameId(): String? = frameId.getNullable("frameId")
 
         /**
-         * Natural language instruction for extraction
+         * Natural language instruction for what to extract
          *
          * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -384,7 +420,7 @@ private constructor(
         fun options(): Options? = options.getNullable("options")
 
         /**
-         * JSON Schema for structured output
+         * JSON Schema defining the structure of data to extract
          *
          * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -456,7 +492,7 @@ private constructor(
                 additionalProperties = body.additionalProperties.toMutableMap()
             }
 
-            /** Frame ID to extract from */
+            /** Target frame ID for the extraction */
             fun frameId(frameId: String) = frameId(JsonField.of(frameId))
 
             /**
@@ -468,7 +504,7 @@ private constructor(
              */
             fun frameId(frameId: JsonField<String>) = apply { this.frameId = frameId }
 
-            /** Natural language instruction for extraction */
+            /** Natural language instruction for what to extract */
             fun instruction(instruction: String) = instruction(JsonField.of(instruction))
 
             /**
@@ -493,7 +529,7 @@ private constructor(
              */
             fun options(options: JsonField<Options>) = apply { this.options = options }
 
-            /** JSON Schema for structured output */
+            /** JSON Schema defining the structure of data to extract */
             fun schema(schema: Schema) = schema(JsonField.of(schema))
 
             /**
@@ -595,7 +631,7 @@ private constructor(
     private constructor(
         private val model: JsonField<ModelConfig>,
         private val selector: JsonField<String>,
-        private val timeout: JsonField<Long>,
+        private val timeout: JsonField<Double>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
@@ -605,7 +641,7 @@ private constructor(
             @JsonProperty("selector")
             @ExcludeMissing
             selector: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("timeout") @ExcludeMissing timeout: JsonField<Long> = JsonMissing.of(),
+            @JsonProperty("timeout") @ExcludeMissing timeout: JsonField<Double> = JsonMissing.of(),
         ) : this(model, selector, timeout, mutableMapOf())
 
         /**
@@ -615,7 +651,7 @@ private constructor(
         fun model(): ModelConfig? = model.getNullable("model")
 
         /**
-         * Extract only from elements matching this selector
+         * CSS selector to scope extraction to a specific element
          *
          * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -623,10 +659,12 @@ private constructor(
         fun selector(): String? = selector.getNullable("selector")
 
         /**
+         * Timeout in ms for the extraction
+         *
          * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
-        fun timeout(): Long? = timeout.getNullable("timeout")
+        fun timeout(): Double? = timeout.getNullable("timeout")
 
         /**
          * Returns the raw JSON value of [model].
@@ -647,7 +685,7 @@ private constructor(
          *
          * Unlike [timeout], this method doesn't throw if the JSON field has an unexpected type.
          */
-        @JsonProperty("timeout") @ExcludeMissing fun _timeout(): JsonField<Long> = timeout
+        @JsonProperty("timeout") @ExcludeMissing fun _timeout(): JsonField<Double> = timeout
 
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -672,7 +710,7 @@ private constructor(
 
             private var model: JsonField<ModelConfig> = JsonMissing.of()
             private var selector: JsonField<String> = JsonMissing.of()
-            private var timeout: JsonField<Long> = JsonMissing.of()
+            private var timeout: JsonField<Double> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             internal fun from(options: Options) = apply {
@@ -693,7 +731,14 @@ private constructor(
              */
             fun model(model: JsonField<ModelConfig>) = apply { this.model = model }
 
-            /** Extract only from elements matching this selector */
+            /** Alias for calling [model] with `ModelConfig.ofString(string)`. */
+            fun model(string: String) = model(ModelConfig.ofString(string))
+
+            /** Alias for calling [model] with `ModelConfig.ofUnionMember1(unionMember1)`. */
+            fun model(unionMember1: ModelConfig.UnionMember1) =
+                model(ModelConfig.ofUnionMember1(unionMember1))
+
+            /** CSS selector to scope extraction to a specific element */
             fun selector(selector: String) = selector(JsonField.of(selector))
 
             /**
@@ -705,16 +750,17 @@ private constructor(
              */
             fun selector(selector: JsonField<String>) = apply { this.selector = selector }
 
-            fun timeout(timeout: Long) = timeout(JsonField.of(timeout))
+            /** Timeout in ms for the extraction */
+            fun timeout(timeout: Double) = timeout(JsonField.of(timeout))
 
             /**
              * Sets [Builder.timeout] to an arbitrary JSON value.
              *
-             * You should usually call [Builder.timeout] with a well-typed [Long] value instead.
+             * You should usually call [Builder.timeout] with a well-typed [Double] value instead.
              * This method is primarily for setting the field to an undocumented or not yet
              * supported value.
              */
-            fun timeout(timeout: JsonField<Long>) = apply { this.timeout = timeout }
+            fun timeout(timeout: JsonField<Double>) = apply { this.timeout = timeout }
 
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
@@ -798,7 +844,7 @@ private constructor(
             "Options{model=$model, selector=$selector, timeout=$timeout, additionalProperties=$additionalProperties}"
     }
 
-    /** JSON Schema for structured output */
+    /** JSON Schema defining the structure of data to extract */
     class Schema
     @JsonCreator
     private constructor(
@@ -896,6 +942,141 @@ private constructor(
         override fun toString() = "Schema{additionalProperties=$additionalProperties}"
     }
 
+    /** Client SDK language */
+    class XLanguage @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            val TYPESCRIPT = of("typescript")
+
+            val PYTHON = of("python")
+
+            val PLAYGROUND = of("playground")
+
+            fun of(value: String) = XLanguage(JsonField.of(value))
+        }
+
+        /** An enum containing [XLanguage]'s known values. */
+        enum class Known {
+            TYPESCRIPT,
+            PYTHON,
+            PLAYGROUND,
+        }
+
+        /**
+         * An enum containing [XLanguage]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [XLanguage] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            TYPESCRIPT,
+            PYTHON,
+            PLAYGROUND,
+            /**
+             * An enum member indicating that [XLanguage] was instantiated with an unknown value.
+             */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                TYPESCRIPT -> Value.TYPESCRIPT
+                PYTHON -> Value.PYTHON
+                PLAYGROUND -> Value.PLAYGROUND
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws StagehandInvalidDataException if this class instance's value is a not a known
+         *   member.
+         */
+        fun known(): Known =
+            when (this) {
+                TYPESCRIPT -> Known.TYPESCRIPT
+                PYTHON -> Known.PYTHON
+                PLAYGROUND -> Known.PLAYGROUND
+                else -> throw StagehandInvalidDataException("Unknown XLanguage: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws StagehandInvalidDataException if this class instance's value does not have the
+         *   expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString() ?: throw StagehandInvalidDataException("Value is not a String")
+
+        private var validated: Boolean = false
+
+        fun validate(): XLanguage = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: StagehandInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is XLanguage && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
+    }
+
+    /** Whether to stream the response via SSE */
     class XStreamResponse @JsonCreator private constructor(private val value: JsonField<String>) :
         Enum {
 
@@ -1031,7 +1212,10 @@ private constructor(
         }
 
         return other is SessionExtractParams &&
-            sessionId == other.sessionId &&
+            id == other.id &&
+            xLanguage == other.xLanguage &&
+            xSdkVersion == other.xSdkVersion &&
+            xSentAt == other.xSentAt &&
             xStreamResponse == other.xStreamResponse &&
             body == other.body &&
             additionalHeaders == other.additionalHeaders &&
@@ -1039,8 +1223,17 @@ private constructor(
     }
 
     override fun hashCode(): Int =
-        Objects.hash(sessionId, xStreamResponse, body, additionalHeaders, additionalQueryParams)
+        Objects.hash(
+            id,
+            xLanguage,
+            xSdkVersion,
+            xSentAt,
+            xStreamResponse,
+            body,
+            additionalHeaders,
+            additionalQueryParams,
+        )
 
     override fun toString() =
-        "SessionExtractParams{sessionId=$sessionId, xStreamResponse=$xStreamResponse, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "SessionExtractParams{id=$id, xLanguage=$xLanguage, xSdkVersion=$xSdkVersion, xSentAt=$xSentAt, xStreamResponse=$xStreamResponse, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

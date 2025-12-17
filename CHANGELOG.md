@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.2.0 (2025-12-17)
+
+Full Changelog: [v0.1.0...v0.2.0](https://github.com/browserbase/stagehand-kotlin/compare/v0.1.0...v0.2.0)
+
+### Features
+
+* **api:** manual updates ([441fff1](https://github.com/browserbase/stagehand-kotlin/commit/441fff113a3e1b5cf91864a2c01e3a5a177938ed))
+* **api:** manual updates ([de89ef0](https://github.com/browserbase/stagehand-kotlin/commit/de89ef0a33fe52bc6b0bdb828079d5a3935566aa))
+* **api:** manual updates ([81df74d](https://github.com/browserbase/stagehand-kotlin/commit/81df74d8e0d066805c4efc0739e25237e4954854))
+* **api:** manual updates ([b06de97](https://github.com/browserbase/stagehand-kotlin/commit/b06de9710dfdf82d021a43603ac74dde10754558))
+* **api:** manual updates ([d3793d7](https://github.com/browserbase/stagehand-kotlin/commit/d3793d75a6fe307869eddf909c70f45812fbe571))
+* **api:** manual updates ([3e6ea1d](https://github.com/browserbase/stagehand-kotlin/commit/3e6ea1db002bf6140d274faf6352ff52389232dd))
+
 ## 0.1.0 (2025-12-16)
 
 Full Changelog: [v0.0.1...v0.1.0](https://github.com/browserbase/stagehand-kotlin/compare/v0.0.1...v0.1.0)

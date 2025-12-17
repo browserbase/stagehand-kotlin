@@ -7,7 +7,9 @@ import com.browserbase.api.core.ExcludeMissing
 import com.browserbase.api.core.JsonField
 import com.browserbase.api.core.JsonMissing
 import com.browserbase.api.core.JsonValue
+import com.browserbase.api.core.checkKnown
 import com.browserbase.api.core.checkRequired
+import com.browserbase.api.core.toImmutable
 import com.browserbase.api.errors.StagehandInvalidDataException
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
@@ -16,7 +18,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import java.util.Collections
 import java.util.Objects
 
-class SessionNavigateResponse
+class SessionObserveResponse
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val data: JsonField<Data>,
@@ -71,7 +73,7 @@ private constructor(
     companion object {
 
         /**
-         * Returns a mutable builder for constructing an instance of [SessionNavigateResponse].
+         * Returns a mutable builder for constructing an instance of [SessionObserveResponse].
          *
          * The following fields are required:
          * ```kotlin
@@ -82,17 +84,17 @@ private constructor(
         fun builder() = Builder()
     }
 
-    /** A builder for [SessionNavigateResponse]. */
+    /** A builder for [SessionObserveResponse]. */
     class Builder internal constructor() {
 
         private var data: JsonField<Data>? = null
         private var success: JsonField<Success>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
-        internal fun from(sessionNavigateResponse: SessionNavigateResponse) = apply {
-            data = sessionNavigateResponse.data
-            success = sessionNavigateResponse.success
-            additionalProperties = sessionNavigateResponse.additionalProperties.toMutableMap()
+        internal fun from(sessionObserveResponse: SessionObserveResponse) = apply {
+            data = sessionObserveResponse.data
+            success = sessionObserveResponse.success
+            additionalProperties = sessionObserveResponse.additionalProperties.toMutableMap()
         }
 
         fun data(data: Data) = data(JsonField.of(data))
@@ -135,7 +137,7 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [SessionNavigateResponse].
+         * Returns an immutable instance of [SessionObserveResponse].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          *
@@ -147,8 +149,8 @@ private constructor(
          *
          * @throws IllegalStateException if any required field is unset.
          */
-        fun build(): SessionNavigateResponse =
-            SessionNavigateResponse(
+        fun build(): SessionObserveResponse =
+            SessionObserveResponse(
                 checkRequired("data", data),
                 checkRequired("success", success),
                 additionalProperties.toMutableMap(),
@@ -157,7 +159,7 @@ private constructor(
 
     private var validated: Boolean = false
 
-    fun validate(): SessionNavigateResponse = apply {
+    fun validate(): SessionObserveResponse = apply {
         if (validated) {
             return@apply
         }
@@ -186,19 +188,24 @@ private constructor(
     class Data
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
-        private val result: JsonValue,
+        private val result: JsonField<List<Action>>,
         private val actionId: JsonField<String>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
         @JsonCreator
         private constructor(
-            @JsonProperty("result") @ExcludeMissing result: JsonValue = JsonMissing.of(),
+            @JsonProperty("result")
+            @ExcludeMissing
+            result: JsonField<List<Action>> = JsonMissing.of(),
             @JsonProperty("actionId") @ExcludeMissing actionId: JsonField<String> = JsonMissing.of(),
         ) : this(result, actionId, mutableMapOf())
 
-        /** Navigation response (Playwright Response object or null) */
-        @JsonProperty("result") @ExcludeMissing fun _result(): JsonValue = result
+        /**
+         * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun result(): List<Action> = result.getRequired("result")
 
         /**
          * Action ID for tracking
@@ -207,6 +214,13 @@ private constructor(
          *   the server responded with an unexpected value).
          */
         fun actionId(): String? = actionId.getNullable("actionId")
+
+        /**
+         * Returns the raw JSON value of [result].
+         *
+         * Unlike [result], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("result") @ExcludeMissing fun _result(): JsonField<List<Action>> = result
 
         /**
          * Returns the raw JSON value of [actionId].
@@ -243,18 +257,40 @@ private constructor(
         /** A builder for [Data]. */
         class Builder internal constructor() {
 
-            private var result: JsonValue? = null
+            private var result: JsonField<MutableList<Action>>? = null
             private var actionId: JsonField<String> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             internal fun from(data: Data) = apply {
-                result = data.result
+                result = data.result.map { it.toMutableList() }
                 actionId = data.actionId
                 additionalProperties = data.additionalProperties.toMutableMap()
             }
 
-            /** Navigation response (Playwright Response object or null) */
-            fun result(result: JsonValue) = apply { this.result = result }
+            fun result(result: List<Action>) = result(JsonField.of(result))
+
+            /**
+             * Sets [Builder.result] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.result] with a well-typed `List<Action>` value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun result(result: JsonField<List<Action>>) = apply {
+                this.result = result.map { it.toMutableList() }
+            }
+
+            /**
+             * Adds a single [Action] to [Builder.result].
+             *
+             * @throws IllegalStateException if the field was previously set to a non-list.
+             */
+            fun addResult(result: Action) = apply {
+                this.result =
+                    (this.result ?: JsonField.of(mutableListOf())).also {
+                        checkKnown("result", it).add(result)
+                    }
+            }
 
             /** Action ID for tracking */
             fun actionId(actionId: String) = actionId(JsonField.of(actionId))
@@ -300,7 +336,11 @@ private constructor(
              * @throws IllegalStateException if any required field is unset.
              */
             fun build(): Data =
-                Data(checkRequired("result", result), actionId, additionalProperties.toMutableMap())
+                Data(
+                    checkRequired("result", result).map { it.toImmutable() },
+                    actionId,
+                    additionalProperties.toMutableMap(),
+                )
         }
 
         private var validated: Boolean = false
@@ -310,6 +350,7 @@ private constructor(
                 return@apply
             }
 
+            result().forEach { it.validate() }
             actionId()
             validated = true
         }
@@ -328,7 +369,9 @@ private constructor(
          *
          * Used for best match union deserialization.
          */
-        internal fun validity(): Int = (if (actionId.asKnown() == null) 0 else 1)
+        internal fun validity(): Int =
+            (result.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
+                (if (actionId.asKnown() == null) 0 else 1)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
@@ -470,7 +513,7 @@ private constructor(
             return true
         }
 
-        return other is SessionNavigateResponse &&
+        return other is SessionObserveResponse &&
             data == other.data &&
             success == other.success &&
             additionalProperties == other.additionalProperties
@@ -481,5 +524,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "SessionNavigateResponse{data=$data, success=$success, additionalProperties=$additionalProperties}"
+        "SessionObserveResponse{data=$data, success=$success, additionalProperties=$additionalProperties}"
 }

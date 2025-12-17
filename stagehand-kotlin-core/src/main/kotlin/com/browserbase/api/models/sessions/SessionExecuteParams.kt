@@ -2,17 +2,13 @@
 
 package com.browserbase.api.models.sessions
 
-import com.browserbase.api.core.BaseDeserializer
-import com.browserbase.api.core.BaseSerializer
 import com.browserbase.api.core.Enum
 import com.browserbase.api.core.ExcludeMissing
 import com.browserbase.api.core.JsonField
 import com.browserbase.api.core.JsonMissing
 import com.browserbase.api.core.JsonValue
 import com.browserbase.api.core.Params
-import com.browserbase.api.core.allMaxBy
 import com.browserbase.api.core.checkRequired
-import com.browserbase.api.core.getOrThrow
 import com.browserbase.api.core.http.Headers
 import com.browserbase.api.core.http.QueryParams
 import com.browserbase.api.errors.StagehandInvalidDataException
@@ -20,28 +16,37 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.fasterxml.jackson.core.JsonGenerator
-import com.fasterxml.jackson.core.ObjectCodec
-import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.SerializerProvider
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize
-import com.fasterxml.jackson.databind.annotation.JsonSerialize
-import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Collections
 import java.util.Objects
 
-/** Runs an autonomous agent that can perform multiple actions to complete a complex task. */
-class SessionExecuteAgentParams
+/** Runs an autonomous AI agent that can perform complex multi-step browser tasks. */
+class SessionExecuteParams
 private constructor(
-    private val sessionId: String?,
+    private val id: String?,
+    private val xLanguage: XLanguage?,
+    private val xSdkVersion: String?,
+    private val xSentAt: OffsetDateTime?,
     private val xStreamResponse: XStreamResponse?,
     private val body: Body,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
-    fun sessionId(): String? = sessionId
+    /** Unique session identifier */
+    fun id(): String? = id
 
+    /** Client SDK language */
+    fun xLanguage(): XLanguage? = xLanguage
+
+    /** Version of the Stagehand SDK */
+    fun xSdkVersion(): String? = xSdkVersion
+
+    /** ISO timestamp when request was sent */
+    fun xSentAt(): OffsetDateTime? = xSentAt
+
+    /** Whether to stream the response via SSE */
     fun xStreamResponse(): XStreamResponse? = xStreamResponse
 
     /**
@@ -57,6 +62,8 @@ private constructor(
     fun executeOptions(): ExecuteOptions = body.executeOptions()
 
     /**
+     * Target frame ID for the agent
+     *
      * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
@@ -96,7 +103,7 @@ private constructor(
     companion object {
 
         /**
-         * Returns a mutable builder for constructing an instance of [SessionExecuteAgentParams].
+         * Returns a mutable builder for constructing an instance of [SessionExecuteParams].
          *
          * The following fields are required:
          * ```kotlin
@@ -107,25 +114,42 @@ private constructor(
         fun builder() = Builder()
     }
 
-    /** A builder for [SessionExecuteAgentParams]. */
+    /** A builder for [SessionExecuteParams]. */
     class Builder internal constructor() {
 
-        private var sessionId: String? = null
+        private var id: String? = null
+        private var xLanguage: XLanguage? = null
+        private var xSdkVersion: String? = null
+        private var xSentAt: OffsetDateTime? = null
         private var xStreamResponse: XStreamResponse? = null
         private var body: Body.Builder = Body.builder()
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
-        internal fun from(sessionExecuteAgentParams: SessionExecuteAgentParams) = apply {
-            sessionId = sessionExecuteAgentParams.sessionId
-            xStreamResponse = sessionExecuteAgentParams.xStreamResponse
-            body = sessionExecuteAgentParams.body.toBuilder()
-            additionalHeaders = sessionExecuteAgentParams.additionalHeaders.toBuilder()
-            additionalQueryParams = sessionExecuteAgentParams.additionalQueryParams.toBuilder()
+        internal fun from(sessionExecuteParams: SessionExecuteParams) = apply {
+            id = sessionExecuteParams.id
+            xLanguage = sessionExecuteParams.xLanguage
+            xSdkVersion = sessionExecuteParams.xSdkVersion
+            xSentAt = sessionExecuteParams.xSentAt
+            xStreamResponse = sessionExecuteParams.xStreamResponse
+            body = sessionExecuteParams.body.toBuilder()
+            additionalHeaders = sessionExecuteParams.additionalHeaders.toBuilder()
+            additionalQueryParams = sessionExecuteParams.additionalQueryParams.toBuilder()
         }
 
-        fun sessionId(sessionId: String?) = apply { this.sessionId = sessionId }
+        /** Unique session identifier */
+        fun id(id: String?) = apply { this.id = id }
 
+        /** Client SDK language */
+        fun xLanguage(xLanguage: XLanguage?) = apply { this.xLanguage = xLanguage }
+
+        /** Version of the Stagehand SDK */
+        fun xSdkVersion(xSdkVersion: String?) = apply { this.xSdkVersion = xSdkVersion }
+
+        /** ISO timestamp when request was sent */
+        fun xSentAt(xSentAt: OffsetDateTime?) = apply { this.xSentAt = xSentAt }
+
+        /** Whether to stream the response via SSE */
         fun xStreamResponse(xStreamResponse: XStreamResponse?) = apply {
             this.xStreamResponse = xStreamResponse
         }
@@ -169,6 +193,7 @@ private constructor(
             body.executeOptions(executeOptions)
         }
 
+        /** Target frame ID for the agent */
         fun frameId(frameId: String) = apply { body.frameId(frameId) }
 
         /**
@@ -297,7 +322,7 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [SessionExecuteAgentParams].
+         * Returns an immutable instance of [SessionExecuteParams].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          *
@@ -309,9 +334,12 @@ private constructor(
          *
          * @throws IllegalStateException if any required field is unset.
          */
-        fun build(): SessionExecuteAgentParams =
-            SessionExecuteAgentParams(
-                sessionId,
+        fun build(): SessionExecuteParams =
+            SessionExecuteParams(
+                id,
+                xLanguage,
+                xSdkVersion,
+                xSentAt,
                 xStreamResponse,
                 body.build(),
                 additionalHeaders.build(),
@@ -323,13 +351,16 @@ private constructor(
 
     fun _pathParam(index: Int): String =
         when (index) {
-            0 -> sessionId ?: ""
+            0 -> id ?: ""
             else -> ""
         }
 
     override fun _headers(): Headers =
         Headers.builder()
             .apply {
+                xLanguage?.let { put("x-language", it.toString()) }
+                xSdkVersion?.let { put("x-sdk-version", it) }
+                xSentAt?.let { put("x-sent-at", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(it)) }
                 xStreamResponse?.let { put("x-stream-response", it.toString()) }
                 putAll(additionalHeaders)
             }
@@ -370,6 +401,8 @@ private constructor(
         fun executeOptions(): ExecuteOptions = executeOptions.getRequired("executeOptions")
 
         /**
+         * Target frame ID for the agent
+         *
          * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
@@ -469,6 +502,7 @@ private constructor(
                 this.executeOptions = executeOptions
             }
 
+            /** Target frame ID for the agent */
             fun frameId(frameId: String) = frameId(JsonField.of(frameId))
 
             /**
@@ -579,8 +613,7 @@ private constructor(
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val cua: JsonField<Boolean>,
-        private val model: JsonField<Model>,
-        private val provider: JsonField<Provider>,
+        private val model: JsonField<ModelConfig>,
         private val systemPrompt: JsonField<String>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
@@ -588,14 +621,11 @@ private constructor(
         @JsonCreator
         private constructor(
             @JsonProperty("cua") @ExcludeMissing cua: JsonField<Boolean> = JsonMissing.of(),
-            @JsonProperty("model") @ExcludeMissing model: JsonField<Model> = JsonMissing.of(),
-            @JsonProperty("provider")
-            @ExcludeMissing
-            provider: JsonField<Provider> = JsonMissing.of(),
+            @JsonProperty("model") @ExcludeMissing model: JsonField<ModelConfig> = JsonMissing.of(),
             @JsonProperty("systemPrompt")
             @ExcludeMissing
             systemPrompt: JsonField<String> = JsonMissing.of(),
-        ) : this(cua, model, provider, systemPrompt, mutableMapOf())
+        ) : this(cua, model, systemPrompt, mutableMapOf())
 
         /**
          * Enable Computer Use Agent mode
@@ -609,15 +639,11 @@ private constructor(
          * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
-        fun model(): Model? = model.getNullable("model")
+        fun model(): ModelConfig? = model.getNullable("model")
 
         /**
-         * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
-         *   the server responded with an unexpected value).
-         */
-        fun provider(): Provider? = provider.getNullable("provider")
-
-        /**
+         * Custom system prompt for the agent
+         *
          * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
@@ -635,14 +661,7 @@ private constructor(
          *
          * Unlike [model], this method doesn't throw if the JSON field has an unexpected type.
          */
-        @JsonProperty("model") @ExcludeMissing fun _model(): JsonField<Model> = model
-
-        /**
-         * Returns the raw JSON value of [provider].
-         *
-         * Unlike [provider], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("provider") @ExcludeMissing fun _provider(): JsonField<Provider> = provider
+        @JsonProperty("model") @ExcludeMissing fun _model(): JsonField<ModelConfig> = model
 
         /**
          * Returns the raw JSON value of [systemPrompt].
@@ -676,15 +695,13 @@ private constructor(
         class Builder internal constructor() {
 
             private var cua: JsonField<Boolean> = JsonMissing.of()
-            private var model: JsonField<Model> = JsonMissing.of()
-            private var provider: JsonField<Provider> = JsonMissing.of()
+            private var model: JsonField<ModelConfig> = JsonMissing.of()
             private var systemPrompt: JsonField<String> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             internal fun from(agentConfig: AgentConfig) = apply {
                 cua = agentConfig.cua
                 model = agentConfig.model
-                provider = agentConfig.provider
                 systemPrompt = agentConfig.systemPrompt
                 additionalProperties = agentConfig.additionalProperties.toMutableMap()
             }
@@ -701,34 +718,25 @@ private constructor(
              */
             fun cua(cua: JsonField<Boolean>) = apply { this.cua = cua }
 
-            fun model(model: Model) = model(JsonField.of(model))
+            fun model(model: ModelConfig) = model(JsonField.of(model))
 
             /**
              * Sets [Builder.model] to an arbitrary JSON value.
              *
-             * You should usually call [Builder.model] with a well-typed [Model] value instead. This
-             * method is primarily for setting the field to an undocumented or not yet supported
-             * value.
-             */
-            fun model(model: JsonField<Model>) = apply { this.model = model }
-
-            /** Alias for calling [model] with `Model.ofString(string)`. */
-            fun model(string: String) = model(Model.ofString(string))
-
-            /** Alias for calling [model] with `Model.ofConfig(config)`. */
-            fun model(config: ModelConfig) = model(Model.ofConfig(config))
-
-            fun provider(provider: Provider) = provider(JsonField.of(provider))
-
-            /**
-             * Sets [Builder.provider] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.provider] with a well-typed [Provider] value
+             * You should usually call [Builder.model] with a well-typed [ModelConfig] value
              * instead. This method is primarily for setting the field to an undocumented or not yet
              * supported value.
              */
-            fun provider(provider: JsonField<Provider>) = apply { this.provider = provider }
+            fun model(model: JsonField<ModelConfig>) = apply { this.model = model }
 
+            /** Alias for calling [model] with `ModelConfig.ofString(string)`. */
+            fun model(string: String) = model(ModelConfig.ofString(string))
+
+            /** Alias for calling [model] with `ModelConfig.ofUnionMember1(unionMember1)`. */
+            fun model(unionMember1: ModelConfig.UnionMember1) =
+                model(ModelConfig.ofUnionMember1(unionMember1))
+
+            /** Custom system prompt for the agent */
             fun systemPrompt(systemPrompt: String) = systemPrompt(JsonField.of(systemPrompt))
 
             /**
@@ -767,7 +775,7 @@ private constructor(
              * Further updates to this [Builder] will not mutate the returned instance.
              */
             fun build(): AgentConfig =
-                AgentConfig(cua, model, provider, systemPrompt, additionalProperties.toMutableMap())
+                AgentConfig(cua, model, systemPrompt, additionalProperties.toMutableMap())
         }
 
         private var validated: Boolean = false
@@ -779,7 +787,6 @@ private constructor(
 
             cua()
             model()?.validate()
-            provider()?.validate()
             systemPrompt()
             validated = true
         }
@@ -801,312 +808,7 @@ private constructor(
         internal fun validity(): Int =
             (if (cua.asKnown() == null) 0 else 1) +
                 (model.asKnown()?.validity() ?: 0) +
-                (provider.asKnown()?.validity() ?: 0) +
                 (if (systemPrompt.asKnown() == null) 0 else 1)
-
-        @JsonDeserialize(using = Model.Deserializer::class)
-        @JsonSerialize(using = Model.Serializer::class)
-        class Model
-        private constructor(
-            private val string: String? = null,
-            private val config: ModelConfig? = null,
-            private val _json: JsonValue? = null,
-        ) {
-
-            fun string(): String? = string
-
-            fun config(): ModelConfig? = config
-
-            fun isString(): Boolean = string != null
-
-            fun isConfig(): Boolean = config != null
-
-            fun asString(): String = string.getOrThrow("string")
-
-            fun asConfig(): ModelConfig = config.getOrThrow("config")
-
-            fun _json(): JsonValue? = _json
-
-            fun <T> accept(visitor: Visitor<T>): T =
-                when {
-                    string != null -> visitor.visitString(string)
-                    config != null -> visitor.visitConfig(config)
-                    else -> visitor.unknown(_json)
-                }
-
-            private var validated: Boolean = false
-
-            fun validate(): Model = apply {
-                if (validated) {
-                    return@apply
-                }
-
-                accept(
-                    object : Visitor<Unit> {
-                        override fun visitString(string: String) {}
-
-                        override fun visitConfig(config: ModelConfig) {
-                            config.validate()
-                        }
-                    }
-                )
-                validated = true
-            }
-
-            fun isValid(): Boolean =
-                try {
-                    validate()
-                    true
-                } catch (e: StagehandInvalidDataException) {
-                    false
-                }
-
-            /**
-             * Returns a score indicating how many valid values are contained in this object
-             * recursively.
-             *
-             * Used for best match union deserialization.
-             */
-            internal fun validity(): Int =
-                accept(
-                    object : Visitor<Int> {
-                        override fun visitString(string: String) = 1
-
-                        override fun visitConfig(config: ModelConfig) = config.validity()
-
-                        override fun unknown(json: JsonValue?) = 0
-                    }
-                )
-
-            override fun equals(other: Any?): Boolean {
-                if (this === other) {
-                    return true
-                }
-
-                return other is Model && string == other.string && config == other.config
-            }
-
-            override fun hashCode(): Int = Objects.hash(string, config)
-
-            override fun toString(): String =
-                when {
-                    string != null -> "Model{string=$string}"
-                    config != null -> "Model{config=$config}"
-                    _json != null -> "Model{_unknown=$_json}"
-                    else -> throw IllegalStateException("Invalid Model")
-                }
-
-            companion object {
-
-                fun ofString(string: String) = Model(string = string)
-
-                fun ofConfig(config: ModelConfig) = Model(config = config)
-            }
-
-            /**
-             * An interface that defines how to map each variant of [Model] to a value of type [T].
-             */
-            interface Visitor<out T> {
-
-                fun visitString(string: String): T
-
-                fun visitConfig(config: ModelConfig): T
-
-                /**
-                 * Maps an unknown variant of [Model] to a value of type [T].
-                 *
-                 * An instance of [Model] can contain an unknown variant if it was deserialized from
-                 * data that doesn't match any known variant. For example, if the SDK is on an older
-                 * version than the API, then the API may respond with new variants that the SDK is
-                 * unaware of.
-                 *
-                 * @throws StagehandInvalidDataException in the default implementation.
-                 */
-                fun unknown(json: JsonValue?): T {
-                    throw StagehandInvalidDataException("Unknown Model: $json")
-                }
-            }
-
-            internal class Deserializer : BaseDeserializer<Model>(Model::class) {
-
-                override fun ObjectCodec.deserialize(node: JsonNode): Model {
-                    val json = JsonValue.fromJsonNode(node)
-
-                    val bestMatches =
-                        sequenceOf(
-                                tryDeserialize(node, jacksonTypeRef<ModelConfig>())?.let {
-                                    Model(config = it, _json = json)
-                                },
-                                tryDeserialize(node, jacksonTypeRef<String>())?.let {
-                                    Model(string = it, _json = json)
-                                },
-                            )
-                            .filterNotNull()
-                            .allMaxBy { it.validity() }
-                            .toList()
-                    return when (bestMatches.size) {
-                        // This can happen if what we're deserializing is completely incompatible
-                        // with all the possible variants (e.g. deserializing from array).
-                        0 -> Model(_json = json)
-                        1 -> bestMatches.single()
-                        // If there's more than one match with the highest validity, then use the
-                        // first completely valid match, or simply the first match if none are
-                        // completely valid.
-                        else -> bestMatches.firstOrNull { it.isValid() } ?: bestMatches.first()
-                    }
-                }
-            }
-
-            internal class Serializer : BaseSerializer<Model>(Model::class) {
-
-                override fun serialize(
-                    value: Model,
-                    generator: JsonGenerator,
-                    provider: SerializerProvider,
-                ) {
-                    when {
-                        value.string != null -> generator.writeObject(value.string)
-                        value.config != null -> generator.writeObject(value.config)
-                        value._json != null -> generator.writeObject(value._json)
-                        else -> throw IllegalStateException("Invalid Model")
-                    }
-                }
-            }
-        }
-
-        class Provider @JsonCreator private constructor(private val value: JsonField<String>) :
-            Enum {
-
-            /**
-             * Returns this class instance's raw value.
-             *
-             * This is usually only useful if this instance was deserialized from data that doesn't
-             * match any known member, and you want to know that value. For example, if the SDK is
-             * on an older version than the API, then the API may respond with new members that the
-             * SDK is unaware of.
-             */
-            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
-
-            companion object {
-
-                val OPENAI = of("openai")
-
-                val ANTHROPIC = of("anthropic")
-
-                val GOOGLE = of("google")
-
-                fun of(value: String) = Provider(JsonField.of(value))
-            }
-
-            /** An enum containing [Provider]'s known values. */
-            enum class Known {
-                OPENAI,
-                ANTHROPIC,
-                GOOGLE,
-            }
-
-            /**
-             * An enum containing [Provider]'s known values, as well as an [_UNKNOWN] member.
-             *
-             * An instance of [Provider] can contain an unknown value in a couple of cases:
-             * - It was deserialized from data that doesn't match any known member. For example, if
-             *   the SDK is on an older version than the API, then the API may respond with new
-             *   members that the SDK is unaware of.
-             * - It was constructed with an arbitrary value using the [of] method.
-             */
-            enum class Value {
-                OPENAI,
-                ANTHROPIC,
-                GOOGLE,
-                /**
-                 * An enum member indicating that [Provider] was instantiated with an unknown value.
-                 */
-                _UNKNOWN,
-            }
-
-            /**
-             * Returns an enum member corresponding to this class instance's value, or
-             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
-             *
-             * Use the [known] method instead if you're certain the value is always known or if you
-             * want to throw for the unknown case.
-             */
-            fun value(): Value =
-                when (this) {
-                    OPENAI -> Value.OPENAI
-                    ANTHROPIC -> Value.ANTHROPIC
-                    GOOGLE -> Value.GOOGLE
-                    else -> Value._UNKNOWN
-                }
-
-            /**
-             * Returns an enum member corresponding to this class instance's value.
-             *
-             * Use the [value] method instead if you're uncertain the value is always known and
-             * don't want to throw for the unknown case.
-             *
-             * @throws StagehandInvalidDataException if this class instance's value is a not a known
-             *   member.
-             */
-            fun known(): Known =
-                when (this) {
-                    OPENAI -> Known.OPENAI
-                    ANTHROPIC -> Known.ANTHROPIC
-                    GOOGLE -> Known.GOOGLE
-                    else -> throw StagehandInvalidDataException("Unknown Provider: $value")
-                }
-
-            /**
-             * Returns this class instance's primitive wire representation.
-             *
-             * This differs from the [toString] method because that method is primarily for
-             * debugging and generally doesn't throw.
-             *
-             * @throws StagehandInvalidDataException if this class instance's value does not have
-             *   the expected primitive type.
-             */
-            fun asString(): String =
-                _value().asString() ?: throw StagehandInvalidDataException("Value is not a String")
-
-            private var validated: Boolean = false
-
-            fun validate(): Provider = apply {
-                if (validated) {
-                    return@apply
-                }
-
-                known()
-                validated = true
-            }
-
-            fun isValid(): Boolean =
-                try {
-                    validate()
-                    true
-                } catch (e: StagehandInvalidDataException) {
-                    false
-                }
-
-            /**
-             * Returns a score indicating how many valid values are contained in this object
-             * recursively.
-             *
-             * Used for best match union deserialization.
-             */
-            internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
-
-            override fun equals(other: Any?): Boolean {
-                if (this === other) {
-                    return true
-                }
-
-                return other is Provider && value == other.value
-            }
-
-            override fun hashCode() = value.hashCode()
-
-            override fun toString() = value.toString()
-        }
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
@@ -1116,19 +818,18 @@ private constructor(
             return other is AgentConfig &&
                 cua == other.cua &&
                 model == other.model &&
-                provider == other.provider &&
                 systemPrompt == other.systemPrompt &&
                 additionalProperties == other.additionalProperties
         }
 
         private val hashCode: Int by lazy {
-            Objects.hash(cua, model, provider, systemPrompt, additionalProperties)
+            Objects.hash(cua, model, systemPrompt, additionalProperties)
         }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "AgentConfig{cua=$cua, model=$model, provider=$provider, systemPrompt=$systemPrompt, additionalProperties=$additionalProperties}"
+            "AgentConfig{cua=$cua, model=$model, systemPrompt=$systemPrompt, additionalProperties=$additionalProperties}"
     }
 
     class ExecuteOptions
@@ -1136,7 +837,7 @@ private constructor(
     private constructor(
         private val instruction: JsonField<String>,
         private val highlightCursor: JsonField<Boolean>,
-        private val maxSteps: JsonField<Long>,
+        private val maxSteps: JsonField<Double>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
@@ -1148,11 +849,11 @@ private constructor(
             @JsonProperty("highlightCursor")
             @ExcludeMissing
             highlightCursor: JsonField<Boolean> = JsonMissing.of(),
-            @JsonProperty("maxSteps") @ExcludeMissing maxSteps: JsonField<Long> = JsonMissing.of(),
+            @JsonProperty("maxSteps") @ExcludeMissing maxSteps: JsonField<Double> = JsonMissing.of(),
         ) : this(instruction, highlightCursor, maxSteps, mutableMapOf())
 
         /**
-         * Task for the agent to complete
+         * Natural language instruction for the agent
          *
          * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -1160,7 +861,7 @@ private constructor(
         fun instruction(): String = instruction.getRequired("instruction")
 
         /**
-         * Visually highlight the cursor during actions
+         * Whether to visually highlight the cursor during execution
          *
          * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -1173,7 +874,7 @@ private constructor(
          * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
-        fun maxSteps(): Long? = maxSteps.getNullable("maxSteps")
+        fun maxSteps(): Double? = maxSteps.getNullable("maxSteps")
 
         /**
          * Returns the raw JSON value of [instruction].
@@ -1199,7 +900,7 @@ private constructor(
          *
          * Unlike [maxSteps], this method doesn't throw if the JSON field has an unexpected type.
          */
-        @JsonProperty("maxSteps") @ExcludeMissing fun _maxSteps(): JsonField<Long> = maxSteps
+        @JsonProperty("maxSteps") @ExcludeMissing fun _maxSteps(): JsonField<Double> = maxSteps
 
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -1231,7 +932,7 @@ private constructor(
 
             private var instruction: JsonField<String>? = null
             private var highlightCursor: JsonField<Boolean> = JsonMissing.of()
-            private var maxSteps: JsonField<Long> = JsonMissing.of()
+            private var maxSteps: JsonField<Double> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             internal fun from(executeOptions: ExecuteOptions) = apply {
@@ -1241,7 +942,7 @@ private constructor(
                 additionalProperties = executeOptions.additionalProperties.toMutableMap()
             }
 
-            /** Task for the agent to complete */
+            /** Natural language instruction for the agent */
             fun instruction(instruction: String) = instruction(JsonField.of(instruction))
 
             /**
@@ -1255,7 +956,7 @@ private constructor(
                 this.instruction = instruction
             }
 
-            /** Visually highlight the cursor during actions */
+            /** Whether to visually highlight the cursor during execution */
             fun highlightCursor(highlightCursor: Boolean) =
                 highlightCursor(JsonField.of(highlightCursor))
 
@@ -1271,16 +972,16 @@ private constructor(
             }
 
             /** Maximum number of steps the agent can take */
-            fun maxSteps(maxSteps: Long) = maxSteps(JsonField.of(maxSteps))
+            fun maxSteps(maxSteps: Double) = maxSteps(JsonField.of(maxSteps))
 
             /**
              * Sets [Builder.maxSteps] to an arbitrary JSON value.
              *
-             * You should usually call [Builder.maxSteps] with a well-typed [Long] value instead.
+             * You should usually call [Builder.maxSteps] with a well-typed [Double] value instead.
              * This method is primarily for setting the field to an undocumented or not yet
              * supported value.
              */
-            fun maxSteps(maxSteps: JsonField<Long>) = apply { this.maxSteps = maxSteps }
+            fun maxSteps(maxSteps: JsonField<Double>) = apply { this.maxSteps = maxSteps }
 
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
@@ -1376,6 +1077,141 @@ private constructor(
             "ExecuteOptions{instruction=$instruction, highlightCursor=$highlightCursor, maxSteps=$maxSteps, additionalProperties=$additionalProperties}"
     }
 
+    /** Client SDK language */
+    class XLanguage @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            val TYPESCRIPT = of("typescript")
+
+            val PYTHON = of("python")
+
+            val PLAYGROUND = of("playground")
+
+            fun of(value: String) = XLanguage(JsonField.of(value))
+        }
+
+        /** An enum containing [XLanguage]'s known values. */
+        enum class Known {
+            TYPESCRIPT,
+            PYTHON,
+            PLAYGROUND,
+        }
+
+        /**
+         * An enum containing [XLanguage]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [XLanguage] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            TYPESCRIPT,
+            PYTHON,
+            PLAYGROUND,
+            /**
+             * An enum member indicating that [XLanguage] was instantiated with an unknown value.
+             */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                TYPESCRIPT -> Value.TYPESCRIPT
+                PYTHON -> Value.PYTHON
+                PLAYGROUND -> Value.PLAYGROUND
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws StagehandInvalidDataException if this class instance's value is a not a known
+         *   member.
+         */
+        fun known(): Known =
+            when (this) {
+                TYPESCRIPT -> Known.TYPESCRIPT
+                PYTHON -> Known.PYTHON
+                PLAYGROUND -> Known.PLAYGROUND
+                else -> throw StagehandInvalidDataException("Unknown XLanguage: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws StagehandInvalidDataException if this class instance's value does not have the
+         *   expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString() ?: throw StagehandInvalidDataException("Value is not a String")
+
+        private var validated: Boolean = false
+
+        fun validate(): XLanguage = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: StagehandInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is XLanguage && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
+    }
+
+    /** Whether to stream the response via SSE */
     class XStreamResponse @JsonCreator private constructor(private val value: JsonField<String>) :
         Enum {
 
@@ -1510,8 +1346,11 @@ private constructor(
             return true
         }
 
-        return other is SessionExecuteAgentParams &&
-            sessionId == other.sessionId &&
+        return other is SessionExecuteParams &&
+            id == other.id &&
+            xLanguage == other.xLanguage &&
+            xSdkVersion == other.xSdkVersion &&
+            xSentAt == other.xSentAt &&
             xStreamResponse == other.xStreamResponse &&
             body == other.body &&
             additionalHeaders == other.additionalHeaders &&
@@ -1519,8 +1358,17 @@ private constructor(
     }
 
     override fun hashCode(): Int =
-        Objects.hash(sessionId, xStreamResponse, body, additionalHeaders, additionalQueryParams)
+        Objects.hash(
+            id,
+            xLanguage,
+            xSdkVersion,
+            xSentAt,
+            xStreamResponse,
+            body,
+            additionalHeaders,
+            additionalQueryParams,
+        )
 
     override fun toString() =
-        "SessionExecuteAgentParams{sessionId=$sessionId, xStreamResponse=$xStreamResponse, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "SessionExecuteParams{id=$id, xLanguage=$xLanguage, xSdkVersion=$xSdkVersion, xSentAt=$xSentAt, xStreamResponse=$xStreamResponse, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

@@ -2,8 +2,8 @@
 
 <!-- x-release-please-start-version -->
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.browserbase.api/stagehand-kotlin)](https://central.sonatype.com/artifact/com.browserbase.api/stagehand-kotlin/0.1.0)
-[![javadoc](https://javadoc.io/badge2/com.browserbase.api/stagehand-kotlin/0.1.0/javadoc.svg)](https://javadoc.io/doc/com.browserbase.api/stagehand-kotlin/0.1.0)
+[![Maven Central](https://img.shields.io/maven-central/v/com.browserbase.api/stagehand-kotlin)](https://central.sonatype.com/artifact/com.browserbase.api/stagehand-kotlin/0.2.0)
+[![javadoc](https://javadoc.io/badge2/com.browserbase.api/stagehand-kotlin/0.2.0/javadoc.svg)](https://javadoc.io/doc/com.browserbase.api/stagehand-kotlin/0.2.0)
 
 <!-- x-release-please-end -->
 
@@ -13,7 +13,7 @@ It is generated with [Stainless](https://www.stainless.com/).
 
 <!-- x-release-please-start-version -->
 
-The REST API documentation can be found on [docs.stagehand.dev](https://docs.stagehand.dev). KDocs are available on [javadoc.io](https://javadoc.io/doc/com.browserbase.api/stagehand-kotlin/0.1.0).
+The REST API documentation can be found on [docs.stagehand.dev](https://docs.stagehand.dev). KDocs are available on [javadoc.io](https://javadoc.io/doc/com.browserbase.api/stagehand-kotlin/0.2.0).
 
 <!-- x-release-please-end -->
 
@@ -24,7 +24,7 @@ The REST API documentation can be found on [docs.stagehand.dev](https://docs.sta
 ### Gradle
 
 ```kotlin
-implementation("com.browserbase.api:stagehand-kotlin:0.1.0")
+implementation("com.browserbase.api:stagehand-kotlin:0.2.0")
 ```
 
 ### Maven
@@ -33,7 +33,7 @@ implementation("com.browserbase.api:stagehand-kotlin:0.1.0")
 <dependency>
   <groupId>com.browserbase.api</groupId>
   <artifactId>stagehand-kotlin</artifactId>
-  <version>0.1.0</version>
+  <version>0.2.0</version>
 </dependency>
 ```
 
@@ -56,7 +56,7 @@ import com.browserbase.api.models.sessions.SessionActResponse
 val client: StagehandClient = StagehandOkHttpClient.fromEnv()
 
 val params: SessionActParams = SessionActParams.builder()
-    .sessionId("00000000-your-session-id-000000000000")
+    .id("00000000-your-session-id-000000000000")
     .input("click the first link on the page")
     .build()
 val response: SessionActResponse = client.sessions().act(params)
@@ -161,7 +161,7 @@ import com.browserbase.api.models.sessions.SessionActResponse
 val client: StagehandClient = StagehandOkHttpClient.fromEnv()
 
 val params: SessionActParams = SessionActParams.builder()
-    .sessionId("00000000-your-session-id-000000000000")
+    .id("00000000-your-session-id-000000000000")
     .input("click the first link on the page")
     .build()
 val response: SessionActResponse = client.async().sessions().act(params)
@@ -180,7 +180,7 @@ import com.browserbase.api.models.sessions.SessionActResponse
 val client: StagehandClientAsync = StagehandOkHttpClientAsync.fromEnv()
 
 val params: SessionActParams = SessionActParams.builder()
-    .sessionId("00000000-your-session-id-000000000000")
+    .id("00000000-your-session-id-000000000000")
     .input("click the first link on the page")
     .build()
 val response: SessionActResponse = client.sessions().act(params)
@@ -201,8 +201,7 @@ import com.browserbase.api.models.sessions.SessionStartParams
 import com.browserbase.api.models.sessions.SessionStartResponse
 
 val params: SessionStartParams = SessionStartParams.builder()
-    .browserbaseApiKey("your Browserbase API key")
-    .browserbaseProjectId("your Browserbase Project ID")
+    .modelName("openai/gpt-5-nano")
     .build()
 val response: HttpResponseFor<SessionStartResponse> = client.sessions().withRawResponse().start(params)
 
@@ -499,8 +498,8 @@ import com.browserbase.api.core.JsonMissing
 import com.browserbase.api.models.sessions.SessionActParams
 
 val params: SessionActParams = SessionActParams.builder()
-    .input("click the sign in button")
-    .sessionId(JsonMissing.of())
+    .input("Click the login button")
+    .id(JsonMissing.of())
     .build()
 ```
 
