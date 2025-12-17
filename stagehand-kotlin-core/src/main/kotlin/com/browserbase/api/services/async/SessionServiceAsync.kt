@@ -3,15 +3,14 @@
 package com.browserbase.api.services.async
 
 import com.browserbase.api.core.ClientOptions
-import com.browserbase.api.core.JsonValue
 import com.browserbase.api.core.RequestOptions
 import com.browserbase.api.core.http.HttpResponseFor
 import com.browserbase.api.models.sessions.SessionActParams
 import com.browserbase.api.models.sessions.SessionActResponse
 import com.browserbase.api.models.sessions.SessionEndParams
 import com.browserbase.api.models.sessions.SessionEndResponse
-import com.browserbase.api.models.sessions.SessionExecuteAgentParams
-import com.browserbase.api.models.sessions.SessionExecuteAgentResponse
+import com.browserbase.api.models.sessions.SessionExecuteParams
+import com.browserbase.api.models.sessions.SessionExecuteResponse
 import com.browserbase.api.models.sessions.SessionExtractParams
 import com.browserbase.api.models.sessions.SessionExtractResponse
 import com.browserbase.api.models.sessions.SessionNavigateParams
@@ -40,8 +39,8 @@ interface SessionServiceAsync {
      * Executes a browser action using natural language instructions or a predefined Action object.
      */
     suspend fun act(
-        id: JsonValue,
-        params: SessionActParams = SessionActParams.none(),
+        id: String,
+        params: SessionActParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): SessionActResponse = act(params.toBuilder().id(id).build(), requestOptions)
 
@@ -51,13 +50,9 @@ interface SessionServiceAsync {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): SessionActResponse
 
-    /** @see act */
-    suspend fun act(id: JsonValue, requestOptions: RequestOptions): SessionActResponse =
-        act(id, SessionActParams.none(), requestOptions)
-
     /** Terminates the browser session and releases all associated resources. */
     suspend fun end(
-        id: JsonValue,
+        id: String,
         params: SessionEndParams = SessionEndParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
     ): SessionEndResponse = end(params.toBuilder().id(id).build(), requestOptions)
@@ -69,32 +64,25 @@ interface SessionServiceAsync {
     ): SessionEndResponse
 
     /** @see end */
-    suspend fun end(id: JsonValue, requestOptions: RequestOptions): SessionEndResponse =
+    suspend fun end(id: String, requestOptions: RequestOptions): SessionEndResponse =
         end(id, SessionEndParams.none(), requestOptions)
 
     /** Runs an autonomous AI agent that can perform complex multi-step browser tasks. */
-    suspend fun executeAgent(
-        id: JsonValue,
-        params: SessionExecuteAgentParams = SessionExecuteAgentParams.none(),
+    suspend fun execute(
+        id: String,
+        params: SessionExecuteParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): SessionExecuteAgentResponse = executeAgent(params.toBuilder().id(id).build(), requestOptions)
+    ): SessionExecuteResponse = execute(params.toBuilder().id(id).build(), requestOptions)
 
-    /** @see executeAgent */
-    suspend fun executeAgent(
-        params: SessionExecuteAgentParams,
+    /** @see execute */
+    suspend fun execute(
+        params: SessionExecuteParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): SessionExecuteAgentResponse
-
-    /** @see executeAgent */
-    suspend fun executeAgent(
-        id: JsonValue,
-        requestOptions: RequestOptions,
-    ): SessionExecuteAgentResponse =
-        executeAgent(id, SessionExecuteAgentParams.none(), requestOptions)
+    ): SessionExecuteResponse
 
     /** Extracts structured data from the current page using AI-powered analysis. */
     suspend fun extract(
-        id: JsonValue,
+        id: String,
         params: SessionExtractParams = SessionExtractParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
     ): SessionExtractResponse = extract(params.toBuilder().id(id).build(), requestOptions)
@@ -106,13 +94,13 @@ interface SessionServiceAsync {
     ): SessionExtractResponse
 
     /** @see extract */
-    suspend fun extract(id: JsonValue, requestOptions: RequestOptions): SessionExtractResponse =
+    suspend fun extract(id: String, requestOptions: RequestOptions): SessionExtractResponse =
         extract(id, SessionExtractParams.none(), requestOptions)
 
     /** Navigates the browser to the specified URL. */
     suspend fun navigate(
-        id: JsonValue,
-        params: SessionNavigateParams = SessionNavigateParams.none(),
+        id: String,
+        params: SessionNavigateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): SessionNavigateResponse = navigate(params.toBuilder().id(id).build(), requestOptions)
 
@@ -122,16 +110,12 @@ interface SessionServiceAsync {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): SessionNavigateResponse
 
-    /** @see navigate */
-    suspend fun navigate(id: JsonValue, requestOptions: RequestOptions): SessionNavigateResponse =
-        navigate(id, SessionNavigateParams.none(), requestOptions)
-
     /**
      * Identifies and returns available actions on the current page that match the given
      * instruction.
      */
     suspend fun observe(
-        id: JsonValue,
+        id: String,
         params: SessionObserveParams = SessionObserveParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
     ): SessionObserveResponse = observe(params.toBuilder().id(id).build(), requestOptions)
@@ -143,7 +127,7 @@ interface SessionServiceAsync {
     ): SessionObserveResponse
 
     /** @see observe */
-    suspend fun observe(id: JsonValue, requestOptions: RequestOptions): SessionObserveResponse =
+    suspend fun observe(id: String, requestOptions: RequestOptions): SessionObserveResponse =
         observe(id, SessionObserveParams.none(), requestOptions)
 
     /**
@@ -151,13 +135,9 @@ interface SessionServiceAsync {
      * all subsequent operations.
      */
     suspend fun start(
-        params: SessionStartParams = SessionStartParams.none(),
+        params: SessionStartParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): SessionStartResponse
-
-    /** @see start */
-    suspend fun start(requestOptions: RequestOptions): SessionStartResponse =
-        start(SessionStartParams.none(), requestOptions)
 
     /**
      * A view of [SessionServiceAsync] that provides access to raw HTTP responses for each method.
@@ -174,13 +154,13 @@ interface SessionServiceAsync {
         ): SessionServiceAsync.WithRawResponse
 
         /**
-         * Returns a raw HTTP response for `post /sessions/{id}/act`, but is otherwise the same as
-         * [SessionServiceAsync.act].
+         * Returns a raw HTTP response for `post /v1/sessions/{id}/act`, but is otherwise the same
+         * as [SessionServiceAsync.act].
          */
         @MustBeClosed
         suspend fun act(
-            id: JsonValue,
-            params: SessionActParams = SessionActParams.none(),
+            id: String,
+            params: SessionActParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<SessionActResponse> =
             act(params.toBuilder().id(id).build(), requestOptions)
@@ -192,20 +172,13 @@ interface SessionServiceAsync {
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<SessionActResponse>
 
-        /** @see act */
-        @MustBeClosed
-        suspend fun act(
-            id: JsonValue,
-            requestOptions: RequestOptions,
-        ): HttpResponseFor<SessionActResponse> = act(id, SessionActParams.none(), requestOptions)
-
         /**
-         * Returns a raw HTTP response for `post /sessions/{id}/end`, but is otherwise the same as
-         * [SessionServiceAsync.end].
+         * Returns a raw HTTP response for `post /v1/sessions/{id}/end`, but is otherwise the same
+         * as [SessionServiceAsync.end].
          */
         @MustBeClosed
         suspend fun end(
-            id: JsonValue,
+            id: String,
             params: SessionEndParams = SessionEndParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<SessionEndResponse> =
@@ -221,44 +194,36 @@ interface SessionServiceAsync {
         /** @see end */
         @MustBeClosed
         suspend fun end(
-            id: JsonValue,
+            id: String,
             requestOptions: RequestOptions,
         ): HttpResponseFor<SessionEndResponse> = end(id, SessionEndParams.none(), requestOptions)
 
         /**
-         * Returns a raw HTTP response for `post /sessions/{id}/agentExecute`, but is otherwise the
-         * same as [SessionServiceAsync.executeAgent].
+         * Returns a raw HTTP response for `post /v1/sessions/{id}/agentExecute`, but is otherwise
+         * the same as [SessionServiceAsync.execute].
          */
         @MustBeClosed
-        suspend fun executeAgent(
-            id: JsonValue,
-            params: SessionExecuteAgentParams = SessionExecuteAgentParams.none(),
+        suspend fun execute(
+            id: String,
+            params: SessionExecuteParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<SessionExecuteAgentResponse> =
-            executeAgent(params.toBuilder().id(id).build(), requestOptions)
+        ): HttpResponseFor<SessionExecuteResponse> =
+            execute(params.toBuilder().id(id).build(), requestOptions)
 
-        /** @see executeAgent */
+        /** @see execute */
         @MustBeClosed
-        suspend fun executeAgent(
-            params: SessionExecuteAgentParams,
+        suspend fun execute(
+            params: SessionExecuteParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<SessionExecuteAgentResponse>
-
-        /** @see executeAgent */
-        @MustBeClosed
-        suspend fun executeAgent(
-            id: JsonValue,
-            requestOptions: RequestOptions,
-        ): HttpResponseFor<SessionExecuteAgentResponse> =
-            executeAgent(id, SessionExecuteAgentParams.none(), requestOptions)
+        ): HttpResponseFor<SessionExecuteResponse>
 
         /**
-         * Returns a raw HTTP response for `post /sessions/{id}/extract`, but is otherwise the same
-         * as [SessionServiceAsync.extract].
+         * Returns a raw HTTP response for `post /v1/sessions/{id}/extract`, but is otherwise the
+         * same as [SessionServiceAsync.extract].
          */
         @MustBeClosed
         suspend fun extract(
-            id: JsonValue,
+            id: String,
             params: SessionExtractParams = SessionExtractParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<SessionExtractResponse> =
@@ -274,19 +239,19 @@ interface SessionServiceAsync {
         /** @see extract */
         @MustBeClosed
         suspend fun extract(
-            id: JsonValue,
+            id: String,
             requestOptions: RequestOptions,
         ): HttpResponseFor<SessionExtractResponse> =
             extract(id, SessionExtractParams.none(), requestOptions)
 
         /**
-         * Returns a raw HTTP response for `post /sessions/{id}/navigate`, but is otherwise the same
-         * as [SessionServiceAsync.navigate].
+         * Returns a raw HTTP response for `post /v1/sessions/{id}/navigate`, but is otherwise the
+         * same as [SessionServiceAsync.navigate].
          */
         @MustBeClosed
         suspend fun navigate(
-            id: JsonValue,
-            params: SessionNavigateParams = SessionNavigateParams.none(),
+            id: String,
+            params: SessionNavigateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<SessionNavigateResponse> =
             navigate(params.toBuilder().id(id).build(), requestOptions)
@@ -298,21 +263,13 @@ interface SessionServiceAsync {
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<SessionNavigateResponse>
 
-        /** @see navigate */
-        @MustBeClosed
-        suspend fun navigate(
-            id: JsonValue,
-            requestOptions: RequestOptions,
-        ): HttpResponseFor<SessionNavigateResponse> =
-            navigate(id, SessionNavigateParams.none(), requestOptions)
-
         /**
-         * Returns a raw HTTP response for `post /sessions/{id}/observe`, but is otherwise the same
-         * as [SessionServiceAsync.observe].
+         * Returns a raw HTTP response for `post /v1/sessions/{id}/observe`, but is otherwise the
+         * same as [SessionServiceAsync.observe].
          */
         @MustBeClosed
         suspend fun observe(
-            id: JsonValue,
+            id: String,
             params: SessionObserveParams = SessionObserveParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<SessionObserveResponse> =
@@ -328,24 +285,19 @@ interface SessionServiceAsync {
         /** @see observe */
         @MustBeClosed
         suspend fun observe(
-            id: JsonValue,
+            id: String,
             requestOptions: RequestOptions,
         ): HttpResponseFor<SessionObserveResponse> =
             observe(id, SessionObserveParams.none(), requestOptions)
 
         /**
-         * Returns a raw HTTP response for `post /sessions/start`, but is otherwise the same as
+         * Returns a raw HTTP response for `post /v1/sessions/start`, but is otherwise the same as
          * [SessionServiceAsync.start].
          */
         @MustBeClosed
         suspend fun start(
-            params: SessionStartParams = SessionStartParams.none(),
+            params: SessionStartParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<SessionStartResponse>
-
-        /** @see start */
-        @MustBeClosed
-        suspend fun start(requestOptions: RequestOptions): HttpResponseFor<SessionStartResponse> =
-            start(SessionStartParams.none(), requestOptions)
     }
 }

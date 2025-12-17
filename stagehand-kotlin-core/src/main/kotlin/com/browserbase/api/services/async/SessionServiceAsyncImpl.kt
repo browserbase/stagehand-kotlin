@@ -4,6 +4,7 @@ package com.browserbase.api.services.async
 
 import com.browserbase.api.core.ClientOptions
 import com.browserbase.api.core.RequestOptions
+import com.browserbase.api.core.checkRequired
 import com.browserbase.api.core.handlers.errorBodyHandler
 import com.browserbase.api.core.handlers.errorHandler
 import com.browserbase.api.core.handlers.jsonHandler
@@ -19,8 +20,8 @@ import com.browserbase.api.models.sessions.SessionActParams
 import com.browserbase.api.models.sessions.SessionActResponse
 import com.browserbase.api.models.sessions.SessionEndParams
 import com.browserbase.api.models.sessions.SessionEndResponse
-import com.browserbase.api.models.sessions.SessionExecuteAgentParams
-import com.browserbase.api.models.sessions.SessionExecuteAgentResponse
+import com.browserbase.api.models.sessions.SessionExecuteParams
+import com.browserbase.api.models.sessions.SessionExecuteResponse
 import com.browserbase.api.models.sessions.SessionExtractParams
 import com.browserbase.api.models.sessions.SessionExtractResponse
 import com.browserbase.api.models.sessions.SessionNavigateParams
@@ -46,49 +47,49 @@ class SessionServiceAsyncImpl internal constructor(private val clientOptions: Cl
         params: SessionActParams,
         requestOptions: RequestOptions,
     ): SessionActResponse =
-        // post /sessions/{id}/act
+        // post /v1/sessions/{id}/act
         withRawResponse().act(params, requestOptions).parse()
 
     override suspend fun end(
         params: SessionEndParams,
         requestOptions: RequestOptions,
     ): SessionEndResponse =
-        // post /sessions/{id}/end
+        // post /v1/sessions/{id}/end
         withRawResponse().end(params, requestOptions).parse()
 
-    override suspend fun executeAgent(
-        params: SessionExecuteAgentParams,
+    override suspend fun execute(
+        params: SessionExecuteParams,
         requestOptions: RequestOptions,
-    ): SessionExecuteAgentResponse =
-        // post /sessions/{id}/agentExecute
-        withRawResponse().executeAgent(params, requestOptions).parse()
+    ): SessionExecuteResponse =
+        // post /v1/sessions/{id}/agentExecute
+        withRawResponse().execute(params, requestOptions).parse()
 
     override suspend fun extract(
         params: SessionExtractParams,
         requestOptions: RequestOptions,
     ): SessionExtractResponse =
-        // post /sessions/{id}/extract
+        // post /v1/sessions/{id}/extract
         withRawResponse().extract(params, requestOptions).parse()
 
     override suspend fun navigate(
         params: SessionNavigateParams,
         requestOptions: RequestOptions,
     ): SessionNavigateResponse =
-        // post /sessions/{id}/navigate
+        // post /v1/sessions/{id}/navigate
         withRawResponse().navigate(params, requestOptions).parse()
 
     override suspend fun observe(
         params: SessionObserveParams,
         requestOptions: RequestOptions,
     ): SessionObserveResponse =
-        // post /sessions/{id}/observe
+        // post /v1/sessions/{id}/observe
         withRawResponse().observe(params, requestOptions).parse()
 
     override suspend fun start(
         params: SessionStartParams,
         requestOptions: RequestOptions,
     ): SessionStartResponse =
-        // post /sessions/start
+        // post /v1/sessions/start
         withRawResponse().start(params, requestOptions).parse()
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
@@ -111,11 +112,14 @@ class SessionServiceAsyncImpl internal constructor(private val clientOptions: Cl
             params: SessionActParams,
             requestOptions: RequestOptions,
         ): HttpResponseFor<SessionActResponse> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("id", params.id())
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.POST)
                     .baseUrl(clientOptions.baseUrl())
-                    .addPathSegments("sessions", params._pathParam(0), "act")
+                    .addPathSegments("v1", "sessions", params._pathParam(0), "act")
                     .body(json(clientOptions.jsonMapper, params._body()))
                     .build()
                     .prepareAsync(clientOptions, params)
@@ -139,11 +143,14 @@ class SessionServiceAsyncImpl internal constructor(private val clientOptions: Cl
             params: SessionEndParams,
             requestOptions: RequestOptions,
         ): HttpResponseFor<SessionEndResponse> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("id", params.id())
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.POST)
                     .baseUrl(clientOptions.baseUrl())
-                    .addPathSegments("sessions", params._pathParam(0), "end")
+                    .addPathSegments("v1", "sessions", params._pathParam(0), "end")
                     .apply { params._body()?.let { body(json(clientOptions.jsonMapper, it)) } }
                     .build()
                     .prepareAsync(clientOptions, params)
@@ -160,18 +167,21 @@ class SessionServiceAsyncImpl internal constructor(private val clientOptions: Cl
             }
         }
 
-        private val executeAgentHandler: Handler<SessionExecuteAgentResponse> =
-            jsonHandler<SessionExecuteAgentResponse>(clientOptions.jsonMapper)
+        private val executeHandler: Handler<SessionExecuteResponse> =
+            jsonHandler<SessionExecuteResponse>(clientOptions.jsonMapper)
 
-        override suspend fun executeAgent(
-            params: SessionExecuteAgentParams,
+        override suspend fun execute(
+            params: SessionExecuteParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<SessionExecuteAgentResponse> {
+        ): HttpResponseFor<SessionExecuteResponse> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("id", params.id())
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.POST)
                     .baseUrl(clientOptions.baseUrl())
-                    .addPathSegments("sessions", params._pathParam(0), "agentExecute")
+                    .addPathSegments("v1", "sessions", params._pathParam(0), "agentExecute")
                     .body(json(clientOptions.jsonMapper, params._body()))
                     .build()
                     .prepareAsync(clientOptions, params)
@@ -179,7 +189,7 @@ class SessionServiceAsyncImpl internal constructor(private val clientOptions: Cl
             val response = clientOptions.httpClient.executeAsync(request, requestOptions)
             return errorHandler.handle(response).parseable {
                 response
-                    .use { executeAgentHandler.handle(it) }
+                    .use { executeHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()
@@ -195,11 +205,14 @@ class SessionServiceAsyncImpl internal constructor(private val clientOptions: Cl
             params: SessionExtractParams,
             requestOptions: RequestOptions,
         ): HttpResponseFor<SessionExtractResponse> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("id", params.id())
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.POST)
                     .baseUrl(clientOptions.baseUrl())
-                    .addPathSegments("sessions", params._pathParam(0), "extract")
+                    .addPathSegments("v1", "sessions", params._pathParam(0), "extract")
                     .body(json(clientOptions.jsonMapper, params._body()))
                     .build()
                     .prepareAsync(clientOptions, params)
@@ -223,11 +236,14 @@ class SessionServiceAsyncImpl internal constructor(private val clientOptions: Cl
             params: SessionNavigateParams,
             requestOptions: RequestOptions,
         ): HttpResponseFor<SessionNavigateResponse> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("id", params.id())
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.POST)
                     .baseUrl(clientOptions.baseUrl())
-                    .addPathSegments("sessions", params._pathParam(0), "navigate")
+                    .addPathSegments("v1", "sessions", params._pathParam(0), "navigate")
                     .body(json(clientOptions.jsonMapper, params._body()))
                     .build()
                     .prepareAsync(clientOptions, params)
@@ -251,11 +267,14 @@ class SessionServiceAsyncImpl internal constructor(private val clientOptions: Cl
             params: SessionObserveParams,
             requestOptions: RequestOptions,
         ): HttpResponseFor<SessionObserveResponse> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("id", params.id())
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.POST)
                     .baseUrl(clientOptions.baseUrl())
-                    .addPathSegments("sessions", params._pathParam(0), "observe")
+                    .addPathSegments("v1", "sessions", params._pathParam(0), "observe")
                     .body(json(clientOptions.jsonMapper, params._body()))
                     .build()
                     .prepareAsync(clientOptions, params)
@@ -283,7 +302,7 @@ class SessionServiceAsyncImpl internal constructor(private val clientOptions: Cl
                 HttpRequest.builder()
                     .method(HttpMethod.POST)
                     .baseUrl(clientOptions.baseUrl())
-                    .addPathSegments("sessions", "start")
+                    .addPathSegments("v1", "sessions", "start")
                     .body(json(clientOptions.jsonMapper, params._body()))
                     .build()
                     .prepareAsync(clientOptions, params)

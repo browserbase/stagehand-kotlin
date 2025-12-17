@@ -8,9 +8,9 @@ import com.browserbase.api.core.JsonField
 import com.browserbase.api.core.JsonMissing
 import com.browserbase.api.core.JsonValue
 import com.browserbase.api.core.Params
+import com.browserbase.api.core.checkRequired
 import com.browserbase.api.core.http.Headers
 import com.browserbase.api.core.http.QueryParams
-import com.browserbase.api.core.toImmutable
 import com.browserbase.api.errors.StagehandInvalidDataException
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
@@ -21,8 +21,8 @@ import java.time.format.DateTimeFormatter
 import java.util.Collections
 import java.util.Objects
 
-/** Extracts structured data from the current page using AI-powered analysis. */
-class SessionExtractParams
+/** Runs an autonomous AI agent that can perform complex multi-step browser tasks. */
+class SessionExecuteParams
 private constructor(
     private val id: String?,
     private val xLanguage: XLanguage?,
@@ -50,7 +50,19 @@ private constructor(
     fun xStreamResponse(): XStreamResponse? = xStreamResponse
 
     /**
-     * Target frame ID for the extraction
+     * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun agentConfig(): AgentConfig = body.agentConfig()
+
+    /**
+     * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun executeOptions(): ExecuteOptions = body.executeOptions()
+
+    /**
+     * Target frame ID for the agent
      *
      * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -58,26 +70,18 @@ private constructor(
     fun frameId(): String? = body.frameId()
 
     /**
-     * Natural language instruction for what to extract
+     * Returns the raw JSON value of [agentConfig].
      *
-     * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
+     * Unlike [agentConfig], this method doesn't throw if the JSON field has an unexpected type.
      */
-    fun instruction(): String? = body.instruction()
+    fun _agentConfig(): JsonField<AgentConfig> = body._agentConfig()
 
     /**
-     * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
-     */
-    fun options(): Options? = body.options()
-
-    /**
-     * JSON Schema defining the structure of data to extract
+     * Returns the raw JSON value of [executeOptions].
      *
-     * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
+     * Unlike [executeOptions], this method doesn't throw if the JSON field has an unexpected type.
      */
-    fun schema(): Schema? = body.schema()
+    fun _executeOptions(): JsonField<ExecuteOptions> = body._executeOptions()
 
     /**
      * Returns the raw JSON value of [frameId].
@@ -85,27 +89,6 @@ private constructor(
      * Unlike [frameId], this method doesn't throw if the JSON field has an unexpected type.
      */
     fun _frameId(): JsonField<String> = body._frameId()
-
-    /**
-     * Returns the raw JSON value of [instruction].
-     *
-     * Unlike [instruction], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    fun _instruction(): JsonField<String> = body._instruction()
-
-    /**
-     * Returns the raw JSON value of [options].
-     *
-     * Unlike [options], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    fun _options(): JsonField<Options> = body._options()
-
-    /**
-     * Returns the raw JSON value of [schema].
-     *
-     * Unlike [schema], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    fun _schema(): JsonField<Schema> = body._schema()
 
     fun _additionalBodyProperties(): Map<String, JsonValue> = body._additionalProperties()
 
@@ -119,13 +102,19 @@ private constructor(
 
     companion object {
 
-        fun none(): SessionExtractParams = builder().build()
-
-        /** Returns a mutable builder for constructing an instance of [SessionExtractParams]. */
+        /**
+         * Returns a mutable builder for constructing an instance of [SessionExecuteParams].
+         *
+         * The following fields are required:
+         * ```kotlin
+         * .agentConfig()
+         * .executeOptions()
+         * ```
+         */
         fun builder() = Builder()
     }
 
-    /** A builder for [SessionExtractParams]. */
+    /** A builder for [SessionExecuteParams]. */
     class Builder internal constructor() {
 
         private var id: String? = null
@@ -137,15 +126,15 @@ private constructor(
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
-        internal fun from(sessionExtractParams: SessionExtractParams) = apply {
-            id = sessionExtractParams.id
-            xLanguage = sessionExtractParams.xLanguage
-            xSdkVersion = sessionExtractParams.xSdkVersion
-            xSentAt = sessionExtractParams.xSentAt
-            xStreamResponse = sessionExtractParams.xStreamResponse
-            body = sessionExtractParams.body.toBuilder()
-            additionalHeaders = sessionExtractParams.additionalHeaders.toBuilder()
-            additionalQueryParams = sessionExtractParams.additionalQueryParams.toBuilder()
+        internal fun from(sessionExecuteParams: SessionExecuteParams) = apply {
+            id = sessionExecuteParams.id
+            xLanguage = sessionExecuteParams.xLanguage
+            xSdkVersion = sessionExecuteParams.xSdkVersion
+            xSentAt = sessionExecuteParams.xSentAt
+            xStreamResponse = sessionExecuteParams.xStreamResponse
+            body = sessionExecuteParams.body.toBuilder()
+            additionalHeaders = sessionExecuteParams.additionalHeaders.toBuilder()
+            additionalQueryParams = sessionExecuteParams.additionalQueryParams.toBuilder()
         }
 
         /** Unique session identifier */
@@ -170,14 +159,41 @@ private constructor(
          *
          * This is generally only useful if you are already constructing the body separately.
          * Otherwise, it's more convenient to use the top-level setters instead:
+         * - [agentConfig]
+         * - [executeOptions]
          * - [frameId]
-         * - [instruction]
-         * - [options]
-         * - [schema]
          */
         fun body(body: Body) = apply { this.body = body.toBuilder() }
 
-        /** Target frame ID for the extraction */
+        fun agentConfig(agentConfig: AgentConfig) = apply { body.agentConfig(agentConfig) }
+
+        /**
+         * Sets [Builder.agentConfig] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.agentConfig] with a well-typed [AgentConfig] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun agentConfig(agentConfig: JsonField<AgentConfig>) = apply {
+            body.agentConfig(agentConfig)
+        }
+
+        fun executeOptions(executeOptions: ExecuteOptions) = apply {
+            body.executeOptions(executeOptions)
+        }
+
+        /**
+         * Sets [Builder.executeOptions] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.executeOptions] with a well-typed [ExecuteOptions] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun executeOptions(executeOptions: JsonField<ExecuteOptions>) = apply {
+            body.executeOptions(executeOptions)
+        }
+
+        /** Target frame ID for the agent */
         fun frameId(frameId: String) = apply { body.frameId(frameId) }
 
         /**
@@ -187,39 +203,6 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun frameId(frameId: JsonField<String>) = apply { body.frameId(frameId) }
-
-        /** Natural language instruction for what to extract */
-        fun instruction(instruction: String) = apply { body.instruction(instruction) }
-
-        /**
-         * Sets [Builder.instruction] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.instruction] with a well-typed [String] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
-         */
-        fun instruction(instruction: JsonField<String>) = apply { body.instruction(instruction) }
-
-        fun options(options: Options) = apply { body.options(options) }
-
-        /**
-         * Sets [Builder.options] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.options] with a well-typed [Options] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
-         */
-        fun options(options: JsonField<Options>) = apply { body.options(options) }
-
-        /** JSON Schema defining the structure of data to extract */
-        fun schema(schema: Schema) = apply { body.schema(schema) }
-
-        /**
-         * Sets [Builder.schema] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.schema] with a well-typed [Schema] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
-         */
-        fun schema(schema: JsonField<Schema>) = apply { body.schema(schema) }
 
         fun additionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) = apply {
             body.additionalProperties(additionalBodyProperties)
@@ -339,12 +322,20 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [SessionExtractParams].
+         * Returns an immutable instance of [SessionExecuteParams].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
+         *
+         * The following fields are required:
+         * ```kotlin
+         * .agentConfig()
+         * .executeOptions()
+         * ```
+         *
+         * @throws IllegalStateException if any required field is unset.
          */
-        fun build(): SessionExtractParams =
-            SessionExtractParams(
+        fun build(): SessionExecuteParams =
+            SessionExecuteParams(
                 id,
                 xLanguage,
                 xSdkVersion,
@@ -380,25 +371,37 @@ private constructor(
     class Body
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
+        private val agentConfig: JsonField<AgentConfig>,
+        private val executeOptions: JsonField<ExecuteOptions>,
         private val frameId: JsonField<String>,
-        private val instruction: JsonField<String>,
-        private val options: JsonField<Options>,
-        private val schema: JsonField<Schema>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
         @JsonCreator
         private constructor(
-            @JsonProperty("frameId") @ExcludeMissing frameId: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("instruction")
+            @JsonProperty("agentConfig")
             @ExcludeMissing
-            instruction: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("options") @ExcludeMissing options: JsonField<Options> = JsonMissing.of(),
-            @JsonProperty("schema") @ExcludeMissing schema: JsonField<Schema> = JsonMissing.of(),
-        ) : this(frameId, instruction, options, schema, mutableMapOf())
+            agentConfig: JsonField<AgentConfig> = JsonMissing.of(),
+            @JsonProperty("executeOptions")
+            @ExcludeMissing
+            executeOptions: JsonField<ExecuteOptions> = JsonMissing.of(),
+            @JsonProperty("frameId") @ExcludeMissing frameId: JsonField<String> = JsonMissing.of(),
+        ) : this(agentConfig, executeOptions, frameId, mutableMapOf())
 
         /**
-         * Target frame ID for the extraction
+         * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun agentConfig(): AgentConfig = agentConfig.getRequired("agentConfig")
+
+        /**
+         * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun executeOptions(): ExecuteOptions = executeOptions.getRequired("executeOptions")
+
+        /**
+         * Target frame ID for the agent
          *
          * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -406,26 +409,23 @@ private constructor(
         fun frameId(): String? = frameId.getNullable("frameId")
 
         /**
-         * Natural language instruction for what to extract
+         * Returns the raw JSON value of [agentConfig].
          *
-         * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
-         *   the server responded with an unexpected value).
+         * Unlike [agentConfig], this method doesn't throw if the JSON field has an unexpected type.
          */
-        fun instruction(): String? = instruction.getNullable("instruction")
+        @JsonProperty("agentConfig")
+        @ExcludeMissing
+        fun _agentConfig(): JsonField<AgentConfig> = agentConfig
 
         /**
-         * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
-         *   the server responded with an unexpected value).
-         */
-        fun options(): Options? = options.getNullable("options")
-
-        /**
-         * JSON Schema defining the structure of data to extract
+         * Returns the raw JSON value of [executeOptions].
          *
-         * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
-         *   the server responded with an unexpected value).
+         * Unlike [executeOptions], this method doesn't throw if the JSON field has an unexpected
+         * type.
          */
-        fun schema(): Schema? = schema.getNullable("schema")
+        @JsonProperty("executeOptions")
+        @ExcludeMissing
+        fun _executeOptions(): JsonField<ExecuteOptions> = executeOptions
 
         /**
          * Returns the raw JSON value of [frameId].
@@ -433,29 +433,6 @@ private constructor(
          * Unlike [frameId], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("frameId") @ExcludeMissing fun _frameId(): JsonField<String> = frameId
-
-        /**
-         * Returns the raw JSON value of [instruction].
-         *
-         * Unlike [instruction], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("instruction")
-        @ExcludeMissing
-        fun _instruction(): JsonField<String> = instruction
-
-        /**
-         * Returns the raw JSON value of [options].
-         *
-         * Unlike [options], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("options") @ExcludeMissing fun _options(): JsonField<Options> = options
-
-        /**
-         * Returns the raw JSON value of [schema].
-         *
-         * Unlike [schema], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("schema") @ExcludeMissing fun _schema(): JsonField<Schema> = schema
 
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -471,28 +448,61 @@ private constructor(
 
         companion object {
 
-            /** Returns a mutable builder for constructing an instance of [Body]. */
+            /**
+             * Returns a mutable builder for constructing an instance of [Body].
+             *
+             * The following fields are required:
+             * ```kotlin
+             * .agentConfig()
+             * .executeOptions()
+             * ```
+             */
             fun builder() = Builder()
         }
 
         /** A builder for [Body]. */
         class Builder internal constructor() {
 
+            private var agentConfig: JsonField<AgentConfig>? = null
+            private var executeOptions: JsonField<ExecuteOptions>? = null
             private var frameId: JsonField<String> = JsonMissing.of()
-            private var instruction: JsonField<String> = JsonMissing.of()
-            private var options: JsonField<Options> = JsonMissing.of()
-            private var schema: JsonField<Schema> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             internal fun from(body: Body) = apply {
+                agentConfig = body.agentConfig
+                executeOptions = body.executeOptions
                 frameId = body.frameId
-                instruction = body.instruction
-                options = body.options
-                schema = body.schema
                 additionalProperties = body.additionalProperties.toMutableMap()
             }
 
-            /** Target frame ID for the extraction */
+            fun agentConfig(agentConfig: AgentConfig) = agentConfig(JsonField.of(agentConfig))
+
+            /**
+             * Sets [Builder.agentConfig] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.agentConfig] with a well-typed [AgentConfig] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun agentConfig(agentConfig: JsonField<AgentConfig>) = apply {
+                this.agentConfig = agentConfig
+            }
+
+            fun executeOptions(executeOptions: ExecuteOptions) =
+                executeOptions(JsonField.of(executeOptions))
+
+            /**
+             * Sets [Builder.executeOptions] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.executeOptions] with a well-typed [ExecuteOptions]
+             * value instead. This method is primarily for setting the field to an undocumented or
+             * not yet supported value.
+             */
+            fun executeOptions(executeOptions: JsonField<ExecuteOptions>) = apply {
+                this.executeOptions = executeOptions
+            }
+
+            /** Target frame ID for the agent */
             fun frameId(frameId: String) = frameId(JsonField.of(frameId))
 
             /**
@@ -503,43 +513,6 @@ private constructor(
              * supported value.
              */
             fun frameId(frameId: JsonField<String>) = apply { this.frameId = frameId }
-
-            /** Natural language instruction for what to extract */
-            fun instruction(instruction: String) = instruction(JsonField.of(instruction))
-
-            /**
-             * Sets [Builder.instruction] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.instruction] with a well-typed [String] value
-             * instead. This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun instruction(instruction: JsonField<String>) = apply {
-                this.instruction = instruction
-            }
-
-            fun options(options: Options) = options(JsonField.of(options))
-
-            /**
-             * Sets [Builder.options] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.options] with a well-typed [Options] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun options(options: JsonField<Options>) = apply { this.options = options }
-
-            /** JSON Schema defining the structure of data to extract */
-            fun schema(schema: Schema) = schema(JsonField.of(schema))
-
-            /**
-             * Sets [Builder.schema] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.schema] with a well-typed [Schema] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun schema(schema: JsonField<Schema>) = apply { this.schema = schema }
 
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
@@ -564,9 +537,22 @@ private constructor(
              * Returns an immutable instance of [Body].
              *
              * Further updates to this [Builder] will not mutate the returned instance.
+             *
+             * The following fields are required:
+             * ```kotlin
+             * .agentConfig()
+             * .executeOptions()
+             * ```
+             *
+             * @throws IllegalStateException if any required field is unset.
              */
             fun build(): Body =
-                Body(frameId, instruction, options, schema, additionalProperties.toMutableMap())
+                Body(
+                    checkRequired("agentConfig", agentConfig),
+                    checkRequired("executeOptions", executeOptions),
+                    frameId,
+                    additionalProperties.toMutableMap(),
+                )
         }
 
         private var validated: Boolean = false
@@ -576,10 +562,9 @@ private constructor(
                 return@apply
             }
 
+            agentConfig().validate()
+            executeOptions().validate()
             frameId()
-            instruction()
-            options()?.validate()
-            schema()?.validate()
             validated = true
         }
 
@@ -598,10 +583,9 @@ private constructor(
          * Used for best match union deserialization.
          */
         internal fun validity(): Int =
-            (if (frameId.asKnown() == null) 0 else 1) +
-                (if (instruction.asKnown() == null) 0 else 1) +
-                (options.asKnown()?.validity() ?: 0) +
-                (schema.asKnown()?.validity() ?: 0)
+            (agentConfig.asKnown()?.validity() ?: 0) +
+                (executeOptions.asKnown()?.validity() ?: 0) +
+                (if (frameId.asKnown() == null) 0 else 1)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
@@ -609,40 +593,47 @@ private constructor(
             }
 
             return other is Body &&
+                agentConfig == other.agentConfig &&
+                executeOptions == other.executeOptions &&
                 frameId == other.frameId &&
-                instruction == other.instruction &&
-                options == other.options &&
-                schema == other.schema &&
                 additionalProperties == other.additionalProperties
         }
 
         private val hashCode: Int by lazy {
-            Objects.hash(frameId, instruction, options, schema, additionalProperties)
+            Objects.hash(agentConfig, executeOptions, frameId, additionalProperties)
         }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Body{frameId=$frameId, instruction=$instruction, options=$options, schema=$schema, additionalProperties=$additionalProperties}"
+            "Body{agentConfig=$agentConfig, executeOptions=$executeOptions, frameId=$frameId, additionalProperties=$additionalProperties}"
     }
 
-    class Options
+    class AgentConfig
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
+        private val cua: JsonField<Boolean>,
         private val model: JsonField<ModelConfig>,
-        private val selector: JsonField<String>,
-        private val timeout: JsonField<Double>,
+        private val systemPrompt: JsonField<String>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
         @JsonCreator
         private constructor(
+            @JsonProperty("cua") @ExcludeMissing cua: JsonField<Boolean> = JsonMissing.of(),
             @JsonProperty("model") @ExcludeMissing model: JsonField<ModelConfig> = JsonMissing.of(),
-            @JsonProperty("selector")
+            @JsonProperty("systemPrompt")
             @ExcludeMissing
-            selector: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("timeout") @ExcludeMissing timeout: JsonField<Double> = JsonMissing.of(),
-        ) : this(model, selector, timeout, mutableMapOf())
+            systemPrompt: JsonField<String> = JsonMissing.of(),
+        ) : this(cua, model, systemPrompt, mutableMapOf())
+
+        /**
+         * Enable Computer Use Agent mode
+         *
+         * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun cua(): Boolean? = cua.getNullable("cua")
 
         /**
          * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
@@ -651,20 +642,19 @@ private constructor(
         fun model(): ModelConfig? = model.getNullable("model")
 
         /**
-         * CSS selector to scope extraction to a specific element
+         * Custom system prompt for the agent
          *
          * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
-        fun selector(): String? = selector.getNullable("selector")
+        fun systemPrompt(): String? = systemPrompt.getNullable("systemPrompt")
 
         /**
-         * Timeout in ms for the extraction
+         * Returns the raw JSON value of [cua].
          *
-         * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
-         *   the server responded with an unexpected value).
+         * Unlike [cua], this method doesn't throw if the JSON field has an unexpected type.
          */
-        fun timeout(): Double? = timeout.getNullable("timeout")
+        @JsonProperty("cua") @ExcludeMissing fun _cua(): JsonField<Boolean> = cua
 
         /**
          * Returns the raw JSON value of [model].
@@ -674,18 +664,14 @@ private constructor(
         @JsonProperty("model") @ExcludeMissing fun _model(): JsonField<ModelConfig> = model
 
         /**
-         * Returns the raw JSON value of [selector].
+         * Returns the raw JSON value of [systemPrompt].
          *
-         * Unlike [selector], this method doesn't throw if the JSON field has an unexpected type.
+         * Unlike [systemPrompt], this method doesn't throw if the JSON field has an unexpected
+         * type.
          */
-        @JsonProperty("selector") @ExcludeMissing fun _selector(): JsonField<String> = selector
-
-        /**
-         * Returns the raw JSON value of [timeout].
-         *
-         * Unlike [timeout], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("timeout") @ExcludeMissing fun _timeout(): JsonField<Double> = timeout
+        @JsonProperty("systemPrompt")
+        @ExcludeMissing
+        fun _systemPrompt(): JsonField<String> = systemPrompt
 
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -701,24 +687,36 @@ private constructor(
 
         companion object {
 
-            /** Returns a mutable builder for constructing an instance of [Options]. */
+            /** Returns a mutable builder for constructing an instance of [AgentConfig]. */
             fun builder() = Builder()
         }
 
-        /** A builder for [Options]. */
+        /** A builder for [AgentConfig]. */
         class Builder internal constructor() {
 
+            private var cua: JsonField<Boolean> = JsonMissing.of()
             private var model: JsonField<ModelConfig> = JsonMissing.of()
-            private var selector: JsonField<String> = JsonMissing.of()
-            private var timeout: JsonField<Double> = JsonMissing.of()
+            private var systemPrompt: JsonField<String> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
-            internal fun from(options: Options) = apply {
-                model = options.model
-                selector = options.selector
-                timeout = options.timeout
-                additionalProperties = options.additionalProperties.toMutableMap()
+            internal fun from(agentConfig: AgentConfig) = apply {
+                cua = agentConfig.cua
+                model = agentConfig.model
+                systemPrompt = agentConfig.systemPrompt
+                additionalProperties = agentConfig.additionalProperties.toMutableMap()
             }
+
+            /** Enable Computer Use Agent mode */
+            fun cua(cua: Boolean) = cua(JsonField.of(cua))
+
+            /**
+             * Sets [Builder.cua] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.cua] with a well-typed [Boolean] value instead. This
+             * method is primarily for setting the field to an undocumented or not yet supported
+             * value.
+             */
+            fun cua(cua: JsonField<Boolean>) = apply { this.cua = cua }
 
             fun model(model: ModelConfig) = model(JsonField.of(model))
 
@@ -738,29 +736,19 @@ private constructor(
             fun model(unionMember1: ModelConfig.UnionMember1) =
                 model(ModelConfig.ofUnionMember1(unionMember1))
 
-            /** CSS selector to scope extraction to a specific element */
-            fun selector(selector: String) = selector(JsonField.of(selector))
+            /** Custom system prompt for the agent */
+            fun systemPrompt(systemPrompt: String) = systemPrompt(JsonField.of(systemPrompt))
 
             /**
-             * Sets [Builder.selector] to an arbitrary JSON value.
+             * Sets [Builder.systemPrompt] to an arbitrary JSON value.
              *
-             * You should usually call [Builder.selector] with a well-typed [String] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
+             * You should usually call [Builder.systemPrompt] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
              * supported value.
              */
-            fun selector(selector: JsonField<String>) = apply { this.selector = selector }
-
-            /** Timeout in ms for the extraction */
-            fun timeout(timeout: Double) = timeout(JsonField.of(timeout))
-
-            /**
-             * Sets [Builder.timeout] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.timeout] with a well-typed [Double] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun timeout(timeout: JsonField<Double>) = apply { this.timeout = timeout }
+            fun systemPrompt(systemPrompt: JsonField<String>) = apply {
+                this.systemPrompt = systemPrompt
+            }
 
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
@@ -782,24 +770,24 @@ private constructor(
             }
 
             /**
-             * Returns an immutable instance of [Options].
+             * Returns an immutable instance of [AgentConfig].
              *
              * Further updates to this [Builder] will not mutate the returned instance.
              */
-            fun build(): Options =
-                Options(model, selector, timeout, additionalProperties.toMutableMap())
+            fun build(): AgentConfig =
+                AgentConfig(cua, model, systemPrompt, additionalProperties.toMutableMap())
         }
 
         private var validated: Boolean = false
 
-        fun validate(): Options = apply {
+        fun validate(): AgentConfig = apply {
             if (validated) {
                 return@apply
             }
 
+            cua()
             model()?.validate()
-            selector()
-            timeout()
+            systemPrompt()
             validated = true
         }
 
@@ -818,60 +806,182 @@ private constructor(
          * Used for best match union deserialization.
          */
         internal fun validity(): Int =
-            (model.asKnown()?.validity() ?: 0) +
-                (if (selector.asKnown() == null) 0 else 1) +
-                (if (timeout.asKnown() == null) 0 else 1)
+            (if (cua.asKnown() == null) 0 else 1) +
+                (model.asKnown()?.validity() ?: 0) +
+                (if (systemPrompt.asKnown() == null) 0 else 1)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
                 return true
             }
 
-            return other is Options &&
+            return other is AgentConfig &&
+                cua == other.cua &&
                 model == other.model &&
-                selector == other.selector &&
-                timeout == other.timeout &&
+                systemPrompt == other.systemPrompt &&
                 additionalProperties == other.additionalProperties
         }
 
         private val hashCode: Int by lazy {
-            Objects.hash(model, selector, timeout, additionalProperties)
+            Objects.hash(cua, model, systemPrompt, additionalProperties)
         }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Options{model=$model, selector=$selector, timeout=$timeout, additionalProperties=$additionalProperties}"
+            "AgentConfig{cua=$cua, model=$model, systemPrompt=$systemPrompt, additionalProperties=$additionalProperties}"
     }
 
-    /** JSON Schema defining the structure of data to extract */
-    class Schema
-    @JsonCreator
+    class ExecuteOptions
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
-        @com.fasterxml.jackson.annotation.JsonValue
-        private val additionalProperties: Map<String, JsonValue>
+        private val instruction: JsonField<String>,
+        private val highlightCursor: JsonField<Boolean>,
+        private val maxSteps: JsonField<Double>,
+        private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
+
+        @JsonCreator
+        private constructor(
+            @JsonProperty("instruction")
+            @ExcludeMissing
+            instruction: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("highlightCursor")
+            @ExcludeMissing
+            highlightCursor: JsonField<Boolean> = JsonMissing.of(),
+            @JsonProperty("maxSteps") @ExcludeMissing maxSteps: JsonField<Double> = JsonMissing.of(),
+        ) : this(instruction, highlightCursor, maxSteps, mutableMapOf())
+
+        /**
+         * Natural language instruction for the agent
+         *
+         * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun instruction(): String = instruction.getRequired("instruction")
+
+        /**
+         * Whether to visually highlight the cursor during execution
+         *
+         * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun highlightCursor(): Boolean? = highlightCursor.getNullable("highlightCursor")
+
+        /**
+         * Maximum number of steps the agent can take
+         *
+         * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun maxSteps(): Double? = maxSteps.getNullable("maxSteps")
+
+        /**
+         * Returns the raw JSON value of [instruction].
+         *
+         * Unlike [instruction], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("instruction")
+        @ExcludeMissing
+        fun _instruction(): JsonField<String> = instruction
+
+        /**
+         * Returns the raw JSON value of [highlightCursor].
+         *
+         * Unlike [highlightCursor], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("highlightCursor")
+        @ExcludeMissing
+        fun _highlightCursor(): JsonField<Boolean> = highlightCursor
+
+        /**
+         * Returns the raw JSON value of [maxSteps].
+         *
+         * Unlike [maxSteps], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("maxSteps") @ExcludeMissing fun _maxSteps(): JsonField<Double> = maxSteps
+
+        @JsonAnySetter
+        private fun putAdditionalProperty(key: String, value: JsonValue) {
+            additionalProperties.put(key, value)
+        }
 
         @JsonAnyGetter
         @ExcludeMissing
-        fun _additionalProperties(): Map<String, JsonValue> = additionalProperties
+        fun _additionalProperties(): Map<String, JsonValue> =
+            Collections.unmodifiableMap(additionalProperties)
 
         fun toBuilder() = Builder().from(this)
 
         companion object {
 
-            /** Returns a mutable builder for constructing an instance of [Schema]. */
+            /**
+             * Returns a mutable builder for constructing an instance of [ExecuteOptions].
+             *
+             * The following fields are required:
+             * ```kotlin
+             * .instruction()
+             * ```
+             */
             fun builder() = Builder()
         }
 
-        /** A builder for [Schema]. */
+        /** A builder for [ExecuteOptions]. */
         class Builder internal constructor() {
 
+            private var instruction: JsonField<String>? = null
+            private var highlightCursor: JsonField<Boolean> = JsonMissing.of()
+            private var maxSteps: JsonField<Double> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
-            internal fun from(schema: Schema) = apply {
-                additionalProperties = schema.additionalProperties.toMutableMap()
+            internal fun from(executeOptions: ExecuteOptions) = apply {
+                instruction = executeOptions.instruction
+                highlightCursor = executeOptions.highlightCursor
+                maxSteps = executeOptions.maxSteps
+                additionalProperties = executeOptions.additionalProperties.toMutableMap()
             }
+
+            /** Natural language instruction for the agent */
+            fun instruction(instruction: String) = instruction(JsonField.of(instruction))
+
+            /**
+             * Sets [Builder.instruction] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.instruction] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun instruction(instruction: JsonField<String>) = apply {
+                this.instruction = instruction
+            }
+
+            /** Whether to visually highlight the cursor during execution */
+            fun highlightCursor(highlightCursor: Boolean) =
+                highlightCursor(JsonField.of(highlightCursor))
+
+            /**
+             * Sets [Builder.highlightCursor] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.highlightCursor] with a well-typed [Boolean] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun highlightCursor(highlightCursor: JsonField<Boolean>) = apply {
+                this.highlightCursor = highlightCursor
+            }
+
+            /** Maximum number of steps the agent can take */
+            fun maxSteps(maxSteps: Double) = maxSteps(JsonField.of(maxSteps))
+
+            /**
+             * Sets [Builder.maxSteps] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.maxSteps] with a well-typed [Double] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun maxSteps(maxSteps: JsonField<Double>) = apply { this.maxSteps = maxSteps }
 
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
@@ -893,20 +1003,36 @@ private constructor(
             }
 
             /**
-             * Returns an immutable instance of [Schema].
+             * Returns an immutable instance of [ExecuteOptions].
              *
              * Further updates to this [Builder] will not mutate the returned instance.
+             *
+             * The following fields are required:
+             * ```kotlin
+             * .instruction()
+             * ```
+             *
+             * @throws IllegalStateException if any required field is unset.
              */
-            fun build(): Schema = Schema(additionalProperties.toImmutable())
+            fun build(): ExecuteOptions =
+                ExecuteOptions(
+                    checkRequired("instruction", instruction),
+                    highlightCursor,
+                    maxSteps,
+                    additionalProperties.toMutableMap(),
+                )
         }
 
         private var validated: Boolean = false
 
-        fun validate(): Schema = apply {
+        fun validate(): ExecuteOptions = apply {
             if (validated) {
                 return@apply
             }
 
+            instruction()
+            highlightCursor()
+            maxSteps()
             validated = true
         }
 
@@ -925,21 +1051,30 @@ private constructor(
          * Used for best match union deserialization.
          */
         internal fun validity(): Int =
-            additionalProperties.count { (_, value) -> !value.isNull() && !value.isMissing() }
+            (if (instruction.asKnown() == null) 0 else 1) +
+                (if (highlightCursor.asKnown() == null) 0 else 1) +
+                (if (maxSteps.asKnown() == null) 0 else 1)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
                 return true
             }
 
-            return other is Schema && additionalProperties == other.additionalProperties
+            return other is ExecuteOptions &&
+                instruction == other.instruction &&
+                highlightCursor == other.highlightCursor &&
+                maxSteps == other.maxSteps &&
+                additionalProperties == other.additionalProperties
         }
 
-        private val hashCode: Int by lazy { Objects.hash(additionalProperties) }
+        private val hashCode: Int by lazy {
+            Objects.hash(instruction, highlightCursor, maxSteps, additionalProperties)
+        }
 
         override fun hashCode(): Int = hashCode
 
-        override fun toString() = "Schema{additionalProperties=$additionalProperties}"
+        override fun toString() =
+            "ExecuteOptions{instruction=$instruction, highlightCursor=$highlightCursor, maxSteps=$maxSteps, additionalProperties=$additionalProperties}"
     }
 
     /** Client SDK language */
@@ -1211,7 +1346,7 @@ private constructor(
             return true
         }
 
-        return other is SessionExtractParams &&
+        return other is SessionExecuteParams &&
             id == other.id &&
             xLanguage == other.xLanguage &&
             xSdkVersion == other.xSdkVersion &&
@@ -1235,5 +1370,5 @@ private constructor(
         )
 
     override fun toString() =
-        "SessionExtractParams{id=$id, xLanguage=$xLanguage, xSdkVersion=$xSdkVersion, xSentAt=$xSentAt, xStreamResponse=$xStreamResponse, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "SessionExecuteParams{id=$id, xLanguage=$xLanguage, xSdkVersion=$xSdkVersion, xSentAt=$xSentAt, xStreamResponse=$xStreamResponse, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }
