@@ -56,7 +56,7 @@ import com.browserbase.api.models.sessions.SessionActResponse
 val client: StagehandClient = StagehandOkHttpClient.fromEnv()
 
 val params: SessionActParams = SessionActParams.builder()
-    .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
+    .id("00000000-your-session-id-000000000000")
     .input("click the first link on the page")
     .build()
 val response: SessionActResponse = client.sessions().act(params)
@@ -161,7 +161,7 @@ import com.browserbase.api.models.sessions.SessionActResponse
 val client: StagehandClient = StagehandOkHttpClient.fromEnv()
 
 val params: SessionActParams = SessionActParams.builder()
-    .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
+    .id("00000000-your-session-id-000000000000")
     .input("click the first link on the page")
     .build()
 val response: SessionActResponse = client.async().sessions().act(params)
@@ -180,7 +180,7 @@ import com.browserbase.api.models.sessions.SessionActResponse
 val client: StagehandClientAsync = StagehandOkHttpClientAsync.fromEnv()
 
 val params: SessionActParams = SessionActParams.builder()
-    .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
+    .id("00000000-your-session-id-000000000000")
     .input("click the first link on the page")
     .build()
 val response: SessionActResponse = client.sessions().act(params)
