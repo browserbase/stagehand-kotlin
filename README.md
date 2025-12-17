@@ -201,7 +201,7 @@ import com.browserbase.api.models.sessions.SessionStartParams
 import com.browserbase.api.models.sessions.SessionStartResponse
 
 val params: SessionStartParams = SessionStartParams.builder()
-    .modelName("gpt-4o")
+    .modelName("openai/gpt-5-nano")
     .build()
 val response: HttpResponseFor<SessionStartResponse> = client.sessions().withRawResponse().start(params)
 
