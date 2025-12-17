@@ -454,6 +454,20 @@ val complexValue: JsonValue = JsonValue.from(mapOf(
 ))
 ```
 
+Normally a `Builder` class's `build` method will throw [`IllegalStateException`](https://docs.oracle.com/javase/8/docs/api/java/lang/IllegalStateException.html) if any required parameter or property is unset.
+
+To forcibly omit a required parameter or property, pass [`JsonMissing`](stagehand-kotlin-core/src/main/kotlin/com/browserbase/api/core/Values.kt):
+
+```kotlin
+import com.browserbase.api.core.JsonMissing
+import com.browserbase.api.models.sessions.SessionActParams
+import com.browserbase.api.models.sessions.SessionStartParams
+
+val params: SessionStartParams = SessionActParams.builder()
+    .id(JsonMissing.of())
+    .build()
+```
+
 ### Response properties
 
 To access undocumented response properties, call the `_additionalProperties()` method:
