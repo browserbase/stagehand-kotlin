@@ -197,6 +197,7 @@ internal class SessionServiceAsyncTest {
                             .waitUntil(SessionNavigateParams.Options.WaitUntil.NETWORKIDLE)
                             .build()
                     )
+                    .streamResponse(true)
                     .build()
             )
 

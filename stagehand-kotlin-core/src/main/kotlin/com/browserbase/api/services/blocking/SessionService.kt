@@ -5,6 +5,7 @@ package com.browserbase.api.services.blocking
 import com.browserbase.api.core.ClientOptions
 import com.browserbase.api.core.RequestOptions
 import com.browserbase.api.core.http.HttpResponseFor
+import com.browserbase.api.core.http.StreamResponse
 import com.browserbase.api.models.sessions.SessionActParams
 import com.browserbase.api.models.sessions.SessionActResponse
 import com.browserbase.api.models.sessions.SessionEndParams
@@ -19,6 +20,7 @@ import com.browserbase.api.models.sessions.SessionObserveParams
 import com.browserbase.api.models.sessions.SessionObserveResponse
 import com.browserbase.api.models.sessions.SessionStartParams
 import com.browserbase.api.models.sessions.SessionStartResponse
+import com.browserbase.api.models.sessions.StreamEvent
 import com.google.errorprone.annotations.MustBeClosed
 
 interface SessionService {
@@ -50,6 +52,23 @@ interface SessionService {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): SessionActResponse
 
+    /**
+     * Executes a browser action using natural language instructions or a predefined Action object.
+     */
+    @MustBeClosed
+    fun actStreaming(
+        id: String,
+        params: SessionActParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): StreamResponse<StreamEvent> = actStreaming(params.toBuilder().id(id).build(), requestOptions)
+
+    /** @see actStreaming */
+    @MustBeClosed
+    fun actStreaming(
+        params: SessionActParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): StreamResponse<StreamEvent>
+
     /** Terminates the browser session and releases all associated resources. */
     fun end(
         id: String,
@@ -80,6 +99,22 @@ interface SessionService {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): SessionExecuteResponse
 
+    /** Runs an autonomous AI agent that can perform complex multi-step browser tasks. */
+    @MustBeClosed
+    fun executeStreaming(
+        id: String,
+        params: SessionExecuteParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): StreamResponse<StreamEvent> =
+        executeStreaming(params.toBuilder().id(id).build(), requestOptions)
+
+    /** @see executeStreaming */
+    @MustBeClosed
+    fun executeStreaming(
+        params: SessionExecuteParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): StreamResponse<StreamEvent>
+
     /** Extracts structured data from the current page using AI-powered analysis. */
     fun extract(
         id: String,
@@ -96,6 +131,27 @@ interface SessionService {
     /** @see extract */
     fun extract(id: String, requestOptions: RequestOptions): SessionExtractResponse =
         extract(id, SessionExtractParams.none(), requestOptions)
+
+    /** Extracts structured data from the current page using AI-powered analysis. */
+    @MustBeClosed
+    fun extractStreaming(
+        id: String,
+        params: SessionExtractParams = SessionExtractParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): StreamResponse<StreamEvent> =
+        extractStreaming(params.toBuilder().id(id).build(), requestOptions)
+
+    /** @see extractStreaming */
+    @MustBeClosed
+    fun extractStreaming(
+        params: SessionExtractParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): StreamResponse<StreamEvent>
+
+    /** @see extractStreaming */
+    @MustBeClosed
+    fun extractStreaming(id: String, requestOptions: RequestOptions): StreamResponse<StreamEvent> =
+        extractStreaming(id, SessionExtractParams.none(), requestOptions)
 
     /** Navigates the browser to the specified URL. */
     fun navigate(
@@ -129,6 +185,30 @@ interface SessionService {
     /** @see observe */
     fun observe(id: String, requestOptions: RequestOptions): SessionObserveResponse =
         observe(id, SessionObserveParams.none(), requestOptions)
+
+    /**
+     * Identifies and returns available actions on the current page that match the given
+     * instruction.
+     */
+    @MustBeClosed
+    fun observeStreaming(
+        id: String,
+        params: SessionObserveParams = SessionObserveParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): StreamResponse<StreamEvent> =
+        observeStreaming(params.toBuilder().id(id).build(), requestOptions)
+
+    /** @see observeStreaming */
+    @MustBeClosed
+    fun observeStreaming(
+        params: SessionObserveParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): StreamResponse<StreamEvent>
+
+    /** @see observeStreaming */
+    @MustBeClosed
+    fun observeStreaming(id: String, requestOptions: RequestOptions): StreamResponse<StreamEvent> =
+        observeStreaming(id, SessionObserveParams.none(), requestOptions)
 
     /**
      * Creates a new browser session with the specified configuration. Returns a session ID used for
@@ -167,6 +247,25 @@ interface SessionService {
             params: SessionActParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<SessionActResponse>
+
+        /**
+         * Returns a raw HTTP response for `post /v1/sessions/{id}/act`, but is otherwise the same
+         * as [SessionService.actStreaming].
+         */
+        @MustBeClosed
+        fun actStreaming(
+            id: String,
+            params: SessionActParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<StreamResponse<StreamEvent>> =
+            actStreaming(params.toBuilder().id(id).build(), requestOptions)
+
+        /** @see actStreaming */
+        @MustBeClosed
+        fun actStreaming(
+            params: SessionActParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<StreamResponse<StreamEvent>>
 
         /**
          * Returns a raw HTTP response for `post /v1/sessions/{id}/end`, but is otherwise the same
@@ -212,6 +311,25 @@ interface SessionService {
         ): HttpResponseFor<SessionExecuteResponse>
 
         /**
+         * Returns a raw HTTP response for `post /v1/sessions/{id}/agentExecute`, but is otherwise
+         * the same as [SessionService.executeStreaming].
+         */
+        @MustBeClosed
+        fun executeStreaming(
+            id: String,
+            params: SessionExecuteParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<StreamResponse<StreamEvent>> =
+            executeStreaming(params.toBuilder().id(id).build(), requestOptions)
+
+        /** @see executeStreaming */
+        @MustBeClosed
+        fun executeStreaming(
+            params: SessionExecuteParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<StreamResponse<StreamEvent>>
+
+        /**
          * Returns a raw HTTP response for `post /v1/sessions/{id}/extract`, but is otherwise the
          * same as [SessionService.extract].
          */
@@ -237,6 +355,33 @@ interface SessionService {
             requestOptions: RequestOptions,
         ): HttpResponseFor<SessionExtractResponse> =
             extract(id, SessionExtractParams.none(), requestOptions)
+
+        /**
+         * Returns a raw HTTP response for `post /v1/sessions/{id}/extract`, but is otherwise the
+         * same as [SessionService.extractStreaming].
+         */
+        @MustBeClosed
+        fun extractStreaming(
+            id: String,
+            params: SessionExtractParams = SessionExtractParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<StreamResponse<StreamEvent>> =
+            extractStreaming(params.toBuilder().id(id).build(), requestOptions)
+
+        /** @see extractStreaming */
+        @MustBeClosed
+        fun extractStreaming(
+            params: SessionExtractParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<StreamResponse<StreamEvent>>
+
+        /** @see extractStreaming */
+        @MustBeClosed
+        fun extractStreaming(
+            id: String,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<StreamResponse<StreamEvent>> =
+            extractStreaming(id, SessionExtractParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `post /v1/sessions/{id}/navigate`, but is otherwise the
@@ -283,6 +428,33 @@ interface SessionService {
             requestOptions: RequestOptions,
         ): HttpResponseFor<SessionObserveResponse> =
             observe(id, SessionObserveParams.none(), requestOptions)
+
+        /**
+         * Returns a raw HTTP response for `post /v1/sessions/{id}/observe`, but is otherwise the
+         * same as [SessionService.observeStreaming].
+         */
+        @MustBeClosed
+        fun observeStreaming(
+            id: String,
+            params: SessionObserveParams = SessionObserveParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<StreamResponse<StreamEvent>> =
+            observeStreaming(params.toBuilder().id(id).build(), requestOptions)
+
+        /** @see observeStreaming */
+        @MustBeClosed
+        fun observeStreaming(
+            params: SessionObserveParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<StreamResponse<StreamEvent>>
+
+        /** @see observeStreaming */
+        @MustBeClosed
+        fun observeStreaming(
+            id: String,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<StreamResponse<StreamEvent>> =
+            observeStreaming(id, SessionObserveParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `post /v1/sessions/start`, but is otherwise the same as

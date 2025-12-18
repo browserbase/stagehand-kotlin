@@ -189,6 +189,7 @@ private constructor(
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val available: JsonField<Boolean>,
+        private val connectUrl: JsonField<String>,
         private val sessionId: JsonField<String>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
@@ -198,10 +199,13 @@ private constructor(
             @JsonProperty("available")
             @ExcludeMissing
             available: JsonField<Boolean> = JsonMissing.of(),
+            @JsonProperty("connectUrl")
+            @ExcludeMissing
+            connectUrl: JsonField<String> = JsonMissing.of(),
             @JsonProperty("sessionId")
             @ExcludeMissing
             sessionId: JsonField<String> = JsonMissing.of(),
-        ) : this(available, sessionId, mutableMapOf())
+        ) : this(available, connectUrl, sessionId, mutableMapOf())
 
         /**
          * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
@@ -210,7 +214,15 @@ private constructor(
         fun available(): Boolean = available.getRequired("available")
 
         /**
-         * Unique session identifier
+         * CDP WebSocket URL for connecting to the Browserbase cloud browser
+         *
+         * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun connectUrl(): String = connectUrl.getRequired("connectUrl")
+
+        /**
+         * Unique Browserbase session identifier
          *
          * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -223,6 +235,15 @@ private constructor(
          * Unlike [available], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("available") @ExcludeMissing fun _available(): JsonField<Boolean> = available
+
+        /**
+         * Returns the raw JSON value of [connectUrl].
+         *
+         * Unlike [connectUrl], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("connectUrl")
+        @ExcludeMissing
+        fun _connectUrl(): JsonField<String> = connectUrl
 
         /**
          * Returns the raw JSON value of [sessionId].
@@ -251,6 +272,7 @@ private constructor(
              * The following fields are required:
              * ```kotlin
              * .available()
+             * .connectUrl()
              * .sessionId()
              * ```
              */
@@ -261,11 +283,13 @@ private constructor(
         class Builder internal constructor() {
 
             private var available: JsonField<Boolean>? = null
+            private var connectUrl: JsonField<String>? = null
             private var sessionId: JsonField<String>? = null
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             internal fun from(data: Data) = apply {
                 available = data.available
+                connectUrl = data.connectUrl
                 sessionId = data.sessionId
                 additionalProperties = data.additionalProperties.toMutableMap()
             }
@@ -281,7 +305,19 @@ private constructor(
              */
             fun available(available: JsonField<Boolean>) = apply { this.available = available }
 
-            /** Unique session identifier */
+            /** CDP WebSocket URL for connecting to the Browserbase cloud browser */
+            fun connectUrl(connectUrl: String) = connectUrl(JsonField.of(connectUrl))
+
+            /**
+             * Sets [Builder.connectUrl] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.connectUrl] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun connectUrl(connectUrl: JsonField<String>) = apply { this.connectUrl = connectUrl }
+
+            /** Unique Browserbase session identifier */
             fun sessionId(sessionId: String) = sessionId(JsonField.of(sessionId))
 
             /**
@@ -320,6 +356,7 @@ private constructor(
              * The following fields are required:
              * ```kotlin
              * .available()
+             * .connectUrl()
              * .sessionId()
              * ```
              *
@@ -328,6 +365,7 @@ private constructor(
             fun build(): Data =
                 Data(
                     checkRequired("available", available),
+                    checkRequired("connectUrl", connectUrl),
                     checkRequired("sessionId", sessionId),
                     additionalProperties.toMutableMap(),
                 )
@@ -341,6 +379,7 @@ private constructor(
             }
 
             available()
+            connectUrl()
             sessionId()
             validated = true
         }
@@ -361,6 +400,7 @@ private constructor(
          */
         internal fun validity(): Int =
             (if (available.asKnown() == null) 0 else 1) +
+                (if (connectUrl.asKnown() == null) 0 else 1) +
                 (if (sessionId.asKnown() == null) 0 else 1)
 
         override fun equals(other: Any?): Boolean {
@@ -370,18 +410,19 @@ private constructor(
 
             return other is Data &&
                 available == other.available &&
+                connectUrl == other.connectUrl &&
                 sessionId == other.sessionId &&
                 additionalProperties == other.additionalProperties
         }
 
         private val hashCode: Int by lazy {
-            Objects.hash(available, sessionId, additionalProperties)
+            Objects.hash(available, connectUrl, sessionId, additionalProperties)
         }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Data{available=$available, sessionId=$sessionId, additionalProperties=$additionalProperties}"
+            "Data{available=$available, connectUrl=$connectUrl, sessionId=$sessionId, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {
