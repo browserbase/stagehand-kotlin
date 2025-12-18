@@ -234,6 +234,8 @@ The SDK throws custom unchecked exception types:
   | 5xx    | [`InternalServerException`](stagehand-kotlin-core/src/main/kotlin/com/browserbase/api/errors/InternalServerException.kt)             |
   | others | [`UnexpectedStatusCodeException`](stagehand-kotlin-core/src/main/kotlin/com/browserbase/api/errors/UnexpectedStatusCodeException.kt) |
 
+  [`SseException`](stagehand-kotlin-core/src/main/kotlin/com/browserbase/api/errors/SseException.kt) is thrown for errors encountered during [SSE streaming](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events) after a successful initial HTTP response.
+
 - [`StagehandIoException`](stagehand-kotlin-core/src/main/kotlin/com/browserbase/api/errors/StagehandIoException.kt): I/O networking errors.
 
 - [`StagehandRetryableException`](stagehand-kotlin-core/src/main/kotlin/com/browserbase/api/errors/StagehandRetryableException.kt): Generic error indicating a failure that could be retried by the client.

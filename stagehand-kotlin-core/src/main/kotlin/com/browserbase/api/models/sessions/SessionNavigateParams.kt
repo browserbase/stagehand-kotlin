@@ -72,6 +72,14 @@ private constructor(
     fun options(): Options? = body.options()
 
     /**
+     * Whether to stream the response via SSE
+     *
+     * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun streamResponse(): Boolean? = body.streamResponse()
+
+    /**
      * Returns the raw JSON value of [url].
      *
      * Unlike [url], this method doesn't throw if the JSON field has an unexpected type.
@@ -91,6 +99,13 @@ private constructor(
      * Unlike [options], this method doesn't throw if the JSON field has an unexpected type.
      */
     fun _options(): JsonField<Options> = body._options()
+
+    /**
+     * Returns the raw JSON value of [streamResponse].
+     *
+     * Unlike [streamResponse], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    fun _streamResponse(): JsonField<Boolean> = body._streamResponse()
 
     fun _additionalBodyProperties(): Map<String, JsonValue> = body._additionalProperties()
 
@@ -163,6 +178,7 @@ private constructor(
          * - [url]
          * - [frameId]
          * - [options]
+         * - [streamResponse]
          */
         fun body(body: Body) = apply { this.body = body.toBuilder() }
 
@@ -197,6 +213,20 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun options(options: JsonField<Options>) = apply { body.options(options) }
+
+        /** Whether to stream the response via SSE */
+        fun streamResponse(streamResponse: Boolean) = apply { body.streamResponse(streamResponse) }
+
+        /**
+         * Sets [Builder.streamResponse] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.streamResponse] with a well-typed [Boolean] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun streamResponse(streamResponse: JsonField<Boolean>) = apply {
+            body.streamResponse(streamResponse)
+        }
 
         fun additionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) = apply {
             body.additionalProperties(additionalBodyProperties)
@@ -367,6 +397,7 @@ private constructor(
         private val url: JsonField<String>,
         private val frameId: JsonField<String>,
         private val options: JsonField<Options>,
+        private val streamResponse: JsonField<Boolean>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
@@ -375,7 +406,10 @@ private constructor(
             @JsonProperty("url") @ExcludeMissing url: JsonField<String> = JsonMissing.of(),
             @JsonProperty("frameId") @ExcludeMissing frameId: JsonField<String> = JsonMissing.of(),
             @JsonProperty("options") @ExcludeMissing options: JsonField<Options> = JsonMissing.of(),
-        ) : this(url, frameId, options, mutableMapOf())
+            @JsonProperty("streamResponse")
+            @ExcludeMissing
+            streamResponse: JsonField<Boolean> = JsonMissing.of(),
+        ) : this(url, frameId, options, streamResponse, mutableMapOf())
 
         /**
          * URL to navigate to
@@ -400,6 +434,14 @@ private constructor(
         fun options(): Options? = options.getNullable("options")
 
         /**
+         * Whether to stream the response via SSE
+         *
+         * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun streamResponse(): Boolean? = streamResponse.getNullable("streamResponse")
+
+        /**
          * Returns the raw JSON value of [url].
          *
          * Unlike [url], this method doesn't throw if the JSON field has an unexpected type.
@@ -419,6 +461,16 @@ private constructor(
          * Unlike [options], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("options") @ExcludeMissing fun _options(): JsonField<Options> = options
+
+        /**
+         * Returns the raw JSON value of [streamResponse].
+         *
+         * Unlike [streamResponse], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("streamResponse")
+        @ExcludeMissing
+        fun _streamResponse(): JsonField<Boolean> = streamResponse
 
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -451,12 +503,14 @@ private constructor(
             private var url: JsonField<String>? = null
             private var frameId: JsonField<String> = JsonMissing.of()
             private var options: JsonField<Options> = JsonMissing.of()
+            private var streamResponse: JsonField<Boolean> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             internal fun from(body: Body) = apply {
                 url = body.url
                 frameId = body.frameId
                 options = body.options
+                streamResponse = body.streamResponse
                 additionalProperties = body.additionalProperties.toMutableMap()
             }
 
@@ -495,6 +549,21 @@ private constructor(
              */
             fun options(options: JsonField<Options>) = apply { this.options = options }
 
+            /** Whether to stream the response via SSE */
+            fun streamResponse(streamResponse: Boolean) =
+                streamResponse(JsonField.of(streamResponse))
+
+            /**
+             * Sets [Builder.streamResponse] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.streamResponse] with a well-typed [Boolean] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun streamResponse(streamResponse: JsonField<Boolean>) = apply {
+                this.streamResponse = streamResponse
+            }
+
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
                 putAllAdditionalProperties(additionalProperties)
@@ -531,6 +600,7 @@ private constructor(
                     checkRequired("url", url),
                     frameId,
                     options,
+                    streamResponse,
                     additionalProperties.toMutableMap(),
                 )
         }
@@ -545,6 +615,7 @@ private constructor(
             url()
             frameId()
             options()?.validate()
+            streamResponse()
             validated = true
         }
 
@@ -565,7 +636,8 @@ private constructor(
         internal fun validity(): Int =
             (if (url.asKnown() == null) 0 else 1) +
                 (if (frameId.asKnown() == null) 0 else 1) +
-                (options.asKnown()?.validity() ?: 0)
+                (options.asKnown()?.validity() ?: 0) +
+                (if (streamResponse.asKnown() == null) 0 else 1)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
@@ -576,17 +648,18 @@ private constructor(
                 url == other.url &&
                 frameId == other.frameId &&
                 options == other.options &&
+                streamResponse == other.streamResponse &&
                 additionalProperties == other.additionalProperties
         }
 
         private val hashCode: Int by lazy {
-            Objects.hash(url, frameId, options, additionalProperties)
+            Objects.hash(url, frameId, options, streamResponse, additionalProperties)
         }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Body{url=$url, frameId=$frameId, options=$options, additionalProperties=$additionalProperties}"
+            "Body{url=$url, frameId=$frameId, options=$options, streamResponse=$streamResponse, additionalProperties=$additionalProperties}"
     }
 
     class Options
