@@ -4,6 +4,7 @@ package com.browserbase.api.models.sessions
 
 import com.browserbase.api.core.BaseDeserializer
 import com.browserbase.api.core.BaseSerializer
+import com.browserbase.api.core.Enum
 import com.browserbase.api.core.ExcludeMissing
 import com.browserbase.api.core.JsonField
 import com.browserbase.api.core.JsonMissing
@@ -221,6 +222,7 @@ private constructor(
         private val modelName: JsonField<String>,
         private val apiKey: JsonField<String>,
         private val baseUrl: JsonField<String>,
+        private val provider: JsonField<Provider>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
@@ -231,7 +233,10 @@ private constructor(
             modelName: JsonField<String> = JsonMissing.of(),
             @JsonProperty("apiKey") @ExcludeMissing apiKey: JsonField<String> = JsonMissing.of(),
             @JsonProperty("baseURL") @ExcludeMissing baseUrl: JsonField<String> = JsonMissing.of(),
-        ) : this(modelName, apiKey, baseUrl, mutableMapOf())
+            @JsonProperty("provider")
+            @ExcludeMissing
+            provider: JsonField<Provider> = JsonMissing.of(),
+        ) : this(modelName, apiKey, baseUrl, provider, mutableMapOf())
 
         /**
          * Model name string without prefix (e.g., 'gpt-5-nano', 'claude-4.5-opus')
@@ -258,6 +263,14 @@ private constructor(
         fun baseUrl(): String? = baseUrl.getNullable("baseURL")
 
         /**
+         * AI provider for the model (or provide a baseURL endpoint instead)
+         *
+         * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun provider(): Provider? = provider.getNullable("provider")
+
+        /**
          * Returns the raw JSON value of [modelName].
          *
          * Unlike [modelName], this method doesn't throw if the JSON field has an unexpected type.
@@ -277,6 +290,13 @@ private constructor(
          * Unlike [baseUrl], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("baseURL") @ExcludeMissing fun _baseUrl(): JsonField<String> = baseUrl
+
+        /**
+         * Returns the raw JSON value of [provider].
+         *
+         * Unlike [provider], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("provider") @ExcludeMissing fun _provider(): JsonField<Provider> = provider
 
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -309,12 +329,14 @@ private constructor(
             private var modelName: JsonField<String>? = null
             private var apiKey: JsonField<String> = JsonMissing.of()
             private var baseUrl: JsonField<String> = JsonMissing.of()
+            private var provider: JsonField<Provider> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             internal fun from(modelConfigObject: ModelConfigObject) = apply {
                 modelName = modelConfigObject.modelName
                 apiKey = modelConfigObject.apiKey
                 baseUrl = modelConfigObject.baseUrl
+                provider = modelConfigObject.provider
                 additionalProperties = modelConfigObject.additionalProperties.toMutableMap()
             }
 
@@ -354,6 +376,18 @@ private constructor(
              */
             fun baseUrl(baseUrl: JsonField<String>) = apply { this.baseUrl = baseUrl }
 
+            /** AI provider for the model (or provide a baseURL endpoint instead) */
+            fun provider(provider: Provider) = provider(JsonField.of(provider))
+
+            /**
+             * Sets [Builder.provider] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.provider] with a well-typed [Provider] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun provider(provider: JsonField<Provider>) = apply { this.provider = provider }
+
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
                 putAllAdditionalProperties(additionalProperties)
@@ -390,6 +424,7 @@ private constructor(
                     checkRequired("modelName", modelName),
                     apiKey,
                     baseUrl,
+                    provider,
                     additionalProperties.toMutableMap(),
                 )
         }
@@ -404,6 +439,7 @@ private constructor(
             modelName()
             apiKey()
             baseUrl()
+            provider()?.validate()
             validated = true
         }
 
@@ -424,7 +460,149 @@ private constructor(
         internal fun validity(): Int =
             (if (modelName.asKnown() == null) 0 else 1) +
                 (if (apiKey.asKnown() == null) 0 else 1) +
-                (if (baseUrl.asKnown() == null) 0 else 1)
+                (if (baseUrl.asKnown() == null) 0 else 1) +
+                (provider.asKnown()?.validity() ?: 0)
+
+        /** AI provider for the model (or provide a baseURL endpoint instead) */
+        class Provider @JsonCreator private constructor(private val value: JsonField<String>) :
+            Enum {
+
+            /**
+             * Returns this class instance's raw value.
+             *
+             * This is usually only useful if this instance was deserialized from data that doesn't
+             * match any known member, and you want to know that value. For example, if the SDK is
+             * on an older version than the API, then the API may respond with new members that the
+             * SDK is unaware of.
+             */
+            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+            companion object {
+
+                val OPENAI = of("openai")
+
+                val ANTHROPIC = of("anthropic")
+
+                val GOOGLE = of("google")
+
+                val MICROSOFT = of("microsoft")
+
+                fun of(value: String) = Provider(JsonField.of(value))
+            }
+
+            /** An enum containing [Provider]'s known values. */
+            enum class Known {
+                OPENAI,
+                ANTHROPIC,
+                GOOGLE,
+                MICROSOFT,
+            }
+
+            /**
+             * An enum containing [Provider]'s known values, as well as an [_UNKNOWN] member.
+             *
+             * An instance of [Provider] can contain an unknown value in a couple of cases:
+             * - It was deserialized from data that doesn't match any known member. For example, if
+             *   the SDK is on an older version than the API, then the API may respond with new
+             *   members that the SDK is unaware of.
+             * - It was constructed with an arbitrary value using the [of] method.
+             */
+            enum class Value {
+                OPENAI,
+                ANTHROPIC,
+                GOOGLE,
+                MICROSOFT,
+                /**
+                 * An enum member indicating that [Provider] was instantiated with an unknown value.
+                 */
+                _UNKNOWN,
+            }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value, or
+             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+             *
+             * Use the [known] method instead if you're certain the value is always known or if you
+             * want to throw for the unknown case.
+             */
+            fun value(): Value =
+                when (this) {
+                    OPENAI -> Value.OPENAI
+                    ANTHROPIC -> Value.ANTHROPIC
+                    GOOGLE -> Value.GOOGLE
+                    MICROSOFT -> Value.MICROSOFT
+                    else -> Value._UNKNOWN
+                }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value.
+             *
+             * Use the [value] method instead if you're uncertain the value is always known and
+             * don't want to throw for the unknown case.
+             *
+             * @throws StagehandInvalidDataException if this class instance's value is a not a known
+             *   member.
+             */
+            fun known(): Known =
+                when (this) {
+                    OPENAI -> Known.OPENAI
+                    ANTHROPIC -> Known.ANTHROPIC
+                    GOOGLE -> Known.GOOGLE
+                    MICROSOFT -> Known.MICROSOFT
+                    else -> throw StagehandInvalidDataException("Unknown Provider: $value")
+                }
+
+            /**
+             * Returns this class instance's primitive wire representation.
+             *
+             * This differs from the [toString] method because that method is primarily for
+             * debugging and generally doesn't throw.
+             *
+             * @throws StagehandInvalidDataException if this class instance's value does not have
+             *   the expected primitive type.
+             */
+            fun asString(): String =
+                _value().asString() ?: throw StagehandInvalidDataException("Value is not a String")
+
+            private var validated: Boolean = false
+
+            fun validate(): Provider = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                known()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: StagehandInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is Provider && value == other.value
+            }
+
+            override fun hashCode() = value.hashCode()
+
+            override fun toString() = value.toString()
+        }
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
@@ -435,16 +613,17 @@ private constructor(
                 modelName == other.modelName &&
                 apiKey == other.apiKey &&
                 baseUrl == other.baseUrl &&
+                provider == other.provider &&
                 additionalProperties == other.additionalProperties
         }
 
         private val hashCode: Int by lazy {
-            Objects.hash(modelName, apiKey, baseUrl, additionalProperties)
+            Objects.hash(modelName, apiKey, baseUrl, provider, additionalProperties)
         }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "ModelConfigObject{modelName=$modelName, apiKey=$apiKey, baseUrl=$baseUrl, additionalProperties=$additionalProperties}"
+            "ModelConfigObject{modelName=$modelName, apiKey=$apiKey, baseUrl=$baseUrl, provider=$provider, additionalProperties=$additionalProperties}"
     }
 }

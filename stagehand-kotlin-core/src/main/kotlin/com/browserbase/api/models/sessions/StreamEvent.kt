@@ -27,7 +27,10 @@ import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import java.util.Collections
 import java.util.Objects
 
-/** Server-Sent Event emitted during streaming responses. Events are sent as `data: <JSON>\n\n`. */
+/**
+ * Server-Sent Event emitted during streaming responses. Events are sent as `data: <JSON>\n\n`. Key
+ * order: data (with status first), type, id.
+ */
 class StreamEvent
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
