@@ -188,6 +188,21 @@ val response: SessionActResponse = client.sessions().act(params)
 
 The asynchronous client supports the same options as the synchronous one, except most methods are [suspending](https://kotlinlang.org/docs/coroutines-guide.html).
 
+## Streaming
+
+The SDK defines methods that return response "chunk" streams, where each chunk can be individually processed as soon as it arrives instead of waiting on the full response. Streaming methods generally correspond to [SSE](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events) or [JSONL](https://jsonlines.org) responses.
+
+Some of these methods may have streaming and non-streaming variants, but a streaming method will always have a `Streaming` suffix in its name, even if it doesn't have a non-streaming variant.
+
+These streaming methods return [`StreamResponse`](stagehand-kotlin-core/src/main/kotlin/com/browserbase/api/core/http/StreamResponse.kt) for synchronous clients:
+
+```kotlin
+client.sessions().actStreaming(params).use { response ->
+    response.asSequence().forEach { println(it) }
+    println("No more chunks!")
+}
+```
+
 ## Raw responses
 
 The SDK defines methods that deserialize responses into instances of Kotlin classes. However, these methods don't provide access to the response headers, status code, or the raw response body.
