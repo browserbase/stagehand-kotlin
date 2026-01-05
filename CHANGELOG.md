@@ -1,5 +1,31 @@
 # Changelog
 
+## 0.3.0 (2025-12-23)
+
+Full Changelog: [v0.2.0...v0.3.0](https://github.com/browserbase/stagehand-kotlin/compare/v0.2.0...v0.3.0)
+
+### Features
+
+* [STG-1053] [server] Use fastify-zod-openapi + zod v4 for openapi generation ([6362c87](https://github.com/browserbase/stagehand-kotlin/commit/6362c87288a848616dcd492fe7fe350a4f68fb16))
+* **api:** manual updates ([e4a62fb](https://github.com/browserbase/stagehand-kotlin/commit/e4a62fb0ab12733c844757cbe8ab9894f6c8c8a1))
+* **api:** manual updates ([9480988](https://github.com/browserbase/stagehand-kotlin/commit/9480988b36974e37584a16a2173af3072840d4b8))
+* **api:** manual updates ([d0d4e1b](https://github.com/browserbase/stagehand-kotlin/commit/d0d4e1b22d4fa7a4ea49333800a4c5137659f5e6))
+* **api:** manual updates ([e631708](https://github.com/browserbase/stagehand-kotlin/commit/e63170897295bc07dc47d493573c1290eb26e5f1))
+* **api:** manual updates ([1697e14](https://github.com/browserbase/stagehand-kotlin/commit/1697e144099d3d39c43d1b2ad6ab830e9c4267da))
+
+
+### Chores
+
+* **internal:** codegen related update ([c6b00cb](https://github.com/browserbase/stagehand-kotlin/commit/c6b00cb1704aee4abf1aade497aed8270e250edc))
+* **internal:** codegen related update ([3b4a6f0](https://github.com/browserbase/stagehand-kotlin/commit/3b4a6f0749d57d3a817722988351a2899dca5199))
+* **internal:** codegen related update ([5531737](https://github.com/browserbase/stagehand-kotlin/commit/55317375b13e137f0ae5ebd5fcc05f1393bdf633))
+* **internal:** codegen related update ([842e54f](https://github.com/browserbase/stagehand-kotlin/commit/842e54f32d89d64633746138a28a1947c2f7aaf4))
+
+
+### Documentation
+
+* add more examples ([16aa06e](https://github.com/browserbase/stagehand-kotlin/commit/16aa06e0a826df71165130395e41f6fad0a4f708))
+
 ## 0.2.0 (2025-12-17)
 
 Full Changelog: [v0.1.0...v0.2.0](https://github.com/browserbase/stagehand-kotlin/compare/v0.1.0...v0.2.0)

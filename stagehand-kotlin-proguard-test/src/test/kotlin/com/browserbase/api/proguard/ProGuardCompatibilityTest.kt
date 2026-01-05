@@ -64,6 +64,7 @@ internal class ProGuardCompatibilityTest {
                 .description("Click the submit button")
                 .selector("[data-testid='submit-button']")
                 .addArgument("Hello World")
+                .backendNodeId(0.0)
                 .method("click")
                 .build()
 
@@ -76,7 +77,7 @@ internal class ProGuardCompatibilityTest {
     @Test
     fun modelConfigRoundtrip() {
         val jsonMapper = jsonMapper()
-        val modelConfig = ModelConfig.ofString("string")
+        val modelConfig = ModelConfig.ofName("openai/gpt-5-nano")
 
         val roundtrippedModelConfig =
             jsonMapper.readValue(

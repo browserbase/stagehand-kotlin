@@ -70,7 +70,7 @@ private constructor(
     fun modelName(): String = body.modelName()
 
     /**
-     * Timeout in ms for act operations
+     * Timeout in ms for act operations (deprecated, v2 only)
      *
      * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -97,12 +97,6 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun browserbaseSessionId(): String? = body.browserbaseSessionId()
-
-    /**
-     * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
-     */
-    fun debugDom(): Boolean? = body.debugDom()
 
     /**
      * Timeout in ms to wait for DOM to settle
@@ -143,6 +137,8 @@ private constructor(
     fun verbose(): Verbose? = body.verbose()
 
     /**
+     * Wait for captcha solves (deprecated, v2 only)
+     *
      * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
@@ -185,13 +181,6 @@ private constructor(
      * type.
      */
     fun _browserbaseSessionId(): JsonField<String> = body._browserbaseSessionId()
-
-    /**
-     * Returns the raw JSON value of [debugDom].
-     *
-     * Unlike [debugDom], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    fun _debugDom(): JsonField<Boolean> = body._debugDom()
 
     /**
      * Returns the raw JSON value of [domSettleTimeoutMs].
@@ -321,7 +310,7 @@ private constructor(
          */
         fun modelName(modelName: JsonField<String>) = apply { body.modelName(modelName) }
 
-        /** Timeout in ms for act operations */
+        /** Timeout in ms for act operations (deprecated, v2 only) */
         fun actTimeoutMs(actTimeoutMs: Double) = apply { body.actTimeoutMs(actTimeoutMs) }
 
         /**
@@ -375,17 +364,6 @@ private constructor(
         fun browserbaseSessionId(browserbaseSessionId: JsonField<String>) = apply {
             body.browserbaseSessionId(browserbaseSessionId)
         }
-
-        fun debugDom(debugDom: Boolean) = apply { body.debugDom(debugDom) }
-
-        /**
-         * Sets [Builder.debugDom] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.debugDom] with a well-typed [Boolean] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
-         */
-        fun debugDom(debugDom: JsonField<Boolean>) = apply { body.debugDom(debugDom) }
 
         /** Timeout in ms to wait for DOM to settle */
         fun domSettleTimeoutMs(domSettleTimeoutMs: Double) = apply {
@@ -453,6 +431,7 @@ private constructor(
          */
         fun verbose(verbose: JsonField<Verbose>) = apply { body.verbose(verbose) }
 
+        /** Wait for captcha solves (deprecated, v2 only) */
         fun waitForCaptchaSolves(waitForCaptchaSolves: Boolean) = apply {
             body.waitForCaptchaSolves(waitForCaptchaSolves)
         }
@@ -632,7 +611,6 @@ private constructor(
         private val browser: JsonField<Browser>,
         private val browserbaseSessionCreateParams: JsonField<BrowserbaseSessionCreateParams>,
         private val browserbaseSessionId: JsonField<String>,
-        private val debugDom: JsonField<Boolean>,
         private val domSettleTimeoutMs: JsonField<Double>,
         private val experimental: JsonField<Boolean>,
         private val selfHeal: JsonField<Boolean>,
@@ -658,9 +636,6 @@ private constructor(
             @JsonProperty("browserbaseSessionID")
             @ExcludeMissing
             browserbaseSessionId: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("debugDom")
-            @ExcludeMissing
-            debugDom: JsonField<Boolean> = JsonMissing.of(),
             @JsonProperty("domSettleTimeoutMs")
             @ExcludeMissing
             domSettleTimeoutMs: JsonField<Double> = JsonMissing.of(),
@@ -683,7 +658,6 @@ private constructor(
             browser,
             browserbaseSessionCreateParams,
             browserbaseSessionId,
-            debugDom,
             domSettleTimeoutMs,
             experimental,
             selfHeal,
@@ -702,7 +676,7 @@ private constructor(
         fun modelName(): String = modelName.getRequired("modelName")
 
         /**
-         * Timeout in ms for act operations
+         * Timeout in ms for act operations (deprecated, v2 only)
          *
          * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -730,12 +704,6 @@ private constructor(
          */
         fun browserbaseSessionId(): String? =
             browserbaseSessionId.getNullable("browserbaseSessionID")
-
-        /**
-         * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
-         *   the server responded with an unexpected value).
-         */
-        fun debugDom(): Boolean? = debugDom.getNullable("debugDom")
 
         /**
          * Timeout in ms to wait for DOM to settle
@@ -776,6 +744,8 @@ private constructor(
         fun verbose(): Verbose? = verbose.getNullable("verbose")
 
         /**
+         * Wait for captcha solves (deprecated, v2 only)
+         *
          * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
@@ -826,13 +796,6 @@ private constructor(
         @JsonProperty("browserbaseSessionID")
         @ExcludeMissing
         fun _browserbaseSessionId(): JsonField<String> = browserbaseSessionId
-
-        /**
-         * Returns the raw JSON value of [debugDom].
-         *
-         * Unlike [debugDom], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("debugDom") @ExcludeMissing fun _debugDom(): JsonField<Boolean> = debugDom
 
         /**
          * Returns the raw JSON value of [domSettleTimeoutMs].
@@ -922,7 +885,6 @@ private constructor(
             private var browserbaseSessionCreateParams: JsonField<BrowserbaseSessionCreateParams> =
                 JsonMissing.of()
             private var browserbaseSessionId: JsonField<String> = JsonMissing.of()
-            private var debugDom: JsonField<Boolean> = JsonMissing.of()
             private var domSettleTimeoutMs: JsonField<Double> = JsonMissing.of()
             private var experimental: JsonField<Boolean> = JsonMissing.of()
             private var selfHeal: JsonField<Boolean> = JsonMissing.of()
@@ -937,7 +899,6 @@ private constructor(
                 browser = body.browser
                 browserbaseSessionCreateParams = body.browserbaseSessionCreateParams
                 browserbaseSessionId = body.browserbaseSessionId
-                debugDom = body.debugDom
                 domSettleTimeoutMs = body.domSettleTimeoutMs
                 experimental = body.experimental
                 selfHeal = body.selfHeal
@@ -959,7 +920,7 @@ private constructor(
              */
             fun modelName(modelName: JsonField<String>) = apply { this.modelName = modelName }
 
-            /** Timeout in ms for act operations */
+            /** Timeout in ms for act operations (deprecated, v2 only) */
             fun actTimeoutMs(actTimeoutMs: Double) = actTimeoutMs(JsonField.of(actTimeoutMs))
 
             /**
@@ -1013,17 +974,6 @@ private constructor(
             fun browserbaseSessionId(browserbaseSessionId: JsonField<String>) = apply {
                 this.browserbaseSessionId = browserbaseSessionId
             }
-
-            fun debugDom(debugDom: Boolean) = debugDom(JsonField.of(debugDom))
-
-            /**
-             * Sets [Builder.debugDom] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.debugDom] with a well-typed [Boolean] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun debugDom(debugDom: JsonField<Boolean>) = apply { this.debugDom = debugDom }
 
             /** Timeout in ms to wait for DOM to settle */
             fun domSettleTimeoutMs(domSettleTimeoutMs: Double) =
@@ -1091,6 +1041,7 @@ private constructor(
              */
             fun verbose(verbose: JsonField<Verbose>) = apply { this.verbose = verbose }
 
+            /** Wait for captcha solves (deprecated, v2 only) */
             fun waitForCaptchaSolves(waitForCaptchaSolves: Boolean) =
                 waitForCaptchaSolves(JsonField.of(waitForCaptchaSolves))
 
@@ -1143,7 +1094,6 @@ private constructor(
                     browser,
                     browserbaseSessionCreateParams,
                     browserbaseSessionId,
-                    debugDom,
                     domSettleTimeoutMs,
                     experimental,
                     selfHeal,
@@ -1166,7 +1116,6 @@ private constructor(
             browser()?.validate()
             browserbaseSessionCreateParams()?.validate()
             browserbaseSessionId()
-            debugDom()
             domSettleTimeoutMs()
             experimental()
             selfHeal()
@@ -1196,7 +1145,6 @@ private constructor(
                 (browser.asKnown()?.validity() ?: 0) +
                 (browserbaseSessionCreateParams.asKnown()?.validity() ?: 0) +
                 (if (browserbaseSessionId.asKnown() == null) 0 else 1) +
-                (if (debugDom.asKnown() == null) 0 else 1) +
                 (if (domSettleTimeoutMs.asKnown() == null) 0 else 1) +
                 (if (experimental.asKnown() == null) 0 else 1) +
                 (if (selfHeal.asKnown() == null) 0 else 1) +
@@ -1215,7 +1163,6 @@ private constructor(
                 browser == other.browser &&
                 browserbaseSessionCreateParams == other.browserbaseSessionCreateParams &&
                 browserbaseSessionId == other.browserbaseSessionId &&
-                debugDom == other.debugDom &&
                 domSettleTimeoutMs == other.domSettleTimeoutMs &&
                 experimental == other.experimental &&
                 selfHeal == other.selfHeal &&
@@ -1232,7 +1179,6 @@ private constructor(
                 browser,
                 browserbaseSessionCreateParams,
                 browserbaseSessionId,
-                debugDom,
                 domSettleTimeoutMs,
                 experimental,
                 selfHeal,
@@ -1246,7 +1192,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Body{modelName=$modelName, actTimeoutMs=$actTimeoutMs, browser=$browser, browserbaseSessionCreateParams=$browserbaseSessionCreateParams, browserbaseSessionId=$browserbaseSessionId, debugDom=$debugDom, domSettleTimeoutMs=$domSettleTimeoutMs, experimental=$experimental, selfHeal=$selfHeal, systemPrompt=$systemPrompt, verbose=$verbose, waitForCaptchaSolves=$waitForCaptchaSolves, additionalProperties=$additionalProperties}"
+            "Body{modelName=$modelName, actTimeoutMs=$actTimeoutMs, browser=$browser, browserbaseSessionCreateParams=$browserbaseSessionCreateParams, browserbaseSessionId=$browserbaseSessionId, domSettleTimeoutMs=$domSettleTimeoutMs, experimental=$experimental, selfHeal=$selfHeal, systemPrompt=$systemPrompt, verbose=$verbose, waitForCaptchaSolves=$waitForCaptchaSolves, additionalProperties=$additionalProperties}"
     }
 
     class Browser
@@ -3373,13 +3319,9 @@ private constructor(
             /** Alias for calling [proxies] with `Proxies.ofBoolean(boolean)`. */
             fun proxies(boolean: Boolean) = proxies(Proxies.ofBoolean(boolean))
 
-            /**
-             * Alias for calling [proxies] with
-             * `Proxies.ofUnnamedSchemaWithArrayParent0s(unnamedSchemaWithArrayParent0s)`.
-             */
-            fun proxiesOfUnnamedSchemaWithArrayParent0s(
-                unnamedSchemaWithArrayParent0s: List<Proxies.UnnamedSchemaWithArrayParent0>
-            ) = proxies(Proxies.ofUnnamedSchemaWithArrayParent0s(unnamedSchemaWithArrayParent0s))
+            /** Alias for calling [proxies] with `Proxies.ofProxyConfigList(proxyConfigList)`. */
+            fun proxiesOfProxyConfigList(proxyConfigList: List<Proxies.ProxyConfig>) =
+                proxies(Proxies.ofProxyConfigList(proxyConfigList))
 
             fun region(region: Region) = region(JsonField.of(region))
 
@@ -5611,31 +5553,29 @@ private constructor(
         class Proxies
         private constructor(
             private val boolean: Boolean? = null,
-            private val unnamedSchemaWithArrayParent0s: List<UnnamedSchemaWithArrayParent0>? = null,
+            private val proxyConfigList: List<ProxyConfig>? = null,
             private val _json: JsonValue? = null,
         ) {
 
             fun boolean(): Boolean? = boolean
 
-            fun unnamedSchemaWithArrayParent0s(): List<UnnamedSchemaWithArrayParent0>? =
-                unnamedSchemaWithArrayParent0s
+            fun proxyConfigList(): List<ProxyConfig>? = proxyConfigList
 
             fun isBoolean(): Boolean = boolean != null
 
-            fun isUnnamedSchemaWithArrayParent0s(): Boolean = unnamedSchemaWithArrayParent0s != null
+            fun isProxyConfigList(): Boolean = proxyConfigList != null
 
             fun asBoolean(): Boolean = boolean.getOrThrow("boolean")
 
-            fun asUnnamedSchemaWithArrayParent0s(): List<UnnamedSchemaWithArrayParent0> =
-                unnamedSchemaWithArrayParent0s.getOrThrow("unnamedSchemaWithArrayParent0s")
+            fun asProxyConfigList(): List<ProxyConfig> =
+                proxyConfigList.getOrThrow("proxyConfigList")
 
             fun _json(): JsonValue? = _json
 
             fun <T> accept(visitor: Visitor<T>): T =
                 when {
                     boolean != null -> visitor.visitBoolean(boolean)
-                    unnamedSchemaWithArrayParent0s != null ->
-                        visitor.visitUnnamedSchemaWithArrayParent0s(unnamedSchemaWithArrayParent0s)
+                    proxyConfigList != null -> visitor.visitProxyConfigList(proxyConfigList)
                     else -> visitor.unknown(_json)
                 }
 
@@ -5650,10 +5590,8 @@ private constructor(
                     object : Visitor<Unit> {
                         override fun visitBoolean(boolean: Boolean) {}
 
-                        override fun visitUnnamedSchemaWithArrayParent0s(
-                            unnamedSchemaWithArrayParent0s: List<UnnamedSchemaWithArrayParent0>
-                        ) {
-                            unnamedSchemaWithArrayParent0s.forEach { it.validate() }
+                        override fun visitProxyConfigList(proxyConfigList: List<ProxyConfig>) {
+                            proxyConfigList.forEach { it.validate() }
                         }
                     }
                 )
@@ -5679,9 +5617,8 @@ private constructor(
                     object : Visitor<Int> {
                         override fun visitBoolean(boolean: Boolean) = 1
 
-                        override fun visitUnnamedSchemaWithArrayParent0s(
-                            unnamedSchemaWithArrayParent0s: List<UnnamedSchemaWithArrayParent0>
-                        ) = unnamedSchemaWithArrayParent0s.sumOf { it.validity().toInt() }
+                        override fun visitProxyConfigList(proxyConfigList: List<ProxyConfig>) =
+                            proxyConfigList.sumOf { it.validity().toInt() }
 
                         override fun unknown(json: JsonValue?) = 0
                     }
@@ -5694,16 +5631,15 @@ private constructor(
 
                 return other is Proxies &&
                     boolean == other.boolean &&
-                    unnamedSchemaWithArrayParent0s == other.unnamedSchemaWithArrayParent0s
+                    proxyConfigList == other.proxyConfigList
             }
 
-            override fun hashCode(): Int = Objects.hash(boolean, unnamedSchemaWithArrayParent0s)
+            override fun hashCode(): Int = Objects.hash(boolean, proxyConfigList)
 
             override fun toString(): String =
                 when {
                     boolean != null -> "Proxies{boolean=$boolean}"
-                    unnamedSchemaWithArrayParent0s != null ->
-                        "Proxies{unnamedSchemaWithArrayParent0s=$unnamedSchemaWithArrayParent0s}"
+                    proxyConfigList != null -> "Proxies{proxyConfigList=$proxyConfigList}"
                     _json != null -> "Proxies{_unknown=$_json}"
                     else -> throw IllegalStateException("Invalid Proxies")
                 }
@@ -5712,13 +5648,8 @@ private constructor(
 
                 fun ofBoolean(boolean: Boolean) = Proxies(boolean = boolean)
 
-                fun ofUnnamedSchemaWithArrayParent0s(
-                    unnamedSchemaWithArrayParent0s: List<UnnamedSchemaWithArrayParent0>
-                ) =
-                    Proxies(
-                        unnamedSchemaWithArrayParent0s =
-                            unnamedSchemaWithArrayParent0s.toImmutable()
-                    )
+                fun ofProxyConfigList(proxyConfigList: List<ProxyConfig>) =
+                    Proxies(proxyConfigList = proxyConfigList.toImmutable())
             }
 
             /**
@@ -5729,9 +5660,7 @@ private constructor(
 
                 fun visitBoolean(boolean: Boolean): T
 
-                fun visitUnnamedSchemaWithArrayParent0s(
-                    unnamedSchemaWithArrayParent0s: List<UnnamedSchemaWithArrayParent0>
-                ): T
+                fun visitProxyConfigList(proxyConfigList: List<ProxyConfig>): T
 
                 /**
                  * Maps an unknown variant of [Proxies] to a value of type [T].
@@ -5758,13 +5687,9 @@ private constructor(
                                 tryDeserialize(node, jacksonTypeRef<Boolean>())?.let {
                                     Proxies(boolean = it, _json = json)
                                 },
-                                tryDeserialize(
-                                        node,
-                                        jacksonTypeRef<List<UnnamedSchemaWithArrayParent0>>(),
-                                    )
-                                    ?.let {
-                                        Proxies(unnamedSchemaWithArrayParent0s = it, _json = json)
-                                    },
+                                tryDeserialize(node, jacksonTypeRef<List<ProxyConfig>>())?.let {
+                                    Proxies(proxyConfigList = it, _json = json)
+                                },
                             )
                             .filterNotNull()
                             .allMaxBy { it.validity() }
@@ -5791,67 +5716,59 @@ private constructor(
                 ) {
                     when {
                         value.boolean != null -> generator.writeObject(value.boolean)
-                        value.unnamedSchemaWithArrayParent0s != null ->
-                            generator.writeObject(value.unnamedSchemaWithArrayParent0s)
+                        value.proxyConfigList != null ->
+                            generator.writeObject(value.proxyConfigList)
                         value._json != null -> generator.writeObject(value._json)
                         else -> throw IllegalStateException("Invalid Proxies")
                     }
                 }
             }
 
-            @JsonDeserialize(using = UnnamedSchemaWithArrayParent0.Deserializer::class)
-            @JsonSerialize(using = UnnamedSchemaWithArrayParent0.Serializer::class)
-            class UnnamedSchemaWithArrayParent0
+            @JsonDeserialize(using = ProxyConfig.Deserializer::class)
+            @JsonSerialize(using = ProxyConfig.Serializer::class)
+            class ProxyConfig
             private constructor(
-                private val browserbaseProxyConfig: BrowserbaseProxyConfig? = null,
-                private val externalProxyConfig: ExternalProxyConfig? = null,
+                private val browserbase: Browserbase? = null,
+                private val external: External? = null,
                 private val _json: JsonValue? = null,
             ) {
 
-                fun browserbaseProxyConfig(): BrowserbaseProxyConfig? = browserbaseProxyConfig
+                fun browserbase(): Browserbase? = browserbase
 
-                fun externalProxyConfig(): ExternalProxyConfig? = externalProxyConfig
+                fun external(): External? = external
 
-                fun isBrowserbaseProxyConfig(): Boolean = browserbaseProxyConfig != null
+                fun isBrowserbase(): Boolean = browserbase != null
 
-                fun isExternalProxyConfig(): Boolean = externalProxyConfig != null
+                fun isExternal(): Boolean = external != null
 
-                fun asBrowserbaseProxyConfig(): BrowserbaseProxyConfig =
-                    browserbaseProxyConfig.getOrThrow("browserbaseProxyConfig")
+                fun asBrowserbase(): Browserbase = browserbase.getOrThrow("browserbase")
 
-                fun asExternalProxyConfig(): ExternalProxyConfig =
-                    externalProxyConfig.getOrThrow("externalProxyConfig")
+                fun asExternal(): External = external.getOrThrow("external")
 
                 fun _json(): JsonValue? = _json
 
                 fun <T> accept(visitor: Visitor<T>): T =
                     when {
-                        browserbaseProxyConfig != null ->
-                            visitor.visitBrowserbaseProxyConfig(browserbaseProxyConfig)
-                        externalProxyConfig != null ->
-                            visitor.visitExternalProxyConfig(externalProxyConfig)
+                        browserbase != null -> visitor.visitBrowserbase(browserbase)
+                        external != null -> visitor.visitExternal(external)
                         else -> visitor.unknown(_json)
                     }
 
                 private var validated: Boolean = false
 
-                fun validate(): UnnamedSchemaWithArrayParent0 = apply {
+                fun validate(): ProxyConfig = apply {
                     if (validated) {
                         return@apply
                     }
 
                     accept(
                         object : Visitor<Unit> {
-                            override fun visitBrowserbaseProxyConfig(
-                                browserbaseProxyConfig: BrowserbaseProxyConfig
-                            ) {
-                                browserbaseProxyConfig.validate()
+                            override fun visitBrowserbase(browserbase: Browserbase) {
+                                browserbase.validate()
                             }
 
-                            override fun visitExternalProxyConfig(
-                                externalProxyConfig: ExternalProxyConfig
-                            ) {
-                                externalProxyConfig.validate()
+                            override fun visitExternal(external: External) {
+                                external.validate()
                             }
                         }
                     )
@@ -5875,13 +5792,10 @@ private constructor(
                 internal fun validity(): Int =
                     accept(
                         object : Visitor<Int> {
-                            override fun visitBrowserbaseProxyConfig(
-                                browserbaseProxyConfig: BrowserbaseProxyConfig
-                            ) = browserbaseProxyConfig.validity()
+                            override fun visitBrowserbase(browserbase: Browserbase) =
+                                browserbase.validity()
 
-                            override fun visitExternalProxyConfig(
-                                externalProxyConfig: ExternalProxyConfig
-                            ) = externalProxyConfig.validity()
+                            override fun visitExternal(external: External) = external.validity()
 
                             override fun unknown(json: JsonValue?) = 0
                         }
@@ -5892,135 +5806,97 @@ private constructor(
                         return true
                     }
 
-                    return other is UnnamedSchemaWithArrayParent0 &&
-                        browserbaseProxyConfig == other.browserbaseProxyConfig &&
-                        externalProxyConfig == other.externalProxyConfig
+                    return other is ProxyConfig &&
+                        browserbase == other.browserbase &&
+                        external == other.external
                 }
 
-                override fun hashCode(): Int =
-                    Objects.hash(browserbaseProxyConfig, externalProxyConfig)
+                override fun hashCode(): Int = Objects.hash(browserbase, external)
 
                 override fun toString(): String =
                     when {
-                        browserbaseProxyConfig != null ->
-                            "UnnamedSchemaWithArrayParent0{browserbaseProxyConfig=$browserbaseProxyConfig}"
-                        externalProxyConfig != null ->
-                            "UnnamedSchemaWithArrayParent0{externalProxyConfig=$externalProxyConfig}"
-                        _json != null -> "UnnamedSchemaWithArrayParent0{_unknown=$_json}"
-                        else -> throw IllegalStateException("Invalid UnnamedSchemaWithArrayParent0")
+                        browserbase != null -> "ProxyConfig{browserbase=$browserbase}"
+                        external != null -> "ProxyConfig{external=$external}"
+                        _json != null -> "ProxyConfig{_unknown=$_json}"
+                        else -> throw IllegalStateException("Invalid ProxyConfig")
                     }
 
                 companion object {
 
-                    fun ofBrowserbaseProxyConfig(browserbaseProxyConfig: BrowserbaseProxyConfig) =
-                        UnnamedSchemaWithArrayParent0(
-                            browserbaseProxyConfig = browserbaseProxyConfig
-                        )
+                    fun ofBrowserbase(browserbase: Browserbase) =
+                        ProxyConfig(browserbase = browserbase)
 
-                    fun ofExternalProxyConfig(externalProxyConfig: ExternalProxyConfig) =
-                        UnnamedSchemaWithArrayParent0(externalProxyConfig = externalProxyConfig)
+                    fun ofExternal(external: External) = ProxyConfig(external = external)
                 }
 
                 /**
-                 * An interface that defines how to map each variant of
-                 * [UnnamedSchemaWithArrayParent0] to a value of type [T].
+                 * An interface that defines how to map each variant of [ProxyConfig] to a value of
+                 * type [T].
                  */
                 interface Visitor<out T> {
 
-                    fun visitBrowserbaseProxyConfig(
-                        browserbaseProxyConfig: BrowserbaseProxyConfig
-                    ): T
+                    fun visitBrowserbase(browserbase: Browserbase): T
 
-                    fun visitExternalProxyConfig(externalProxyConfig: ExternalProxyConfig): T
+                    fun visitExternal(external: External): T
 
                     /**
-                     * Maps an unknown variant of [UnnamedSchemaWithArrayParent0] to a value of type
-                     * [T].
+                     * Maps an unknown variant of [ProxyConfig] to a value of type [T].
                      *
-                     * An instance of [UnnamedSchemaWithArrayParent0] can contain an unknown variant
-                     * if it was deserialized from data that doesn't match any known variant. For
-                     * example, if the SDK is on an older version than the API, then the API may
-                     * respond with new variants that the SDK is unaware of.
+                     * An instance of [ProxyConfig] can contain an unknown variant if it was
+                     * deserialized from data that doesn't match any known variant. For example, if
+                     * the SDK is on an older version than the API, then the API may respond with
+                     * new variants that the SDK is unaware of.
                      *
                      * @throws StagehandInvalidDataException in the default implementation.
                      */
                     fun unknown(json: JsonValue?): T {
-                        throw StagehandInvalidDataException(
-                            "Unknown UnnamedSchemaWithArrayParent0: $json"
-                        )
+                        throw StagehandInvalidDataException("Unknown ProxyConfig: $json")
                     }
                 }
 
-                internal class Deserializer :
-                    BaseDeserializer<UnnamedSchemaWithArrayParent0>(
-                        UnnamedSchemaWithArrayParent0::class
-                    ) {
+                internal class Deserializer : BaseDeserializer<ProxyConfig>(ProxyConfig::class) {
 
-                    override fun ObjectCodec.deserialize(
-                        node: JsonNode
-                    ): UnnamedSchemaWithArrayParent0 {
+                    override fun ObjectCodec.deserialize(node: JsonNode): ProxyConfig {
                         val json = JsonValue.fromJsonNode(node)
+                        val type = json.asObject()?.get("type")?.asString()
 
-                        val bestMatches =
-                            sequenceOf(
-                                    tryDeserialize(node, jacksonTypeRef<BrowserbaseProxyConfig>())
-                                        ?.let {
-                                            UnnamedSchemaWithArrayParent0(
-                                                browserbaseProxyConfig = it,
-                                                _json = json,
-                                            )
-                                        },
-                                    tryDeserialize(node, jacksonTypeRef<ExternalProxyConfig>())
-                                        ?.let {
-                                            UnnamedSchemaWithArrayParent0(
-                                                externalProxyConfig = it,
-                                                _json = json,
-                                            )
-                                        },
-                                )
-                                .filterNotNull()
-                                .allMaxBy { it.validity() }
-                                .toList()
-                        return when (bestMatches.size) {
-                            // This can happen if what we're deserializing is completely
-                            // incompatible with all the possible variants (e.g. deserializing from
-                            // boolean).
-                            0 -> UnnamedSchemaWithArrayParent0(_json = json)
-                            1 -> bestMatches.single()
-                            // If there's more than one match with the highest validity, then use
-                            // the first completely valid match, or simply the first match if none
-                            // are completely valid.
-                            else -> bestMatches.firstOrNull { it.isValid() } ?: bestMatches.first()
+                        when (type) {
+                            "browserbase" -> {
+                                return tryDeserialize(node, jacksonTypeRef<Browserbase>())?.let {
+                                    ProxyConfig(browserbase = it, _json = json)
+                                } ?: ProxyConfig(_json = json)
+                            }
+                            "external" -> {
+                                return tryDeserialize(node, jacksonTypeRef<External>())?.let {
+                                    ProxyConfig(external = it, _json = json)
+                                } ?: ProxyConfig(_json = json)
+                            }
                         }
+
+                        return ProxyConfig(_json = json)
                     }
                 }
 
-                internal class Serializer :
-                    BaseSerializer<UnnamedSchemaWithArrayParent0>(
-                        UnnamedSchemaWithArrayParent0::class
-                    ) {
+                internal class Serializer : BaseSerializer<ProxyConfig>(ProxyConfig::class) {
 
                     override fun serialize(
-                        value: UnnamedSchemaWithArrayParent0,
+                        value: ProxyConfig,
                         generator: JsonGenerator,
                         provider: SerializerProvider,
                     ) {
                         when {
-                            value.browserbaseProxyConfig != null ->
-                                generator.writeObject(value.browserbaseProxyConfig)
-                            value.externalProxyConfig != null ->
-                                generator.writeObject(value.externalProxyConfig)
+                            value.browserbase != null -> generator.writeObject(value.browserbase)
+                            value.external != null -> generator.writeObject(value.external)
                             value._json != null -> generator.writeObject(value._json)
-                            else ->
-                                throw IllegalStateException("Invalid UnnamedSchemaWithArrayParent0")
+                            else -> throw IllegalStateException("Invalid ProxyConfig")
                         }
                     }
                 }
 
-                class BrowserbaseProxyConfig
+                class Browserbase
                 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
                 private constructor(
-                    private val type: JsonField<Type>,
+                    private val type: JsonValue,
                     private val domainPattern: JsonField<String>,
                     private val geolocation: JsonField<Geolocation>,
                     private val additionalProperties: MutableMap<String, JsonValue>,
@@ -6028,9 +5904,7 @@ private constructor(
 
                     @JsonCreator
                     private constructor(
-                        @JsonProperty("type")
-                        @ExcludeMissing
-                        type: JsonField<Type> = JsonMissing.of(),
+                        @JsonProperty("type") @ExcludeMissing type: JsonValue = JsonMissing.of(),
                         @JsonProperty("domainPattern")
                         @ExcludeMissing
                         domainPattern: JsonField<String> = JsonMissing.of(),
@@ -6040,11 +5914,15 @@ private constructor(
                     ) : this(type, domainPattern, geolocation, mutableMapOf())
 
                     /**
-                     * @throws StagehandInvalidDataException if the JSON field has an unexpected
-                     *   type or is unexpectedly missing or null (e.g. if the server responded with
-                     *   an unexpected value).
+                     * Expected to always return the following:
+                     * ```kotlin
+                     * JsonValue.from("browserbase")
+                     * ```
+                     *
+                     * However, this method can be useful for debugging and logging (e.g. if the
+                     * server responded with an unexpected value).
                      */
-                    fun type(): Type = type.getRequired("type")
+                    @JsonProperty("type") @ExcludeMissing fun _type(): JsonValue = type
 
                     /**
                      * @throws StagehandInvalidDataException if the JSON field has an unexpected
@@ -6057,14 +5935,6 @@ private constructor(
                      *   type (e.g. if the server responded with an unexpected value).
                      */
                     fun geolocation(): Geolocation? = geolocation.getNullable("geolocation")
-
-                    /**
-                     * Returns the raw JSON value of [type].
-                     *
-                     * Unlike [type], this method doesn't throw if the JSON field has an unexpected
-                     * type.
-                     */
-                    @JsonProperty("type") @ExcludeMissing fun _type(): JsonField<Type> = type
 
                     /**
                      * Returns the raw JSON value of [domainPattern].
@@ -6101,44 +5971,40 @@ private constructor(
                     companion object {
 
                         /**
-                         * Returns a mutable builder for constructing an instance of
-                         * [BrowserbaseProxyConfig].
-                         *
-                         * The following fields are required:
-                         * ```kotlin
-                         * .type()
-                         * ```
+                         * Returns a mutable builder for constructing an instance of [Browserbase].
                          */
                         fun builder() = Builder()
                     }
 
-                    /** A builder for [BrowserbaseProxyConfig]. */
+                    /** A builder for [Browserbase]. */
                     class Builder internal constructor() {
 
-                        private var type: JsonField<Type>? = null
+                        private var type: JsonValue = JsonValue.from("browserbase")
                         private var domainPattern: JsonField<String> = JsonMissing.of()
                         private var geolocation: JsonField<Geolocation> = JsonMissing.of()
                         private var additionalProperties: MutableMap<String, JsonValue> =
                             mutableMapOf()
 
-                        internal fun from(browserbaseProxyConfig: BrowserbaseProxyConfig) = apply {
-                            type = browserbaseProxyConfig.type
-                            domainPattern = browserbaseProxyConfig.domainPattern
-                            geolocation = browserbaseProxyConfig.geolocation
-                            additionalProperties =
-                                browserbaseProxyConfig.additionalProperties.toMutableMap()
+                        internal fun from(browserbase: Browserbase) = apply {
+                            type = browserbase.type
+                            domainPattern = browserbase.domainPattern
+                            geolocation = browserbase.geolocation
+                            additionalProperties = browserbase.additionalProperties.toMutableMap()
                         }
 
-                        fun type(type: Type) = type(JsonField.of(type))
-
                         /**
-                         * Sets [Builder.type] to an arbitrary JSON value.
+                         * Sets the field to an arbitrary JSON value.
                          *
-                         * You should usually call [Builder.type] with a well-typed [Type] value
-                         * instead. This method is primarily for setting the field to an
-                         * undocumented or not yet supported value.
+                         * It is usually unnecessary to call this method because the field defaults
+                         * to the following:
+                         * ```kotlin
+                         * JsonValue.from("browserbase")
+                         * ```
+                         *
+                         * This method is primarily for setting the field to an undocumented or not
+                         * yet supported value.
                          */
-                        fun type(type: JsonField<Type>) = apply { this.type = type }
+                        fun type(type: JsonValue) = apply { this.type = type }
 
                         fun domainPattern(domainPattern: String) =
                             domainPattern(JsonField.of(domainPattern))
@@ -6191,20 +6057,13 @@ private constructor(
                         }
 
                         /**
-                         * Returns an immutable instance of [BrowserbaseProxyConfig].
+                         * Returns an immutable instance of [Browserbase].
                          *
                          * Further updates to this [Builder] will not mutate the returned instance.
-                         *
-                         * The following fields are required:
-                         * ```kotlin
-                         * .type()
-                         * ```
-                         *
-                         * @throws IllegalStateException if any required field is unset.
                          */
-                        fun build(): BrowserbaseProxyConfig =
-                            BrowserbaseProxyConfig(
-                                checkRequired("type", type),
+                        fun build(): Browserbase =
+                            Browserbase(
+                                type,
                                 domainPattern,
                                 geolocation,
                                 additionalProperties.toMutableMap(),
@@ -6213,12 +6072,18 @@ private constructor(
 
                     private var validated: Boolean = false
 
-                    fun validate(): BrowserbaseProxyConfig = apply {
+                    fun validate(): Browserbase = apply {
                         if (validated) {
                             return@apply
                         }
 
-                        type().validate()
+                        _type().let {
+                            if (it != JsonValue.from("browserbase")) {
+                                throw StagehandInvalidDataException(
+                                    "'type' is invalid, received $it"
+                                )
+                            }
+                        }
                         domainPattern()
                         geolocation()?.validate()
                         validated = true
@@ -6239,136 +6104,9 @@ private constructor(
                      * Used for best match union deserialization.
                      */
                     internal fun validity(): Int =
-                        (type.asKnown()?.validity() ?: 0) +
+                        type.let { if (it == JsonValue.from("browserbase")) 1 else 0 } +
                             (if (domainPattern.asKnown() == null) 0 else 1) +
                             (geolocation.asKnown()?.validity() ?: 0)
-
-                    class Type
-                    @JsonCreator
-                    private constructor(private val value: JsonField<String>) : Enum {
-
-                        /**
-                         * Returns this class instance's raw value.
-                         *
-                         * This is usually only useful if this instance was deserialized from data
-                         * that doesn't match any known member, and you want to know that value. For
-                         * example, if the SDK is on an older version than the API, then the API may
-                         * respond with new members that the SDK is unaware of.
-                         */
-                        @com.fasterxml.jackson.annotation.JsonValue
-                        fun _value(): JsonField<String> = value
-
-                        companion object {
-
-                            val BROWSERBASE = of("browserbase")
-
-                            fun of(value: String) = Type(JsonField.of(value))
-                        }
-
-                        /** An enum containing [Type]'s known values. */
-                        enum class Known {
-                            BROWSERBASE
-                        }
-
-                        /**
-                         * An enum containing [Type]'s known values, as well as an [_UNKNOWN]
-                         * member.
-                         *
-                         * An instance of [Type] can contain an unknown value in a couple of cases:
-                         * - It was deserialized from data that doesn't match any known member. For
-                         *   example, if the SDK is on an older version than the API, then the API
-                         *   may respond with new members that the SDK is unaware of.
-                         * - It was constructed with an arbitrary value using the [of] method.
-                         */
-                        enum class Value {
-                            BROWSERBASE,
-                            /**
-                             * An enum member indicating that [Type] was instantiated with an
-                             * unknown value.
-                             */
-                            _UNKNOWN,
-                        }
-
-                        /**
-                         * Returns an enum member corresponding to this class instance's value, or
-                         * [Value._UNKNOWN] if the class was instantiated with an unknown value.
-                         *
-                         * Use the [known] method instead if you're certain the value is always
-                         * known or if you want to throw for the unknown case.
-                         */
-                        fun value(): Value =
-                            when (this) {
-                                BROWSERBASE -> Value.BROWSERBASE
-                                else -> Value._UNKNOWN
-                            }
-
-                        /**
-                         * Returns an enum member corresponding to this class instance's value.
-                         *
-                         * Use the [value] method instead if you're uncertain the value is always
-                         * known and don't want to throw for the unknown case.
-                         *
-                         * @throws StagehandInvalidDataException if this class instance's value is a
-                         *   not a known member.
-                         */
-                        fun known(): Known =
-                            when (this) {
-                                BROWSERBASE -> Known.BROWSERBASE
-                                else -> throw StagehandInvalidDataException("Unknown Type: $value")
-                            }
-
-                        /**
-                         * Returns this class instance's primitive wire representation.
-                         *
-                         * This differs from the [toString] method because that method is primarily
-                         * for debugging and generally doesn't throw.
-                         *
-                         * @throws StagehandInvalidDataException if this class instance's value does
-                         *   not have the expected primitive type.
-                         */
-                        fun asString(): String =
-                            _value().asString()
-                                ?: throw StagehandInvalidDataException("Value is not a String")
-
-                        private var validated: Boolean = false
-
-                        fun validate(): Type = apply {
-                            if (validated) {
-                                return@apply
-                            }
-
-                            known()
-                            validated = true
-                        }
-
-                        fun isValid(): Boolean =
-                            try {
-                                validate()
-                                true
-                            } catch (e: StagehandInvalidDataException) {
-                                false
-                            }
-
-                        /**
-                         * Returns a score indicating how many valid values are contained in this
-                         * object recursively.
-                         *
-                         * Used for best match union deserialization.
-                         */
-                        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
-
-                        override fun equals(other: Any?): Boolean {
-                            if (this === other) {
-                                return true
-                            }
-
-                            return other is Type && value == other.value
-                        }
-
-                        override fun hashCode() = value.hashCode()
-
-                        override fun toString() = value.toString()
-                    }
 
                     class Geolocation
                     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
@@ -6620,7 +6358,7 @@ private constructor(
                             return true
                         }
 
-                        return other is BrowserbaseProxyConfig &&
+                        return other is Browserbase &&
                             type == other.type &&
                             domainPattern == other.domainPattern &&
                             geolocation == other.geolocation &&
@@ -6634,14 +6372,14 @@ private constructor(
                     override fun hashCode(): Int = hashCode
 
                     override fun toString() =
-                        "BrowserbaseProxyConfig{type=$type, domainPattern=$domainPattern, geolocation=$geolocation, additionalProperties=$additionalProperties}"
+                        "Browserbase{type=$type, domainPattern=$domainPattern, geolocation=$geolocation, additionalProperties=$additionalProperties}"
                 }
 
-                class ExternalProxyConfig
+                class External
                 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
                 private constructor(
                     private val server: JsonField<String>,
-                    private val type: JsonField<Type>,
+                    private val type: JsonValue,
                     private val domainPattern: JsonField<String>,
                     private val password: JsonField<String>,
                     private val username: JsonField<String>,
@@ -6653,9 +6391,7 @@ private constructor(
                         @JsonProperty("server")
                         @ExcludeMissing
                         server: JsonField<String> = JsonMissing.of(),
-                        @JsonProperty("type")
-                        @ExcludeMissing
-                        type: JsonField<Type> = JsonMissing.of(),
+                        @JsonProperty("type") @ExcludeMissing type: JsonValue = JsonMissing.of(),
                         @JsonProperty("domainPattern")
                         @ExcludeMissing
                         domainPattern: JsonField<String> = JsonMissing.of(),
@@ -6675,11 +6411,15 @@ private constructor(
                     fun server(): String = server.getRequired("server")
 
                     /**
-                     * @throws StagehandInvalidDataException if the JSON field has an unexpected
-                     *   type or is unexpectedly missing or null (e.g. if the server responded with
-                     *   an unexpected value).
+                     * Expected to always return the following:
+                     * ```kotlin
+                     * JsonValue.from("external")
+                     * ```
+                     *
+                     * However, this method can be useful for debugging and logging (e.g. if the
+                     * server responded with an unexpected value).
                      */
-                    fun type(): Type = type.getRequired("type")
+                    @JsonProperty("type") @ExcludeMissing fun _type(): JsonValue = type
 
                     /**
                      * @throws StagehandInvalidDataException if the JSON field has an unexpected
@@ -6708,14 +6448,6 @@ private constructor(
                     @JsonProperty("server")
                     @ExcludeMissing
                     fun _server(): JsonField<String> = server
-
-                    /**
-                     * Returns the raw JSON value of [type].
-                     *
-                     * Unlike [type], this method doesn't throw if the JSON field has an unexpected
-                     * type.
-                     */
-                    @JsonProperty("type") @ExcludeMissing fun _type(): JsonField<Type> = type
 
                     /**
                      * Returns the raw JSON value of [domainPattern].
@@ -6762,37 +6494,34 @@ private constructor(
                     companion object {
 
                         /**
-                         * Returns a mutable builder for constructing an instance of
-                         * [ExternalProxyConfig].
+                         * Returns a mutable builder for constructing an instance of [External].
                          *
                          * The following fields are required:
                          * ```kotlin
                          * .server()
-                         * .type()
                          * ```
                          */
                         fun builder() = Builder()
                     }
 
-                    /** A builder for [ExternalProxyConfig]. */
+                    /** A builder for [External]. */
                     class Builder internal constructor() {
 
                         private var server: JsonField<String>? = null
-                        private var type: JsonField<Type>? = null
+                        private var type: JsonValue = JsonValue.from("external")
                         private var domainPattern: JsonField<String> = JsonMissing.of()
                         private var password: JsonField<String> = JsonMissing.of()
                         private var username: JsonField<String> = JsonMissing.of()
                         private var additionalProperties: MutableMap<String, JsonValue> =
                             mutableMapOf()
 
-                        internal fun from(externalProxyConfig: ExternalProxyConfig) = apply {
-                            server = externalProxyConfig.server
-                            type = externalProxyConfig.type
-                            domainPattern = externalProxyConfig.domainPattern
-                            password = externalProxyConfig.password
-                            username = externalProxyConfig.username
-                            additionalProperties =
-                                externalProxyConfig.additionalProperties.toMutableMap()
+                        internal fun from(external: External) = apply {
+                            server = external.server
+                            type = external.type
+                            domainPattern = external.domainPattern
+                            password = external.password
+                            username = external.username
+                            additionalProperties = external.additionalProperties.toMutableMap()
                         }
 
                         fun server(server: String) = server(JsonField.of(server))
@@ -6806,16 +6535,19 @@ private constructor(
                          */
                         fun server(server: JsonField<String>) = apply { this.server = server }
 
-                        fun type(type: Type) = type(JsonField.of(type))
-
                         /**
-                         * Sets [Builder.type] to an arbitrary JSON value.
+                         * Sets the field to an arbitrary JSON value.
                          *
-                         * You should usually call [Builder.type] with a well-typed [Type] value
-                         * instead. This method is primarily for setting the field to an
-                         * undocumented or not yet supported value.
+                         * It is usually unnecessary to call this method because the field defaults
+                         * to the following:
+                         * ```kotlin
+                         * JsonValue.from("external")
+                         * ```
+                         *
+                         * This method is primarily for setting the field to an undocumented or not
+                         * yet supported value.
                          */
-                        fun type(type: JsonField<Type>) = apply { this.type = type }
+                        fun type(type: JsonValue) = apply { this.type = type }
 
                         fun domainPattern(domainPattern: String) =
                             domainPattern(JsonField.of(domainPattern))
@@ -6880,22 +6612,21 @@ private constructor(
                         }
 
                         /**
-                         * Returns an immutable instance of [ExternalProxyConfig].
+                         * Returns an immutable instance of [External].
                          *
                          * Further updates to this [Builder] will not mutate the returned instance.
                          *
                          * The following fields are required:
                          * ```kotlin
                          * .server()
-                         * .type()
                          * ```
                          *
                          * @throws IllegalStateException if any required field is unset.
                          */
-                        fun build(): ExternalProxyConfig =
-                            ExternalProxyConfig(
+                        fun build(): External =
+                            External(
                                 checkRequired("server", server),
-                                checkRequired("type", type),
+                                type,
                                 domainPattern,
                                 password,
                                 username,
@@ -6905,13 +6636,19 @@ private constructor(
 
                     private var validated: Boolean = false
 
-                    fun validate(): ExternalProxyConfig = apply {
+                    fun validate(): External = apply {
                         if (validated) {
                             return@apply
                         }
 
                         server()
-                        type().validate()
+                        _type().let {
+                            if (it != JsonValue.from("external")) {
+                                throw StagehandInvalidDataException(
+                                    "'type' is invalid, received $it"
+                                )
+                            }
+                        }
                         domainPattern()
                         password()
                         username()
@@ -6934,144 +6671,17 @@ private constructor(
                      */
                     internal fun validity(): Int =
                         (if (server.asKnown() == null) 0 else 1) +
-                            (type.asKnown()?.validity() ?: 0) +
+                            type.let { if (it == JsonValue.from("external")) 1 else 0 } +
                             (if (domainPattern.asKnown() == null) 0 else 1) +
                             (if (password.asKnown() == null) 0 else 1) +
                             (if (username.asKnown() == null) 0 else 1)
-
-                    class Type
-                    @JsonCreator
-                    private constructor(private val value: JsonField<String>) : Enum {
-
-                        /**
-                         * Returns this class instance's raw value.
-                         *
-                         * This is usually only useful if this instance was deserialized from data
-                         * that doesn't match any known member, and you want to know that value. For
-                         * example, if the SDK is on an older version than the API, then the API may
-                         * respond with new members that the SDK is unaware of.
-                         */
-                        @com.fasterxml.jackson.annotation.JsonValue
-                        fun _value(): JsonField<String> = value
-
-                        companion object {
-
-                            val EXTERNAL = of("external")
-
-                            fun of(value: String) = Type(JsonField.of(value))
-                        }
-
-                        /** An enum containing [Type]'s known values. */
-                        enum class Known {
-                            EXTERNAL
-                        }
-
-                        /**
-                         * An enum containing [Type]'s known values, as well as an [_UNKNOWN]
-                         * member.
-                         *
-                         * An instance of [Type] can contain an unknown value in a couple of cases:
-                         * - It was deserialized from data that doesn't match any known member. For
-                         *   example, if the SDK is on an older version than the API, then the API
-                         *   may respond with new members that the SDK is unaware of.
-                         * - It was constructed with an arbitrary value using the [of] method.
-                         */
-                        enum class Value {
-                            EXTERNAL,
-                            /**
-                             * An enum member indicating that [Type] was instantiated with an
-                             * unknown value.
-                             */
-                            _UNKNOWN,
-                        }
-
-                        /**
-                         * Returns an enum member corresponding to this class instance's value, or
-                         * [Value._UNKNOWN] if the class was instantiated with an unknown value.
-                         *
-                         * Use the [known] method instead if you're certain the value is always
-                         * known or if you want to throw for the unknown case.
-                         */
-                        fun value(): Value =
-                            when (this) {
-                                EXTERNAL -> Value.EXTERNAL
-                                else -> Value._UNKNOWN
-                            }
-
-                        /**
-                         * Returns an enum member corresponding to this class instance's value.
-                         *
-                         * Use the [value] method instead if you're uncertain the value is always
-                         * known and don't want to throw for the unknown case.
-                         *
-                         * @throws StagehandInvalidDataException if this class instance's value is a
-                         *   not a known member.
-                         */
-                        fun known(): Known =
-                            when (this) {
-                                EXTERNAL -> Known.EXTERNAL
-                                else -> throw StagehandInvalidDataException("Unknown Type: $value")
-                            }
-
-                        /**
-                         * Returns this class instance's primitive wire representation.
-                         *
-                         * This differs from the [toString] method because that method is primarily
-                         * for debugging and generally doesn't throw.
-                         *
-                         * @throws StagehandInvalidDataException if this class instance's value does
-                         *   not have the expected primitive type.
-                         */
-                        fun asString(): String =
-                            _value().asString()
-                                ?: throw StagehandInvalidDataException("Value is not a String")
-
-                        private var validated: Boolean = false
-
-                        fun validate(): Type = apply {
-                            if (validated) {
-                                return@apply
-                            }
-
-                            known()
-                            validated = true
-                        }
-
-                        fun isValid(): Boolean =
-                            try {
-                                validate()
-                                true
-                            } catch (e: StagehandInvalidDataException) {
-                                false
-                            }
-
-                        /**
-                         * Returns a score indicating how many valid values are contained in this
-                         * object recursively.
-                         *
-                         * Used for best match union deserialization.
-                         */
-                        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
-
-                        override fun equals(other: Any?): Boolean {
-                            if (this === other) {
-                                return true
-                            }
-
-                            return other is Type && value == other.value
-                        }
-
-                        override fun hashCode() = value.hashCode()
-
-                        override fun toString() = value.toString()
-                    }
 
                     override fun equals(other: Any?): Boolean {
                         if (this === other) {
                             return true
                         }
 
-                        return other is ExternalProxyConfig &&
+                        return other is External &&
                             server == other.server &&
                             type == other.type &&
                             domainPattern == other.domainPattern &&
@@ -7094,7 +6704,7 @@ private constructor(
                     override fun hashCode(): Int = hashCode
 
                     override fun toString() =
-                        "ExternalProxyConfig{server=$server, type=$type, domainPattern=$domainPattern, password=$password, username=$username, additionalProperties=$additionalProperties}"
+                        "External{server=$server, type=$type, domainPattern=$domainPattern, password=$password, username=$username, additionalProperties=$additionalProperties}"
                 }
             }
         }

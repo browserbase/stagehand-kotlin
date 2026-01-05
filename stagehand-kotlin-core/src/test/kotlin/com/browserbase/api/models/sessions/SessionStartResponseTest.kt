@@ -17,9 +17,10 @@ internal class SessionStartResponseTest {
                     SessionStartResponse.Data.builder()
                         .available(true)
                         .sessionId("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
+                        .cdpUrl("wss://connect.browserbase.com/?signingKey=abc123")
                         .build()
                 )
-                .success(SessionStartResponse.Success.TRUE)
+                .success(true)
                 .build()
 
         assertThat(sessionStartResponse.data())
@@ -27,9 +28,10 @@ internal class SessionStartResponseTest {
                 SessionStartResponse.Data.builder()
                     .available(true)
                     .sessionId("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
+                    .cdpUrl("wss://connect.browserbase.com/?signingKey=abc123")
                     .build()
             )
-        assertThat(sessionStartResponse.success()).isEqualTo(SessionStartResponse.Success.TRUE)
+        assertThat(sessionStartResponse.success()).isEqualTo(true)
     }
 
     @Test
@@ -41,9 +43,10 @@ internal class SessionStartResponseTest {
                     SessionStartResponse.Data.builder()
                         .available(true)
                         .sessionId("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
+                        .cdpUrl("wss://connect.browserbase.com/?signingKey=abc123")
                         .build()
                 )
-                .success(SessionStartResponse.Success.TRUE)
+                .success(true)
                 .build()
 
         val roundtrippedSessionStartResponse =

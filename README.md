@@ -2,8 +2,8 @@
 
 <!-- x-release-please-start-version -->
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.browserbase.api/stagehand-kotlin)](https://central.sonatype.com/artifact/com.browserbase.api/stagehand-kotlin/0.2.0)
-[![javadoc](https://javadoc.io/badge2/com.browserbase.api/stagehand-kotlin/0.2.0/javadoc.svg)](https://javadoc.io/doc/com.browserbase.api/stagehand-kotlin/0.2.0)
+[![Maven Central](https://img.shields.io/maven-central/v/com.browserbase.api/stagehand-kotlin)](https://central.sonatype.com/artifact/com.browserbase.api/stagehand-kotlin/0.3.0)
+[![javadoc](https://javadoc.io/badge2/com.browserbase.api/stagehand-kotlin/0.3.0/javadoc.svg)](https://javadoc.io/doc/com.browserbase.api/stagehand-kotlin/0.3.0)
 
 <!-- x-release-please-end -->
 
@@ -13,7 +13,7 @@ It is generated with [Stainless](https://www.stainless.com/).
 
 <!-- x-release-please-start-version -->
 
-The REST API documentation can be found on [docs.stagehand.dev](https://docs.stagehand.dev). KDocs are available on [javadoc.io](https://javadoc.io/doc/com.browserbase.api/stagehand-kotlin/0.2.0).
+The REST API documentation can be found on [docs.stagehand.dev](https://docs.stagehand.dev). KDocs are available on [javadoc.io](https://javadoc.io/doc/com.browserbase.api/stagehand-kotlin/0.3.0).
 
 <!-- x-release-please-end -->
 
@@ -24,7 +24,7 @@ The REST API documentation can be found on [docs.stagehand.dev](https://docs.sta
 ### Gradle
 
 ```kotlin
-implementation("com.browserbase.api:stagehand-kotlin:0.2.0")
+implementation("com.browserbase.api:stagehand-kotlin:0.3.0")
 ```
 
 ### Maven
@@ -33,7 +33,7 @@ implementation("com.browserbase.api:stagehand-kotlin:0.2.0")
 <dependency>
   <groupId>com.browserbase.api</groupId>
   <artifactId>stagehand-kotlin</artifactId>
-  <version>0.2.0</version>
+  <version>0.3.0</version>
 </dependency>
 ```
 
@@ -188,6 +188,21 @@ val response: SessionActResponse = client.sessions().act(params)
 
 The asynchronous client supports the same options as the synchronous one, except most methods are [suspending](https://kotlinlang.org/docs/coroutines-guide.html).
 
+## Streaming
+
+The SDK defines methods that return response "chunk" streams, where each chunk can be individually processed as soon as it arrives instead of waiting on the full response. Streaming methods generally correspond to [SSE](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events) or [JSONL](https://jsonlines.org) responses.
+
+Some of these methods may have streaming and non-streaming variants, but a streaming method will always have a `Streaming` suffix in its name, even if it doesn't have a non-streaming variant.
+
+These streaming methods return [`StreamResponse`](stagehand-kotlin-core/src/main/kotlin/com/browserbase/api/core/http/StreamResponse.kt) for synchronous clients:
+
+```kotlin
+client.sessions().actStreaming(params).use { response ->
+    response.asSequence().forEach { println(it) }
+    println("No more chunks!")
+}
+```
+
 ## Raw responses
 
 The SDK defines methods that deserialize responses into instances of Kotlin classes. However, these methods don't provide access to the response headers, status code, or the raw response body.
@@ -233,6 +248,8 @@ The SDK throws custom unchecked exception types:
   | 429    | [`RateLimitException`](stagehand-kotlin-core/src/main/kotlin/com/browserbase/api/errors/RateLimitException.kt)                       |
   | 5xx    | [`InternalServerException`](stagehand-kotlin-core/src/main/kotlin/com/browserbase/api/errors/InternalServerException.kt)             |
   | others | [`UnexpectedStatusCodeException`](stagehand-kotlin-core/src/main/kotlin/com/browserbase/api/errors/UnexpectedStatusCodeException.kt) |
+
+  [`SseException`](stagehand-kotlin-core/src/main/kotlin/com/browserbase/api/errors/SseException.kt) is thrown for errors encountered during [SSE streaming](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events) after a successful initial HTTP response.
 
 - [`StagehandIoException`](stagehand-kotlin-core/src/main/kotlin/com/browserbase/api/errors/StagehandIoException.kt): I/O networking errors.
 

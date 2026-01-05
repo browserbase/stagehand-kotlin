@@ -2,7 +2,6 @@
 
 package com.browserbase.api.models.sessions
 
-import com.browserbase.api.core.Enum
 import com.browserbase.api.core.ExcludeMissing
 import com.browserbase.api.core.JsonField
 import com.browserbase.api.core.JsonMissing
@@ -22,14 +21,14 @@ class SessionActResponse
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val data: JsonField<Data>,
-    private val success: JsonField<Success>,
+    private val success: JsonField<Boolean>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
     @JsonCreator
     private constructor(
         @JsonProperty("data") @ExcludeMissing data: JsonField<Data> = JsonMissing.of(),
-        @JsonProperty("success") @ExcludeMissing success: JsonField<Success> = JsonMissing.of(),
+        @JsonProperty("success") @ExcludeMissing success: JsonField<Boolean> = JsonMissing.of(),
     ) : this(data, success, mutableMapOf())
 
     /**
@@ -39,10 +38,12 @@ private constructor(
     fun data(): Data = data.getRequired("data")
 
     /**
+     * Indicates whether the request was successful
+     *
      * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun success(): Success = success.getRequired("success")
+    fun success(): Boolean = success.getRequired("success")
 
     /**
      * Returns the raw JSON value of [data].
@@ -56,7 +57,7 @@ private constructor(
      *
      * Unlike [success], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("success") @ExcludeMissing fun _success(): JsonField<Success> = success
+    @JsonProperty("success") @ExcludeMissing fun _success(): JsonField<Boolean> = success
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -88,7 +89,7 @@ private constructor(
     class Builder internal constructor() {
 
         private var data: JsonField<Data>? = null
-        private var success: JsonField<Success>? = null
+        private var success: JsonField<Boolean>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(sessionActResponse: SessionActResponse) = apply {
@@ -107,15 +108,16 @@ private constructor(
          */
         fun data(data: JsonField<Data>) = apply { this.data = data }
 
-        fun success(success: Success) = success(JsonField.of(success))
+        /** Indicates whether the request was successful */
+        fun success(success: Boolean) = success(JsonField.of(success))
 
         /**
          * Sets [Builder.success] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.success] with a well-typed [Success] value instead. This
+         * You should usually call [Builder.success] with a well-typed [Boolean] value instead. This
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
-        fun success(success: JsonField<Success>) = apply { this.success = success }
+        fun success(success: JsonField<Boolean>) = apply { this.success = success }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
@@ -165,7 +167,7 @@ private constructor(
         }
 
         data().validate()
-        success().validate()
+        success()
         validated = true
     }
 
@@ -183,7 +185,7 @@ private constructor(
      * Used for best match union deserialization.
      */
     internal fun validity(): Int =
-        (data.asKnown()?.validity() ?: 0) + (success.asKnown()?.validity() ?: 0)
+        (data.asKnown()?.validity() ?: 0) + (if (success.asKnown() == null) 0 else 1)
 
     class Data
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
@@ -638,6 +640,364 @@ private constructor(
                     (if (message.asKnown() == null) 0 else 1) +
                     (if (success.asKnown() == null) 0 else 1)
 
+            /** Action object returned by observe and used by act */
+            class Action
+            @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+            private constructor(
+                private val description: JsonField<String>,
+                private val selector: JsonField<String>,
+                private val arguments: JsonField<List<String>>,
+                private val backendNodeId: JsonField<Double>,
+                private val method: JsonField<String>,
+                private val additionalProperties: MutableMap<String, JsonValue>,
+            ) {
+
+                @JsonCreator
+                private constructor(
+                    @JsonProperty("description")
+                    @ExcludeMissing
+                    description: JsonField<String> = JsonMissing.of(),
+                    @JsonProperty("selector")
+                    @ExcludeMissing
+                    selector: JsonField<String> = JsonMissing.of(),
+                    @JsonProperty("arguments")
+                    @ExcludeMissing
+                    arguments: JsonField<List<String>> = JsonMissing.of(),
+                    @JsonProperty("backendNodeId")
+                    @ExcludeMissing
+                    backendNodeId: JsonField<Double> = JsonMissing.of(),
+                    @JsonProperty("method")
+                    @ExcludeMissing
+                    method: JsonField<String> = JsonMissing.of(),
+                ) : this(description, selector, arguments, backendNodeId, method, mutableMapOf())
+
+                /**
+                 * Human-readable description of the action
+                 *
+                 * @throws StagehandInvalidDataException if the JSON field has an unexpected type or
+                 *   is unexpectedly missing or null (e.g. if the server responded with an
+                 *   unexpected value).
+                 */
+                fun description(): String = description.getRequired("description")
+
+                /**
+                 * CSS selector or XPath for the element
+                 *
+                 * @throws StagehandInvalidDataException if the JSON field has an unexpected type or
+                 *   is unexpectedly missing or null (e.g. if the server responded with an
+                 *   unexpected value).
+                 */
+                fun selector(): String = selector.getRequired("selector")
+
+                /**
+                 * Arguments to pass to the method
+                 *
+                 * @throws StagehandInvalidDataException if the JSON field has an unexpected type
+                 *   (e.g. if the server responded with an unexpected value).
+                 */
+                fun arguments(): List<String>? = arguments.getNullable("arguments")
+
+                /**
+                 * Backend node ID for the element
+                 *
+                 * @throws StagehandInvalidDataException if the JSON field has an unexpected type
+                 *   (e.g. if the server responded with an unexpected value).
+                 */
+                fun backendNodeId(): Double? = backendNodeId.getNullable("backendNodeId")
+
+                /**
+                 * The method to execute (click, fill, etc.)
+                 *
+                 * @throws StagehandInvalidDataException if the JSON field has an unexpected type
+                 *   (e.g. if the server responded with an unexpected value).
+                 */
+                fun method(): String? = method.getNullable("method")
+
+                /**
+                 * Returns the raw JSON value of [description].
+                 *
+                 * Unlike [description], this method doesn't throw if the JSON field has an
+                 * unexpected type.
+                 */
+                @JsonProperty("description")
+                @ExcludeMissing
+                fun _description(): JsonField<String> = description
+
+                /**
+                 * Returns the raw JSON value of [selector].
+                 *
+                 * Unlike [selector], this method doesn't throw if the JSON field has an unexpected
+                 * type.
+                 */
+                @JsonProperty("selector")
+                @ExcludeMissing
+                fun _selector(): JsonField<String> = selector
+
+                /**
+                 * Returns the raw JSON value of [arguments].
+                 *
+                 * Unlike [arguments], this method doesn't throw if the JSON field has an unexpected
+                 * type.
+                 */
+                @JsonProperty("arguments")
+                @ExcludeMissing
+                fun _arguments(): JsonField<List<String>> = arguments
+
+                /**
+                 * Returns the raw JSON value of [backendNodeId].
+                 *
+                 * Unlike [backendNodeId], this method doesn't throw if the JSON field has an
+                 * unexpected type.
+                 */
+                @JsonProperty("backendNodeId")
+                @ExcludeMissing
+                fun _backendNodeId(): JsonField<Double> = backendNodeId
+
+                /**
+                 * Returns the raw JSON value of [method].
+                 *
+                 * Unlike [method], this method doesn't throw if the JSON field has an unexpected
+                 * type.
+                 */
+                @JsonProperty("method") @ExcludeMissing fun _method(): JsonField<String> = method
+
+                @JsonAnySetter
+                private fun putAdditionalProperty(key: String, value: JsonValue) {
+                    additionalProperties.put(key, value)
+                }
+
+                @JsonAnyGetter
+                @ExcludeMissing
+                fun _additionalProperties(): Map<String, JsonValue> =
+                    Collections.unmodifiableMap(additionalProperties)
+
+                fun toBuilder() = Builder().from(this)
+
+                companion object {
+
+                    /**
+                     * Returns a mutable builder for constructing an instance of [Action].
+                     *
+                     * The following fields are required:
+                     * ```kotlin
+                     * .description()
+                     * .selector()
+                     * ```
+                     */
+                    fun builder() = Builder()
+                }
+
+                /** A builder for [Action]. */
+                class Builder internal constructor() {
+
+                    private var description: JsonField<String>? = null
+                    private var selector: JsonField<String>? = null
+                    private var arguments: JsonField<MutableList<String>>? = null
+                    private var backendNodeId: JsonField<Double> = JsonMissing.of()
+                    private var method: JsonField<String> = JsonMissing.of()
+                    private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                    internal fun from(action: Action) = apply {
+                        description = action.description
+                        selector = action.selector
+                        arguments = action.arguments.map { it.toMutableList() }
+                        backendNodeId = action.backendNodeId
+                        method = action.method
+                        additionalProperties = action.additionalProperties.toMutableMap()
+                    }
+
+                    /** Human-readable description of the action */
+                    fun description(description: String) = description(JsonField.of(description))
+
+                    /**
+                     * Sets [Builder.description] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.description] with a well-typed [String]
+                     * value instead. This method is primarily for setting the field to an
+                     * undocumented or not yet supported value.
+                     */
+                    fun description(description: JsonField<String>) = apply {
+                        this.description = description
+                    }
+
+                    /** CSS selector or XPath for the element */
+                    fun selector(selector: String) = selector(JsonField.of(selector))
+
+                    /**
+                     * Sets [Builder.selector] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.selector] with a well-typed [String] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun selector(selector: JsonField<String>) = apply { this.selector = selector }
+
+                    /** Arguments to pass to the method */
+                    fun arguments(arguments: List<String>) = arguments(JsonField.of(arguments))
+
+                    /**
+                     * Sets [Builder.arguments] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.arguments] with a well-typed `List<String>`
+                     * value instead. This method is primarily for setting the field to an
+                     * undocumented or not yet supported value.
+                     */
+                    fun arguments(arguments: JsonField<List<String>>) = apply {
+                        this.arguments = arguments.map { it.toMutableList() }
+                    }
+
+                    /**
+                     * Adds a single [String] to [arguments].
+                     *
+                     * @throws IllegalStateException if the field was previously set to a non-list.
+                     */
+                    fun addArgument(argument: String) = apply {
+                        arguments =
+                            (arguments ?: JsonField.of(mutableListOf())).also {
+                                checkKnown("arguments", it).add(argument)
+                            }
+                    }
+
+                    /** Backend node ID for the element */
+                    fun backendNodeId(backendNodeId: Double) =
+                        backendNodeId(JsonField.of(backendNodeId))
+
+                    /**
+                     * Sets [Builder.backendNodeId] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.backendNodeId] with a well-typed [Double]
+                     * value instead. This method is primarily for setting the field to an
+                     * undocumented or not yet supported value.
+                     */
+                    fun backendNodeId(backendNodeId: JsonField<Double>) = apply {
+                        this.backendNodeId = backendNodeId
+                    }
+
+                    /** The method to execute (click, fill, etc.) */
+                    fun method(method: String) = method(JsonField.of(method))
+
+                    /**
+                     * Sets [Builder.method] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.method] with a well-typed [String] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun method(method: JsonField<String>) = apply { this.method = method }
+
+                    fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                        this.additionalProperties.clear()
+                        putAllAdditionalProperties(additionalProperties)
+                    }
+
+                    fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                        additionalProperties.put(key, value)
+                    }
+
+                    fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                        apply {
+                            this.additionalProperties.putAll(additionalProperties)
+                        }
+
+                    fun removeAdditionalProperty(key: String) = apply {
+                        additionalProperties.remove(key)
+                    }
+
+                    fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                        keys.forEach(::removeAdditionalProperty)
+                    }
+
+                    /**
+                     * Returns an immutable instance of [Action].
+                     *
+                     * Further updates to this [Builder] will not mutate the returned instance.
+                     *
+                     * The following fields are required:
+                     * ```kotlin
+                     * .description()
+                     * .selector()
+                     * ```
+                     *
+                     * @throws IllegalStateException if any required field is unset.
+                     */
+                    fun build(): Action =
+                        Action(
+                            checkRequired("description", description),
+                            checkRequired("selector", selector),
+                            (arguments ?: JsonMissing.of()).map { it.toImmutable() },
+                            backendNodeId,
+                            method,
+                            additionalProperties.toMutableMap(),
+                        )
+                }
+
+                private var validated: Boolean = false
+
+                fun validate(): Action = apply {
+                    if (validated) {
+                        return@apply
+                    }
+
+                    description()
+                    selector()
+                    arguments()
+                    backendNodeId()
+                    method()
+                    validated = true
+                }
+
+                fun isValid(): Boolean =
+                    try {
+                        validate()
+                        true
+                    } catch (e: StagehandInvalidDataException) {
+                        false
+                    }
+
+                /**
+                 * Returns a score indicating how many valid values are contained in this object
+                 * recursively.
+                 *
+                 * Used for best match union deserialization.
+                 */
+                internal fun validity(): Int =
+                    (if (description.asKnown() == null) 0 else 1) +
+                        (if (selector.asKnown() == null) 0 else 1) +
+                        (arguments.asKnown()?.size ?: 0) +
+                        (if (backendNodeId.asKnown() == null) 0 else 1) +
+                        (if (method.asKnown() == null) 0 else 1)
+
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) {
+                        return true
+                    }
+
+                    return other is Action &&
+                        description == other.description &&
+                        selector == other.selector &&
+                        arguments == other.arguments &&
+                        backendNodeId == other.backendNodeId &&
+                        method == other.method &&
+                        additionalProperties == other.additionalProperties
+                }
+
+                private val hashCode: Int by lazy {
+                    Objects.hash(
+                        description,
+                        selector,
+                        arguments,
+                        backendNodeId,
+                        method,
+                        additionalProperties,
+                    )
+                }
+
+                override fun hashCode(): Int = hashCode
+
+                override fun toString() =
+                    "Action{description=$description, selector=$selector, arguments=$arguments, backendNodeId=$backendNodeId, method=$method, additionalProperties=$additionalProperties}"
+            }
+
             override fun equals(other: Any?): Boolean {
                 if (this === other) {
                     return true
@@ -678,122 +1038,6 @@ private constructor(
 
         override fun toString() =
             "Data{result=$result, actionId=$actionId, additionalProperties=$additionalProperties}"
-    }
-
-    class Success @JsonCreator private constructor(private val value: JsonField<Boolean>) : Enum {
-
-        /**
-         * Returns this class instance's raw value.
-         *
-         * This is usually only useful if this instance was deserialized from data that doesn't
-         * match any known member, and you want to know that value. For example, if the SDK is on an
-         * older version than the API, then the API may respond with new members that the SDK is
-         * unaware of.
-         */
-        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<Boolean> = value
-
-        companion object {
-
-            val TRUE = of(true)
-
-            fun of(value: Boolean) = Success(JsonField.of(value))
-        }
-
-        /** An enum containing [Success]'s known values. */
-        enum class Known {
-            TRUE
-        }
-
-        /**
-         * An enum containing [Success]'s known values, as well as an [_UNKNOWN] member.
-         *
-         * An instance of [Success] can contain an unknown value in a couple of cases:
-         * - It was deserialized from data that doesn't match any known member. For example, if the
-         *   SDK is on an older version than the API, then the API may respond with new members that
-         *   the SDK is unaware of.
-         * - It was constructed with an arbitrary value using the [of] method.
-         */
-        enum class Value {
-            TRUE,
-            /** An enum member indicating that [Success] was instantiated with an unknown value. */
-            _UNKNOWN,
-        }
-
-        /**
-         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
-         * if the class was instantiated with an unknown value.
-         *
-         * Use the [known] method instead if you're certain the value is always known or if you want
-         * to throw for the unknown case.
-         */
-        fun value(): Value =
-            when (this) {
-                TRUE -> Value.TRUE
-                else -> Value._UNKNOWN
-            }
-
-        /**
-         * Returns an enum member corresponding to this class instance's value.
-         *
-         * Use the [value] method instead if you're uncertain the value is always known and don't
-         * want to throw for the unknown case.
-         *
-         * @throws StagehandInvalidDataException if this class instance's value is a not a known
-         *   member.
-         */
-        fun known(): Known =
-            when (this) {
-                TRUE -> Known.TRUE
-                else -> throw StagehandInvalidDataException("Unknown Success: $value")
-            }
-
-        /**
-         * Returns this class instance's primitive wire representation.
-         *
-         * @throws StagehandInvalidDataException if this class instance's value does not have the
-         *   expected primitive type.
-         */
-        fun asBoolean(): Boolean =
-            _value().asBoolean() ?: throw StagehandInvalidDataException("Value is not a Boolean")
-
-        private var validated: Boolean = false
-
-        fun validate(): Success = apply {
-            if (validated) {
-                return@apply
-            }
-
-            known()
-            validated = true
-        }
-
-        fun isValid(): Boolean =
-            try {
-                validate()
-                true
-            } catch (e: StagehandInvalidDataException) {
-                false
-            }
-
-        /**
-         * Returns a score indicating how many valid values are contained in this object
-         * recursively.
-         *
-         * Used for best match union deserialization.
-         */
-        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) {
-                return true
-            }
-
-            return other is Success && value == other.value
-        }
-
-        override fun hashCode() = value.hashCode()
-
-        override fun toString() = value.toString()
     }
 
     override fun equals(other: Any?): Boolean {

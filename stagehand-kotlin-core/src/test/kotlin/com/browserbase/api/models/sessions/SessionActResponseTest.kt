@@ -19,10 +19,11 @@ internal class SessionActResponseTest {
                             SessionActResponse.Data.Result.builder()
                                 .actionDescription("Clicked button with text 'Login'")
                                 .addAction(
-                                    Action.builder()
+                                    SessionActResponse.Data.Result.Action.builder()
                                         .description("Click the submit button")
                                         .selector("[data-testid='submit-button']")
                                         .addArgument("Hello World")
+                                        .backendNodeId(0.0)
                                         .method("click")
                                         .build()
                                 )
@@ -33,7 +34,7 @@ internal class SessionActResponseTest {
                         .actionId("actionId")
                         .build()
                 )
-                .success(SessionActResponse.Success.TRUE)
+                .success(true)
                 .build()
 
         assertThat(sessionActResponse.data())
@@ -43,10 +44,11 @@ internal class SessionActResponseTest {
                         SessionActResponse.Data.Result.builder()
                             .actionDescription("Clicked button with text 'Login'")
                             .addAction(
-                                Action.builder()
+                                SessionActResponse.Data.Result.Action.builder()
                                     .description("Click the submit button")
                                     .selector("[data-testid='submit-button']")
                                     .addArgument("Hello World")
+                                    .backendNodeId(0.0)
                                     .method("click")
                                     .build()
                             )
@@ -57,7 +59,7 @@ internal class SessionActResponseTest {
                     .actionId("actionId")
                     .build()
             )
-        assertThat(sessionActResponse.success()).isEqualTo(SessionActResponse.Success.TRUE)
+        assertThat(sessionActResponse.success()).isEqualTo(true)
     }
 
     @Test
@@ -71,10 +73,11 @@ internal class SessionActResponseTest {
                             SessionActResponse.Data.Result.builder()
                                 .actionDescription("Clicked button with text 'Login'")
                                 .addAction(
-                                    Action.builder()
+                                    SessionActResponse.Data.Result.Action.builder()
                                         .description("Click the submit button")
                                         .selector("[data-testid='submit-button']")
                                         .addArgument("Hello World")
+                                        .backendNodeId(0.0)
                                         .method("click")
                                         .build()
                                 )
@@ -85,7 +88,7 @@ internal class SessionActResponseTest {
                         .actionId("actionId")
                         .build()
                 )
-                .success(SessionActResponse.Success.TRUE)
+                .success(true)
                 .build()
 
         val roundtrippedSessionActResponse =

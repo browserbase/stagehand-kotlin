@@ -16,13 +16,13 @@ internal class SessionActParamsTest {
             .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
             .xLanguage(SessionActParams.XLanguage.TYPESCRIPT)
             .xSdkVersion("3.0.6")
-            .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00.000Z"))
+            .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
             .xStreamResponse(SessionActParams.XStreamResponse.TRUE)
             .input("Click the login button")
             .frameId("frameId")
             .options(
                 SessionActParams.Options.builder()
-                    .model("string")
+                    .model("openai/gpt-5-nano")
                     .timeout(30000.0)
                     .variables(
                         SessionActParams.Options.Variables.builder()
@@ -54,13 +54,13 @@ internal class SessionActParamsTest {
                 .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
                 .xLanguage(SessionActParams.XLanguage.TYPESCRIPT)
                 .xSdkVersion("3.0.6")
-                .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00.000Z"))
+                .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                 .xStreamResponse(SessionActParams.XStreamResponse.TRUE)
                 .input("Click the login button")
                 .frameId("frameId")
                 .options(
                     SessionActParams.Options.builder()
-                        .model("string")
+                        .model("openai/gpt-5-nano")
                         .timeout(30000.0)
                         .variables(
                             SessionActParams.Options.Variables.builder()
@@ -78,7 +78,7 @@ internal class SessionActParamsTest {
                 Headers.builder()
                     .put("x-language", "typescript")
                     .put("x-sdk-version", "3.0.6")
-                    .put("x-sent-at", "2025-01-15T10:30:00.000Z")
+                    .put("x-sent-at", "2025-01-15T10:30:00Z")
                     .put("x-stream-response", "true")
                     .build()
             )
@@ -104,13 +104,13 @@ internal class SessionActParamsTest {
                 .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
                 .xLanguage(SessionActParams.XLanguage.TYPESCRIPT)
                 .xSdkVersion("3.0.6")
-                .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00.000Z"))
+                .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                 .xStreamResponse(SessionActParams.XStreamResponse.TRUE)
                 .input("Click the login button")
                 .frameId("frameId")
                 .options(
                     SessionActParams.Options.builder()
-                        .model("string")
+                        .model("openai/gpt-5-nano")
                         .timeout(30000.0)
                         .variables(
                             SessionActParams.Options.Variables.builder()
@@ -129,7 +129,7 @@ internal class SessionActParamsTest {
         assertThat(body.options())
             .isEqualTo(
                 SessionActParams.Options.builder()
-                    .model("string")
+                    .model("openai/gpt-5-nano")
                     .timeout(30000.0)
                     .variables(
                         SessionActParams.Options.Variables.builder()

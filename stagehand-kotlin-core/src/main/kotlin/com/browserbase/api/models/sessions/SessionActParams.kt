@@ -11,7 +11,6 @@ import com.browserbase.api.core.JsonMissing
 import com.browserbase.api.core.JsonValue
 import com.browserbase.api.core.Params
 import com.browserbase.api.core.allMaxBy
-import com.browserbase.api.core.checkKnown
 import com.browserbase.api.core.checkRequired
 import com.browserbase.api.core.getOrThrow
 import com.browserbase.api.core.http.Headers
@@ -194,7 +193,7 @@ private constructor(
         fun input(string: String) = apply { body.input(string) }
 
         /** Alias for calling [input] with `Input.ofAction(action)`. */
-        fun input(action: Input.ActionInput) = apply { body.input(action) }
+        fun input(action: Action) = apply { body.input(action) }
 
         /** Target frame ID for the action */
         fun frameId(frameId: String) = apply { body.frameId(frameId) }
@@ -495,7 +494,7 @@ private constructor(
             fun input(string: String) = input(Input.ofString(string))
 
             /** Alias for calling [input] with `Input.ofAction(action)`. */
-            fun input(action: Input.ActionInput) = input(Input.ofAction(action))
+            fun input(action: Action) = input(Input.ofAction(action))
 
             /** Target frame ID for the action */
             fun frameId(frameId: String) = frameId(JsonField.of(frameId))
@@ -620,14 +619,14 @@ private constructor(
     class Input
     private constructor(
         private val string: String? = null,
-        private val action: ActionInput? = null,
+        private val action: Action? = null,
         private val _json: JsonValue? = null,
     ) {
 
         fun string(): String? = string
 
         /** Action object returned by observe and used by act */
-        fun action(): ActionInput? = action
+        fun action(): Action? = action
 
         fun isString(): Boolean = string != null
 
@@ -636,7 +635,7 @@ private constructor(
         fun asString(): String = string.getOrThrow("string")
 
         /** Action object returned by observe and used by act */
-        fun asAction(): ActionInput = action.getOrThrow("action")
+        fun asAction(): Action = action.getOrThrow("action")
 
         fun _json(): JsonValue? = _json
 
@@ -658,7 +657,7 @@ private constructor(
                 object : Visitor<Unit> {
                     override fun visitString(string: String) {}
 
-                    override fun visitAction(action: ActionInput) {
+                    override fun visitAction(action: Action) {
                         action.validate()
                     }
                 }
@@ -685,7 +684,7 @@ private constructor(
                 object : Visitor<Int> {
                     override fun visitString(string: String) = 1
 
-                    override fun visitAction(action: ActionInput) = action.validity()
+                    override fun visitAction(action: Action) = action.validity()
 
                     override fun unknown(json: JsonValue?) = 0
                 }
@@ -714,7 +713,7 @@ private constructor(
             fun ofString(string: String) = Input(string = string)
 
             /** Action object returned by observe and used by act */
-            fun ofAction(action: ActionInput) = Input(action = action)
+            fun ofAction(action: Action) = Input(action = action)
         }
 
         /** An interface that defines how to map each variant of [Input] to a value of type [T]. */
@@ -723,7 +722,7 @@ private constructor(
             fun visitString(string: String): T
 
             /** Action object returned by observe and used by act */
-            fun visitAction(action: ActionInput): T
+            fun visitAction(action: Action): T
 
             /**
              * Maps an unknown variant of [Input] to a value of type [T].
@@ -747,7 +746,7 @@ private constructor(
 
                 val bestMatches =
                     sequenceOf(
-                            tryDeserialize(node, jacksonTypeRef<ActionInput>())?.let {
+                            tryDeserialize(node, jacksonTypeRef<Action>())?.let {
                                 Input(action = it, _json = json)
                             },
                             tryDeserialize(node, jacksonTypeRef<String>())?.let {
@@ -785,309 +784,6 @@ private constructor(
                 }
             }
         }
-
-        /** Action object returned by observe and used by act */
-        class ActionInput
-        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
-        private constructor(
-            private val description: JsonField<String>,
-            private val selector: JsonField<String>,
-            private val arguments: JsonField<List<String>>,
-            private val method: JsonField<String>,
-            private val additionalProperties: MutableMap<String, JsonValue>,
-        ) {
-
-            @JsonCreator
-            private constructor(
-                @JsonProperty("description")
-                @ExcludeMissing
-                description: JsonField<String> = JsonMissing.of(),
-                @JsonProperty("selector")
-                @ExcludeMissing
-                selector: JsonField<String> = JsonMissing.of(),
-                @JsonProperty("arguments")
-                @ExcludeMissing
-                arguments: JsonField<List<String>> = JsonMissing.of(),
-                @JsonProperty("method") @ExcludeMissing method: JsonField<String> = JsonMissing.of(),
-            ) : this(description, selector, arguments, method, mutableMapOf())
-
-            /**
-             * Human-readable description of the action
-             *
-             * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
-             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
-             *   value).
-             */
-            fun description(): String = description.getRequired("description")
-
-            /**
-             * CSS selector or XPath for the element
-             *
-             * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
-             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
-             *   value).
-             */
-            fun selector(): String = selector.getRequired("selector")
-
-            /**
-             * Arguments to pass to the method
-             *
-             * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g.
-             *   if the server responded with an unexpected value).
-             */
-            fun arguments(): List<String>? = arguments.getNullable("arguments")
-
-            /**
-             * The method to execute (click, fill, etc.)
-             *
-             * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g.
-             *   if the server responded with an unexpected value).
-             */
-            fun method(): String? = method.getNullable("method")
-
-            /**
-             * Returns the raw JSON value of [description].
-             *
-             * Unlike [description], this method doesn't throw if the JSON field has an unexpected
-             * type.
-             */
-            @JsonProperty("description")
-            @ExcludeMissing
-            fun _description(): JsonField<String> = description
-
-            /**
-             * Returns the raw JSON value of [selector].
-             *
-             * Unlike [selector], this method doesn't throw if the JSON field has an unexpected
-             * type.
-             */
-            @JsonProperty("selector") @ExcludeMissing fun _selector(): JsonField<String> = selector
-
-            /**
-             * Returns the raw JSON value of [arguments].
-             *
-             * Unlike [arguments], this method doesn't throw if the JSON field has an unexpected
-             * type.
-             */
-            @JsonProperty("arguments")
-            @ExcludeMissing
-            fun _arguments(): JsonField<List<String>> = arguments
-
-            /**
-             * Returns the raw JSON value of [method].
-             *
-             * Unlike [method], this method doesn't throw if the JSON field has an unexpected type.
-             */
-            @JsonProperty("method") @ExcludeMissing fun _method(): JsonField<String> = method
-
-            @JsonAnySetter
-            private fun putAdditionalProperty(key: String, value: JsonValue) {
-                additionalProperties.put(key, value)
-            }
-
-            @JsonAnyGetter
-            @ExcludeMissing
-            fun _additionalProperties(): Map<String, JsonValue> =
-                Collections.unmodifiableMap(additionalProperties)
-
-            fun toBuilder() = Builder().from(this)
-
-            companion object {
-
-                /**
-                 * Returns a mutable builder for constructing an instance of [ActionInput].
-                 *
-                 * The following fields are required:
-                 * ```kotlin
-                 * .description()
-                 * .selector()
-                 * ```
-                 */
-                fun builder() = Builder()
-            }
-
-            /** A builder for [ActionInput]. */
-            class Builder internal constructor() {
-
-                private var description: JsonField<String>? = null
-                private var selector: JsonField<String>? = null
-                private var arguments: JsonField<MutableList<String>>? = null
-                private var method: JsonField<String> = JsonMissing.of()
-                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
-
-                internal fun from(actionInput: ActionInput) = apply {
-                    description = actionInput.description
-                    selector = actionInput.selector
-                    arguments = actionInput.arguments.map { it.toMutableList() }
-                    method = actionInput.method
-                    additionalProperties = actionInput.additionalProperties.toMutableMap()
-                }
-
-                /** Human-readable description of the action */
-                fun description(description: String) = description(JsonField.of(description))
-
-                /**
-                 * Sets [Builder.description] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.description] with a well-typed [String] value
-                 * instead. This method is primarily for setting the field to an undocumented or not
-                 * yet supported value.
-                 */
-                fun description(description: JsonField<String>) = apply {
-                    this.description = description
-                }
-
-                /** CSS selector or XPath for the element */
-                fun selector(selector: String) = selector(JsonField.of(selector))
-
-                /**
-                 * Sets [Builder.selector] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.selector] with a well-typed [String] value
-                 * instead. This method is primarily for setting the field to an undocumented or not
-                 * yet supported value.
-                 */
-                fun selector(selector: JsonField<String>) = apply { this.selector = selector }
-
-                /** Arguments to pass to the method */
-                fun arguments(arguments: List<String>) = arguments(JsonField.of(arguments))
-
-                /**
-                 * Sets [Builder.arguments] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.arguments] with a well-typed `List<String>`
-                 * value instead. This method is primarily for setting the field to an undocumented
-                 * or not yet supported value.
-                 */
-                fun arguments(arguments: JsonField<List<String>>) = apply {
-                    this.arguments = arguments.map { it.toMutableList() }
-                }
-
-                /**
-                 * Adds a single [String] to [arguments].
-                 *
-                 * @throws IllegalStateException if the field was previously set to a non-list.
-                 */
-                fun addArgument(argument: String) = apply {
-                    arguments =
-                        (arguments ?: JsonField.of(mutableListOf())).also {
-                            checkKnown("arguments", it).add(argument)
-                        }
-                }
-
-                /** The method to execute (click, fill, etc.) */
-                fun method(method: String) = method(JsonField.of(method))
-
-                /**
-                 * Sets [Builder.method] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.method] with a well-typed [String] value
-                 * instead. This method is primarily for setting the field to an undocumented or not
-                 * yet supported value.
-                 */
-                fun method(method: JsonField<String>) = apply { this.method = method }
-
-                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
-                    this.additionalProperties.clear()
-                    putAllAdditionalProperties(additionalProperties)
-                }
-
-                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
-                    additionalProperties.put(key, value)
-                }
-
-                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
-                    apply {
-                        this.additionalProperties.putAll(additionalProperties)
-                    }
-
-                fun removeAdditionalProperty(key: String) = apply {
-                    additionalProperties.remove(key)
-                }
-
-                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
-                    keys.forEach(::removeAdditionalProperty)
-                }
-
-                /**
-                 * Returns an immutable instance of [ActionInput].
-                 *
-                 * Further updates to this [Builder] will not mutate the returned instance.
-                 *
-                 * The following fields are required:
-                 * ```kotlin
-                 * .description()
-                 * .selector()
-                 * ```
-                 *
-                 * @throws IllegalStateException if any required field is unset.
-                 */
-                fun build(): ActionInput =
-                    ActionInput(
-                        checkRequired("description", description),
-                        checkRequired("selector", selector),
-                        (arguments ?: JsonMissing.of()).map { it.toImmutable() },
-                        method,
-                        additionalProperties.toMutableMap(),
-                    )
-            }
-
-            private var validated: Boolean = false
-
-            fun validate(): ActionInput = apply {
-                if (validated) {
-                    return@apply
-                }
-
-                description()
-                selector()
-                arguments()
-                method()
-                validated = true
-            }
-
-            fun isValid(): Boolean =
-                try {
-                    validate()
-                    true
-                } catch (e: StagehandInvalidDataException) {
-                    false
-                }
-
-            /**
-             * Returns a score indicating how many valid values are contained in this object
-             * recursively.
-             *
-             * Used for best match union deserialization.
-             */
-            internal fun validity(): Int =
-                (if (description.asKnown() == null) 0 else 1) +
-                    (if (selector.asKnown() == null) 0 else 1) +
-                    (arguments.asKnown()?.size ?: 0) +
-                    (if (method.asKnown() == null) 0 else 1)
-
-            override fun equals(other: Any?): Boolean {
-                if (this === other) {
-                    return true
-                }
-
-                return other is ActionInput &&
-                    description == other.description &&
-                    selector == other.selector &&
-                    arguments == other.arguments &&
-                    method == other.method &&
-                    additionalProperties == other.additionalProperties
-            }
-
-            private val hashCode: Int by lazy {
-                Objects.hash(description, selector, arguments, method, additionalProperties)
-            }
-
-            override fun hashCode(): Int = hashCode
-
-            override fun toString() =
-                "ActionInput{description=$description, selector=$selector, arguments=$arguments, method=$method, additionalProperties=$additionalProperties}"
-        }
     }
 
     class Options
@@ -1109,6 +805,9 @@ private constructor(
         ) : this(model, timeout, variables, mutableMapOf())
 
         /**
+         * Model name string with provider prefix (e.g., 'openai/gpt-5-nano',
+         * 'anthropic/claude-4.5-opus')
+         *
          * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
@@ -1186,6 +885,10 @@ private constructor(
                 additionalProperties = options.additionalProperties.toMutableMap()
             }
 
+            /**
+             * Model name string with provider prefix (e.g., 'openai/gpt-5-nano',
+             * 'anthropic/claude-4.5-opus')
+             */
             fun model(model: ModelConfig) = model(JsonField.of(model))
 
             /**
@@ -1197,12 +900,14 @@ private constructor(
              */
             fun model(model: JsonField<ModelConfig>) = apply { this.model = model }
 
-            /** Alias for calling [model] with `ModelConfig.ofString(string)`. */
-            fun model(string: String) = model(ModelConfig.ofString(string))
+            /** Alias for calling [model] with `ModelConfig.ofName(name)`. */
+            fun model(name: String) = model(ModelConfig.ofName(name))
 
-            /** Alias for calling [model] with `ModelConfig.ofUnionMember1(unionMember1)`. */
-            fun model(unionMember1: ModelConfig.UnionMember1) =
-                model(ModelConfig.ofUnionMember1(unionMember1))
+            /**
+             * Alias for calling [model] with `ModelConfig.ofModelConfigObject(modelConfigObject)`.
+             */
+            fun model(modelConfigObject: ModelConfig.ModelConfigObject) =
+                model(ModelConfig.ofModelConfigObject(modelConfigObject))
 
             /** Timeout in ms for the action */
             fun timeout(timeout: Double) = timeout(JsonField.of(timeout))
