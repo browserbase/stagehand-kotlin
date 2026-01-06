@@ -6,9 +6,9 @@ import com.browserbase.api.core.Enum
 import com.browserbase.api.core.JsonField
 import com.browserbase.api.core.JsonValue
 import com.browserbase.api.core.Params
+import com.browserbase.api.core.checkRequired
 import com.browserbase.api.core.http.Headers
 import com.browserbase.api.core.http.QueryParams
-import com.browserbase.api.core.toImmutable
 import com.browserbase.api.errors.StagehandInvalidDataException
 import com.fasterxml.jackson.annotation.JsonCreator
 import java.time.OffsetDateTime
@@ -23,9 +23,9 @@ private constructor(
     private val xSdkVersion: String?,
     private val xSentAt: OffsetDateTime?,
     private val xStreamResponse: XStreamResponse?,
+    private val body: JsonValue,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
-    private val additionalBodyProperties: Map<String, JsonValue>,
 ) : Params {
 
     /** Unique session identifier */
@@ -43,8 +43,7 @@ private constructor(
     /** Whether to stream the response via SSE */
     fun xStreamResponse(): XStreamResponse? = xStreamResponse
 
-    /** Additional body properties to send with the request. */
-    fun _additionalBodyProperties(): Map<String, JsonValue> = additionalBodyProperties
+    fun body(): JsonValue = body
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -56,9 +55,14 @@ private constructor(
 
     companion object {
 
-        fun none(): SessionEndParams = builder().build()
-
-        /** Returns a mutable builder for constructing an instance of [SessionEndParams]. */
+        /**
+         * Returns a mutable builder for constructing an instance of [SessionEndParams].
+         *
+         * The following fields are required:
+         * ```kotlin
+         * .body()
+         * ```
+         */
         fun builder() = Builder()
     }
 
@@ -70,9 +74,9 @@ private constructor(
         private var xSdkVersion: String? = null
         private var xSentAt: OffsetDateTime? = null
         private var xStreamResponse: XStreamResponse? = null
+        private var body: JsonValue? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
-        private var additionalBodyProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(sessionEndParams: SessionEndParams) = apply {
             id = sessionEndParams.id
@@ -80,9 +84,9 @@ private constructor(
             xSdkVersion = sessionEndParams.xSdkVersion
             xSentAt = sessionEndParams.xSentAt
             xStreamResponse = sessionEndParams.xStreamResponse
+            body = sessionEndParams.body
             additionalHeaders = sessionEndParams.additionalHeaders.toBuilder()
             additionalQueryParams = sessionEndParams.additionalQueryParams.toBuilder()
-            additionalBodyProperties = sessionEndParams.additionalBodyProperties.toMutableMap()
         }
 
         /** Unique session identifier */
@@ -101,6 +105,8 @@ private constructor(
         fun xStreamResponse(xStreamResponse: XStreamResponse?) = apply {
             this.xStreamResponse = xStreamResponse
         }
+
+        fun body(body: JsonValue) = apply { this.body = body }
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -200,32 +206,17 @@ private constructor(
             additionalQueryParams.removeAll(keys)
         }
 
-        fun additionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) = apply {
-            this.additionalBodyProperties.clear()
-            putAllAdditionalBodyProperties(additionalBodyProperties)
-        }
-
-        fun putAdditionalBodyProperty(key: String, value: JsonValue) = apply {
-            additionalBodyProperties.put(key, value)
-        }
-
-        fun putAllAdditionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) =
-            apply {
-                this.additionalBodyProperties.putAll(additionalBodyProperties)
-            }
-
-        fun removeAdditionalBodyProperty(key: String) = apply {
-            additionalBodyProperties.remove(key)
-        }
-
-        fun removeAllAdditionalBodyProperties(keys: Set<String>) = apply {
-            keys.forEach(::removeAdditionalBodyProperty)
-        }
-
         /**
          * Returns an immutable instance of [SessionEndParams].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
+         *
+         * The following fields are required:
+         * ```kotlin
+         * .body()
+         * ```
+         *
+         * @throws IllegalStateException if any required field is unset.
          */
         fun build(): SessionEndParams =
             SessionEndParams(
@@ -234,13 +225,13 @@ private constructor(
                 xSdkVersion,
                 xSentAt,
                 xStreamResponse,
+                checkRequired("body", body),
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
-                additionalBodyProperties.toImmutable(),
             )
     }
 
-    fun _body(): Map<String, JsonValue>? = additionalBodyProperties.ifEmpty { null }
+    fun _body(): JsonValue = body
 
     fun _pathParam(index: Int): String =
         when (index) {
@@ -536,9 +527,9 @@ private constructor(
             xSdkVersion == other.xSdkVersion &&
             xSentAt == other.xSentAt &&
             xStreamResponse == other.xStreamResponse &&
+            body == other.body &&
             additionalHeaders == other.additionalHeaders &&
-            additionalQueryParams == other.additionalQueryParams &&
-            additionalBodyProperties == other.additionalBodyProperties
+            additionalQueryParams == other.additionalQueryParams
     }
 
     override fun hashCode(): Int =
@@ -548,11 +539,11 @@ private constructor(
             xSdkVersion,
             xSentAt,
             xStreamResponse,
+            body,
             additionalHeaders,
             additionalQueryParams,
-            additionalBodyProperties,
         )
 
     override fun toString() =
-        "SessionEndParams{id=$id, xLanguage=$xLanguage, xSdkVersion=$xSdkVersion, xSentAt=$xSentAt, xStreamResponse=$xStreamResponse, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams, additionalBodyProperties=$additionalBodyProperties}"
+        "SessionEndParams{id=$id, xLanguage=$xLanguage, xSdkVersion=$xSdkVersion, xSentAt=$xSentAt, xStreamResponse=$xStreamResponse, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }
