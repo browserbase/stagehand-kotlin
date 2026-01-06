@@ -53,7 +53,7 @@ interface SessionServiceAsync {
     /** Terminates the browser session and releases all associated resources. */
     suspend fun end(
         id: String,
-        params: SessionEndParams,
+        params: SessionEndParams = SessionEndParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
     ): SessionEndResponse = end(params.toBuilder().id(id).build(), requestOptions)
 
@@ -62,6 +62,10 @@ interface SessionServiceAsync {
         params: SessionEndParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): SessionEndResponse
+
+    /** @see end */
+    suspend fun end(id: String, requestOptions: RequestOptions): SessionEndResponse =
+        end(id, SessionEndParams.none(), requestOptions)
 
     /** Runs an autonomous AI agent that can perform complex multi-step browser tasks. */
     suspend fun execute(
@@ -175,7 +179,7 @@ interface SessionServiceAsync {
         @MustBeClosed
         suspend fun end(
             id: String,
-            params: SessionEndParams,
+            params: SessionEndParams = SessionEndParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<SessionEndResponse> =
             end(params.toBuilder().id(id).build(), requestOptions)
@@ -186,6 +190,13 @@ interface SessionServiceAsync {
             params: SessionEndParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<SessionEndResponse>
+
+        /** @see end */
+        @MustBeClosed
+        suspend fun end(
+            id: String,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<SessionEndResponse> = end(id, SessionEndParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `post /v1/sessions/{id}/agentExecute`, but is otherwise
