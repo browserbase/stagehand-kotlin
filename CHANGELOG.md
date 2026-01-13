@@ -1,5 +1,31 @@
 # Changelog
 
+## 0.4.0 (2026-01-13)
+
+Full Changelog: [v0.3.0...v0.4.0](https://github.com/browserbase/stagehand-kotlin/compare/v0.3.0...v0.4.0)
+
+### Features
+
+* /end endpoint returns empty object ([2c7c476](https://github.com/browserbase/stagehand-kotlin/commit/2c7c476f25eb5d025ae9b22c9529b5181f8f7315))
+* Added optional param to force empty object ([bd56358](https://github.com/browserbase/stagehand-kotlin/commit/bd563589ee6997fb23073636e14b3a9267a52ac0))
+* **api:** manual updates ([b9ad43c](https://github.com/browserbase/stagehand-kotlin/commit/b9ad43cbc1ec0edf4b8d200121612cedff4528a8))
+* **client:** add `HttpRequest#url()` method ([f405266](https://github.com/browserbase/stagehand-kotlin/commit/f405266c8603f0449f413900e0c8af908c5b0a87))
+* **client:** allow configuring dispatcher executor service ([2b65f1a](https://github.com/browserbase/stagehand-kotlin/commit/2b65f1a0dd83302596ae09371ebf0c1f04feb2db))
+* Removed requiring x-language and x-sdk-version from openapi spec ([56f0692](https://github.com/browserbase/stagehand-kotlin/commit/56f0692142caddce9dd92e28825163fc1dcec7a1))
+* Using provider/model syntax in modelName examples within openapi spec ([925c931](https://github.com/browserbase/stagehand-kotlin/commit/925c931923aeb6dafe334db2eeb00790f97e83ac))
+
+
+### Chores
+
+* **internal:** codegen related update ([030a77d](https://github.com/browserbase/stagehand-kotlin/commit/030a77d0c7bcbce7a12e7299ec02e0f9c7a9d0ab))
+* **internal:** codegen related update ([093e1da](https://github.com/browserbase/stagehand-kotlin/commit/093e1da55176a9fa6d100257c29cab675c3c7b19))
+* **internal:** refactor build files to support future stainless package uploads ([b95190a](https://github.com/browserbase/stagehand-kotlin/commit/b95190a82f547f1129bc5e9077c88a0d1f80fed0))
+
+
+### Documentation
+
+* prominently feature MCP server setup in root SDK readmes ([55ead0e](https://github.com/browserbase/stagehand-kotlin/commit/55ead0ec0648b3e063859711681512dd35298aae))
+
 ## 0.3.0 (2025-12-23)
 
 Full Changelog: [v0.2.0...v0.3.0](https://github.com/browserbase/stagehand-kotlin/compare/v0.2.0...v0.3.0)
