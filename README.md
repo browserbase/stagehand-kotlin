@@ -1,30 +1,67 @@
-# Stagehand Kotlin API Library
+<div id="toc" align="center" style="margin-bottom: 0;">
+  <ul style="list-style: none; margin: 0; padding: 0;">
+    <a href="https://stagehand.dev">
+      <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="media/dark_logo.png" />
+        <img alt="Stagehand" src="media/light_logo.png" width="200" style="margin-right: 30px;" />
+      </picture>
+    </a>
+  </ul>
+</div>
+<p align="center">
+  <strong>The AI Browser Automation Framework</strong><br>
+  <a href="https://docs.stagehand.dev/v3/sdk/kotlin">Read the Docs</a>
+</p>
 
-<!-- x-release-please-start-version -->
+<p align="center">
+  <a href="https://github.com/browserbase/stagehand/tree/main?tab=MIT-1-ov-file#MIT-1-ov-file">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="media/dark_license.svg" />
+      <img alt="MIT License" src="media/light_license.svg" />
+    </picture>
+  </a>
+  <a href="https://stagehand.dev/discord">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="media/dark_discord.svg" />
+      <img alt="Discord Community" src="media/light_discord.svg" />
+    </picture>
+  </a>
+</p>
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.browserbase.api/stagehand-kotlin)](https://central.sonatype.com/artifact/com.browserbase.api/stagehand-kotlin/0.4.0)
-[![javadoc](https://javadoc.io/badge2/com.browserbase.api/stagehand-kotlin/0.4.0/javadoc.svg)](https://javadoc.io/doc/com.browserbase.api/stagehand-kotlin/0.4.0)
+<p align="center">
+	<a href="https://trendshift.io/repositories/12122" target="_blank"><img src="https://trendshift.io/api/badge/repositories/12122" alt="browserbase%2Fstagehand | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
+</p>
 
-<!-- x-release-please-end -->
+<p align="center">
+If you're looking for other languages, you can find them
+<a href="https://docs.stagehand.dev/v3/first-steps/introduction"> here</a>
+</p>
 
-The Stagehand Kotlin SDK provides convenient access to the [Stagehand REST API](https://docs.stagehand.dev) from applications written in Kotlin.
+<div align="center" style="display: flex; align-items: center; justify-content: center; gap: 4px; margin-bottom: 0;">
+  <b>Vibe code</b>
+  <span style="font-size: 1.05em;"> Stagehand with </span>
+  <a href="https://director.ai" style="display: flex; align-items: center;">
+    <span>Director</span>
+  </a>
+  <span> </span>
+  <picture>
+    <img alt="Director" src="media/director_icon.svg" width="25" />
+  </picture>
+</div>
 
-It is generated with [Stainless](https://www.stainless.com/).
+## What is Stagehand?
 
-## MCP Server
+Stagehand is a browser automation framework used to control web browsers with natural language and code. By combining the power of AI with the precision of code, Stagehand makes web automation flexible, maintainable, and actually reliable.
 
-Use the Stagehand MCP Server to enable AI assistants to interact with this API, allowing them to explore endpoints, make test requests, and use documentation to help integrate this SDK into your application.
+## Why Stagehand?
 
-[![Add to Cursor](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/en-US/install-mcp?name=stagehand-mcp&config=eyJjb21tYW5kIjoibnB4IiwiYXJncyI6WyIteSIsInN0YWdlaGFuZC1tY3AiXX0)
-[![Install in VS Code](https://img.shields.io/badge/_-Add_to_VS_Code-blue?style=for-the-badge&logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCA0MCA0MCI+PHBhdGggZmlsbD0iI0VFRSIgZmlsbC1ydWxlPSJldmVub2RkIiBkPSJNMzAuMjM1IDM5Ljg4NGEyLjQ5MSAyLjQ5MSAwIDAgMS0xLjc4MS0uNzNMMTIuNyAyNC43OGwtMy40NiAyLjYyNC0zLjQwNiAyLjU4MmExLjY2NSAxLjY2NSAwIDAgMS0xLjA4Mi4zMzggMS42NjQgMS42NjQgMCAwIDEtMS4wNDYtLjQzMWwtMi4yLTJhMS42NjYgMS42NjYgMCAwIDEgMC0yLjQ2M0w3LjQ1OCAyMCA0LjY3IDE3LjQ1MyAxLjUwNyAxNC41N2ExLjY2NSAxLjY2NSAwIDAgMSAwLTIuNDYzbDIuMi0yYTEuNjY1IDEuNjY1IDAgMCAxIDIuMTMtLjA5N2w2Ljg2MyA1LjIwOUwyOC40NTIuODQ0YTIuNDg4IDIuNDg4IDAgMCAxIDEuODQxLS43MjljLjM1MS4wMDkuNjk5LjA5MSAxLjAxOS4yNDVsOC4yMzYgMy45NjFhMi41IDIuNSAwIDAgMSAxLjQxNSAyLjI1M3YuMDk5LS4wNDVWMzMuMzd2LS4wNDUuMDk1YTIuNTAxIDIuNTAxIDAgMCAxLTEuNDE2IDIuMjU3bC04LjIzNSAzLjk2MWEyLjQ5MiAyLjQ5MiAwIDAgMS0xLjA3Ny4yNDZabS43MTYtMjguOTQ3LTExLjk0OCA5LjA2MiAxMS45NTIgOS4wNjUtLjAwNC0xOC4xMjdaIi8+PC9zdmc+)](https://vscode.stainless.com/mcp/%7B%22name%22%3A%22stagehand-mcp%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22stagehand-mcp%22%5D%7D)
+Most existing browser automation tools either require you to write low-level code in a framework like Selenium, Playwright, or Puppeteer, or use high-level agents that can be unpredictable in production. By letting developers choose what to write in code vs. natural language (and bridging the gap between the two) Stagehand is the natural choice for browser automations in production.
 
-> Note: You may need to set environment variables in your MCP client.
+1. **Choose when to write code vs. natural language**: use AI when you want to navigate unfamiliar pages, and use code when you know exactly what you want to do.
 
-<!-- x-release-please-start-version -->
+2. **Go from AI-driven to repeatable workflows**: Stagehand lets you preview AI actions before running them, and also helps you easily cache repeatable actions to save time and tokens.
 
-The REST API documentation can be found on [docs.stagehand.dev](https://docs.stagehand.dev). KDocs are available on [javadoc.io](https://javadoc.io/doc/com.browserbase.api/stagehand-kotlin/0.4.0).
-
-<!-- x-release-please-end -->
+3. **Write once, run forever**: Stagehand's auto-caching combined with self-healing remembers previous actions, runs without LLM inference, and knows when to involve AI whenever the website changes and your automation breaks.
 
 ## Installation
 
@@ -54,21 +91,155 @@ This library requires Java 8 or later.
 
 ## Usage
 
+This example demonstrates the complete workflow of using Stagehand:
+
 ```kotlin
 import com.browserbase.api.client.StagehandClient
 import com.browserbase.api.client.okhttp.StagehandOkHttpClient
+import com.browserbase.api.models.sessions.SessionStartParams
+import com.browserbase.api.models.sessions.SessionNavigateParams
+import com.browserbase.api.models.sessions.SessionObserveParams
 import com.browserbase.api.models.sessions.SessionActParams
-import com.browserbase.api.models.sessions.SessionActResponse
+import com.browserbase.api.models.sessions.SessionExtractParams
+import com.browserbase.api.models.sessions.SessionExecuteParams
+import com.browserbase.api.models.sessions.SessionEndParams
+import com.browserbase.api.models.sessions.ActionParam
 
-// Configures using the `stagehand.browserbaseApiKey`, `stagehand.browserbaseProjectId`, `stagehand.modelApiKey` and `stagehand.baseUrl` system properties
-// Or configures using the `BROWSERBASE_API_KEY`, `BROWSERBASE_PROJECT_ID`, `MODEL_API_KEY` and `STAGEHAND_BASE_URL` environment variables
-val client: StagehandClient = StagehandOkHttpClient.fromEnv()
+fun main() {
+    // Create a new Stagehand client using environment variables
+    // Configures using BROWSERBASE_API_KEY, BROWSERBASE_PROJECT_ID, and MODEL_API_KEY
+    val client: StagehandClient = StagehandOkHttpClient.fromEnv()
 
-val params: SessionActParams = SessionActParams.builder()
-    .id("00000000-your-session-id-000000000000")
-    .input("click the first link on the page")
-    .build()
-val response: SessionActResponse = client.sessions().act(params)
+    // Start a new browser session
+    val startParams = SessionStartParams.builder()
+        .modelName("openai/gpt-4o")
+        .build()
+
+    val startResponse = client.sessions().start(startParams)
+    println("Session started: ${startResponse.data.sessionId}")
+
+    val sessionId = startResponse.data.sessionId
+
+    // Navigate to Hacker News
+    val navigateParams = SessionNavigateParams.builder()
+        .id(sessionId)
+        .url("https://news.ycombinator.com")
+        .build()
+
+    client.sessions().navigate(navigateParams)
+    println("Navigated to Hacker News")
+
+    // Use Observe to find possible actions on the page
+    val observeParams = SessionObserveParams.builder()
+        .id(sessionId)
+        .instruction("find the link to view comments for the top post")
+        .build()
+
+    val observeResponse = client.sessions().observe(observeParams)
+    val actions = observeResponse.data.result
+    println("Found ${actions.size} possible actions")
+
+    if (actions.isEmpty()) {
+        println("No actions found")
+        return
+    }
+
+    // Take the first action returned by Observe
+    val action = actions[0]
+    println("Acting on: ${action.description}")
+
+    // Pass the structured action to Act
+    val actParams = SessionActParams.builder()
+        .id(sessionId)
+        .input(
+            SessionActParams.Input.ofAction(
+                ActionParam.builder()
+                    .description(action.description)
+                    .selector(action.selector)
+                    .method(action.method ?: "click")
+                    .arguments(action.arguments)
+                    .build()
+            )
+        )
+        .build()
+
+    val actResponse = client.sessions().act(actParams)
+    println("Act completed: ${actResponse.data.result.message}")
+
+    // Extract data from the page
+    // We're now on the comments page, so extract the top comment text
+    val extractParams = SessionExtractParams.builder()
+        .id(sessionId)
+        .instruction("extract the text of the top comment on this page")
+        .schema(
+            mapOf(
+                "type" to "object",
+                "properties" to mapOf(
+                    "commentText" to mapOf(
+                        "type" to "string",
+                        "description" to "The text content of the top comment"
+                    ),
+                    "author" to mapOf(
+                        "type" to "string",
+                        "description" to "The username of the comment author"
+                    )
+                ),
+                "required" to listOf("commentText")
+            )
+        )
+        .build()
+
+    val extractResponse = client.sessions().extract(extractParams)
+    println("Extracted data: ${extractResponse.data.result}")
+
+    // Get the author from the extracted data
+    @Suppress("UNCHECKED_CAST")
+    val extractedData = extractResponse.data.result as Map<String, Any>
+    val author = extractedData["author"] as String
+    println("Looking up profile for author: $author")
+
+    // Use the Agent to find the author's profile
+    // Execute runs an autonomous agent that can navigate and interact with pages
+    val executeParams = SessionExecuteParams.builder()
+        .id(sessionId)
+        .executeOptions(
+            SessionExecuteParams.ExecuteOptions.builder()
+                .instruction(
+                    "Find any personal website, GitHub, LinkedIn, or other best profile URL for the Hacker News user '$author'. " +
+                    "Click on their username to go to their profile page and look for any links they have shared. " +
+                    "Use Google Search with their username or other details from their profile if you don't find any direct links."
+                )
+                .maxSteps(15.0)
+                .build()
+        )
+        .agentConfig(
+            SessionExecuteParams.AgentConfig.builder()
+                .model(
+                    SessionExecuteParams.ModelConfig.ofModelConfigObject(
+                        SessionExecuteParams.ModelConfig.ModelConfigObject.builder()
+                            .modelName("openai/gpt-4.1-mini")
+                            .apiKey(System.getenv("MODEL_API_KEY"))
+                            .build()
+                    )
+                )
+                .cua(false)
+                .build()
+        )
+        .build()
+
+    val executeResponse = client.sessions().execute(executeParams)
+    println("Agent completed: ${executeResponse.data.result.message}")
+    println("Agent success: ${executeResponse.data.result.success}")
+    println("Agent actions taken: ${executeResponse.data.result.actions?.size ?: 0}")
+
+    // End the session to cleanup browser resources
+    val endParams = SessionEndParams.builder()
+        .id(sessionId)
+        .build()
+
+    client.sessions().end(endParams)
+    println("Session ended")
+}
 ```
 
 ## Client configuration
