@@ -3,39 +3,36 @@
 package com.browserbase.api.models.sessions
 
 import com.browserbase.api.core.Enum
+import com.browserbase.api.core.ExcludeMissing
 import com.browserbase.api.core.JsonField
+import com.browserbase.api.core.JsonMissing
 import com.browserbase.api.core.JsonValue
 import com.browserbase.api.core.Params
 import com.browserbase.api.core.http.Headers
 import com.browserbase.api.core.http.QueryParams
-import com.browserbase.api.core.toImmutable
 import com.browserbase.api.errors.StagehandInvalidDataException
+import com.fasterxml.jackson.annotation.JsonAnyGetter
+import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator
+import com.fasterxml.jackson.annotation.JsonProperty
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Collections
 import java.util.Objects
 
 /** Terminates the browser session and releases all associated resources. */
 class SessionEndParams
 private constructor(
     private val id: String?,
-    private val xLanguage: XLanguage?,
-    private val xSdkVersion: String?,
     private val xSentAt: OffsetDateTime?,
     private val xStreamResponse: XStreamResponse?,
+    private val body: Body,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
-    private val additionalBodyProperties: Map<String, JsonValue>,
 ) : Params {
 
     /** Unique session identifier */
     fun id(): String? = id
-
-    /** Client SDK language */
-    fun xLanguage(): XLanguage? = xLanguage
-
-    /** Version of the Stagehand SDK */
-    fun xSdkVersion(): String? = xSdkVersion
 
     /** ISO timestamp when request was sent */
     fun xSentAt(): OffsetDateTime? = xSentAt
@@ -43,8 +40,9 @@ private constructor(
     /** Whether to stream the response via SSE */
     fun xStreamResponse(): XStreamResponse? = xStreamResponse
 
-    /** Additional body properties to send with the request. */
-    fun _additionalBodyProperties(): Map<String, JsonValue> = additionalBodyProperties
+    fun __forceBody(): JsonValue = body.__forceBody()
+
+    fun _additionalBodyProperties(): Map<String, JsonValue> = body._additionalProperties()
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -66,33 +64,23 @@ private constructor(
     class Builder internal constructor() {
 
         private var id: String? = null
-        private var xLanguage: XLanguage? = null
-        private var xSdkVersion: String? = null
         private var xSentAt: OffsetDateTime? = null
         private var xStreamResponse: XStreamResponse? = null
+        private var body: Body.Builder = Body.builder()
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
-        private var additionalBodyProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(sessionEndParams: SessionEndParams) = apply {
             id = sessionEndParams.id
-            xLanguage = sessionEndParams.xLanguage
-            xSdkVersion = sessionEndParams.xSdkVersion
             xSentAt = sessionEndParams.xSentAt
             xStreamResponse = sessionEndParams.xStreamResponse
+            body = sessionEndParams.body.toBuilder()
             additionalHeaders = sessionEndParams.additionalHeaders.toBuilder()
             additionalQueryParams = sessionEndParams.additionalQueryParams.toBuilder()
-            additionalBodyProperties = sessionEndParams.additionalBodyProperties.toMutableMap()
         }
 
         /** Unique session identifier */
         fun id(id: String?) = apply { this.id = id }
-
-        /** Client SDK language */
-        fun xLanguage(xLanguage: XLanguage?) = apply { this.xLanguage = xLanguage }
-
-        /** Version of the Stagehand SDK */
-        fun xSdkVersion(xSdkVersion: String?) = apply { this.xSdkVersion = xSdkVersion }
 
         /** ISO timestamp when request was sent */
         fun xSentAt(xSentAt: OffsetDateTime?) = apply { this.xSentAt = xSentAt }
@@ -100,6 +88,36 @@ private constructor(
         /** Whether to stream the response via SSE */
         fun xStreamResponse(xStreamResponse: XStreamResponse?) = apply {
             this.xStreamResponse = xStreamResponse
+        }
+
+        /**
+         * Sets the entire request body.
+         *
+         * This is generally only useful if you are already constructing the body separately.
+         * Otherwise, it's more convenient to use the top-level setters instead:
+         * - [_forceBody]
+         */
+        fun body(body: Body) = apply { this.body = body.toBuilder() }
+
+        fun _forceBody(_forceBody: JsonValue) = apply { body._forceBody(_forceBody) }
+
+        fun additionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) = apply {
+            body.additionalProperties(additionalBodyProperties)
+        }
+
+        fun putAdditionalBodyProperty(key: String, value: JsonValue) = apply {
+            body.putAdditionalProperty(key, value)
+        }
+
+        fun putAllAdditionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) =
+            apply {
+                body.putAllAdditionalProperties(additionalBodyProperties)
+            }
+
+        fun removeAdditionalBodyProperty(key: String) = apply { body.removeAdditionalProperty(key) }
+
+        fun removeAllAdditionalBodyProperties(keys: Set<String>) = apply {
+            body.removeAllAdditionalProperties(keys)
         }
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
@@ -200,28 +218,6 @@ private constructor(
             additionalQueryParams.removeAll(keys)
         }
 
-        fun additionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) = apply {
-            this.additionalBodyProperties.clear()
-            putAllAdditionalBodyProperties(additionalBodyProperties)
-        }
-
-        fun putAdditionalBodyProperty(key: String, value: JsonValue) = apply {
-            additionalBodyProperties.put(key, value)
-        }
-
-        fun putAllAdditionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) =
-            apply {
-                this.additionalBodyProperties.putAll(additionalBodyProperties)
-            }
-
-        fun removeAdditionalBodyProperty(key: String) = apply {
-            additionalBodyProperties.remove(key)
-        }
-
-        fun removeAllAdditionalBodyProperties(keys: Set<String>) = apply {
-            keys.forEach(::removeAdditionalBodyProperty)
-        }
-
         /**
          * Returns an immutable instance of [SessionEndParams].
          *
@@ -230,17 +226,15 @@ private constructor(
         fun build(): SessionEndParams =
             SessionEndParams(
                 id,
-                xLanguage,
-                xSdkVersion,
                 xSentAt,
                 xStreamResponse,
+                body.build(),
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
-                additionalBodyProperties.toImmutable(),
             )
     }
 
-    fun _body(): Map<String, JsonValue>? = additionalBodyProperties.ifEmpty { null }
+    fun _body(): Body = body
 
     fun _pathParam(index: Int): String =
         when (index) {
@@ -251,8 +245,6 @@ private constructor(
     override fun _headers(): Headers =
         Headers.builder()
             .apply {
-                xLanguage?.let { put("x-language", it.toString()) }
-                xSdkVersion?.let { put("x-sdk-version", it) }
                 xSentAt?.let { put("x-sent-at", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(it)) }
                 xStreamResponse?.let { put("x-stream-response", it.toString()) }
                 putAll(additionalHeaders)
@@ -261,108 +253,85 @@ private constructor(
 
     override fun _queryParams(): QueryParams = additionalQueryParams
 
-    /** Client SDK language */
-    class XLanguage @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+    class Body
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+    private constructor(
+        private val _forceBody: JsonValue,
+        private val additionalProperties: MutableMap<String, JsonValue>,
+    ) {
 
-        /**
-         * Returns this class instance's raw value.
-         *
-         * This is usually only useful if this instance was deserialized from data that doesn't
-         * match any known member, and you want to know that value. For example, if the SDK is on an
-         * older version than the API, then the API may respond with new members that the SDK is
-         * unaware of.
-         */
-        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+        @JsonCreator
+        private constructor(
+            @JsonProperty("_forceBody") @ExcludeMissing _forceBody: JsonValue = JsonMissing.of()
+        ) : this(_forceBody, mutableMapOf())
+
+        @JsonProperty("_forceBody") @ExcludeMissing fun __forceBody(): JsonValue = _forceBody
+
+        @JsonAnySetter
+        private fun putAdditionalProperty(key: String, value: JsonValue) {
+            additionalProperties.put(key, value)
+        }
+
+        @JsonAnyGetter
+        @ExcludeMissing
+        fun _additionalProperties(): Map<String, JsonValue> =
+            Collections.unmodifiableMap(additionalProperties)
+
+        fun toBuilder() = Builder().from(this)
 
         companion object {
 
-            val TYPESCRIPT = of("typescript")
-
-            val PYTHON = of("python")
-
-            val PLAYGROUND = of("playground")
-
-            fun of(value: String) = XLanguage(JsonField.of(value))
+            /** Returns a mutable builder for constructing an instance of [Body]. */
+            fun builder() = Builder()
         }
 
-        /** An enum containing [XLanguage]'s known values. */
-        enum class Known {
-            TYPESCRIPT,
-            PYTHON,
-            PLAYGROUND,
-        }
+        /** A builder for [Body]. */
+        class Builder internal constructor() {
 
-        /**
-         * An enum containing [XLanguage]'s known values, as well as an [_UNKNOWN] member.
-         *
-         * An instance of [XLanguage] can contain an unknown value in a couple of cases:
-         * - It was deserialized from data that doesn't match any known member. For example, if the
-         *   SDK is on an older version than the API, then the API may respond with new members that
-         *   the SDK is unaware of.
-         * - It was constructed with an arbitrary value using the [of] method.
-         */
-        enum class Value {
-            TYPESCRIPT,
-            PYTHON,
-            PLAYGROUND,
+            private var _forceBody: JsonValue = JsonMissing.of()
+            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+            internal fun from(body: Body) = apply {
+                _forceBody = body._forceBody
+                additionalProperties = body.additionalProperties.toMutableMap()
+            }
+
+            fun _forceBody(_forceBody: JsonValue) = apply { this._forceBody = _forceBody }
+
+            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                additionalProperties.put(key, value)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.putAll(additionalProperties)
+            }
+
+            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
+
+            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                keys.forEach(::removeAdditionalProperty)
+            }
+
             /**
-             * An enum member indicating that [XLanguage] was instantiated with an unknown value.
+             * Returns an immutable instance of [Body].
+             *
+             * Further updates to this [Builder] will not mutate the returned instance.
              */
-            _UNKNOWN,
+            fun build(): Body = Body(_forceBody, additionalProperties.toMutableMap())
         }
-
-        /**
-         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
-         * if the class was instantiated with an unknown value.
-         *
-         * Use the [known] method instead if you're certain the value is always known or if you want
-         * to throw for the unknown case.
-         */
-        fun value(): Value =
-            when (this) {
-                TYPESCRIPT -> Value.TYPESCRIPT
-                PYTHON -> Value.PYTHON
-                PLAYGROUND -> Value.PLAYGROUND
-                else -> Value._UNKNOWN
-            }
-
-        /**
-         * Returns an enum member corresponding to this class instance's value.
-         *
-         * Use the [value] method instead if you're uncertain the value is always known and don't
-         * want to throw for the unknown case.
-         *
-         * @throws StagehandInvalidDataException if this class instance's value is a not a known
-         *   member.
-         */
-        fun known(): Known =
-            when (this) {
-                TYPESCRIPT -> Known.TYPESCRIPT
-                PYTHON -> Known.PYTHON
-                PLAYGROUND -> Known.PLAYGROUND
-                else -> throw StagehandInvalidDataException("Unknown XLanguage: $value")
-            }
-
-        /**
-         * Returns this class instance's primitive wire representation.
-         *
-         * This differs from the [toString] method because that method is primarily for debugging
-         * and generally doesn't throw.
-         *
-         * @throws StagehandInvalidDataException if this class instance's value does not have the
-         *   expected primitive type.
-         */
-        fun asString(): String =
-            _value().asString() ?: throw StagehandInvalidDataException("Value is not a String")
 
         private var validated: Boolean = false
 
-        fun validate(): XLanguage = apply {
+        fun validate(): Body = apply {
             if (validated) {
                 return@apply
             }
 
-            known()
             validated = true
         }
 
@@ -380,19 +349,24 @@ private constructor(
          *
          * Used for best match union deserialization.
          */
-        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+        internal fun validity(): Int = 0
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
                 return true
             }
 
-            return other is XLanguage && value == other.value
+            return other is Body &&
+                _forceBody == other._forceBody &&
+                additionalProperties == other.additionalProperties
         }
 
-        override fun hashCode() = value.hashCode()
+        private val hashCode: Int by lazy { Objects.hash(_forceBody, additionalProperties) }
 
-        override fun toString() = value.toString()
+        override fun hashCode(): Int = hashCode
+
+        override fun toString() =
+            "Body{_forceBody=$_forceBody, additionalProperties=$additionalProperties}"
     }
 
     /** Whether to stream the response via SSE */
@@ -532,27 +506,16 @@ private constructor(
 
         return other is SessionEndParams &&
             id == other.id &&
-            xLanguage == other.xLanguage &&
-            xSdkVersion == other.xSdkVersion &&
             xSentAt == other.xSentAt &&
             xStreamResponse == other.xStreamResponse &&
+            body == other.body &&
             additionalHeaders == other.additionalHeaders &&
-            additionalQueryParams == other.additionalQueryParams &&
-            additionalBodyProperties == other.additionalBodyProperties
+            additionalQueryParams == other.additionalQueryParams
     }
 
     override fun hashCode(): Int =
-        Objects.hash(
-            id,
-            xLanguage,
-            xSdkVersion,
-            xSentAt,
-            xStreamResponse,
-            additionalHeaders,
-            additionalQueryParams,
-            additionalBodyProperties,
-        )
+        Objects.hash(id, xSentAt, xStreamResponse, body, additionalHeaders, additionalQueryParams)
 
     override fun toString() =
-        "SessionEndParams{id=$id, xLanguage=$xLanguage, xSdkVersion=$xSdkVersion, xSentAt=$xSentAt, xStreamResponse=$xStreamResponse, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams, additionalBodyProperties=$additionalBodyProperties}"
+        "SessionEndParams{id=$id, xSentAt=$xSentAt, xStreamResponse=$xStreamResponse, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

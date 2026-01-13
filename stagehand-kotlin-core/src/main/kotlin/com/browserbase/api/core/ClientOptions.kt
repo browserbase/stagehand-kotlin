@@ -108,7 +108,7 @@ private constructor(
     /**
      * The base URL to use for every request.
      *
-     * Defaults to the production environment: `https://api.stagehand.browserbase.com/v1`.
+     * Defaults to the production environment: `https://api.stagehand.browserbase.com`.
      */
     fun baseUrl(): String = baseUrl ?: PRODUCTION_URL
 
@@ -116,7 +116,7 @@ private constructor(
 
     companion object {
 
-        const val PRODUCTION_URL = "https://api.stagehand.browserbase.com/v1"
+        const val PRODUCTION_URL = "https://api.stagehand.browserbase.com"
 
         /**
          * Returns a mutable builder for constructing an instance of [ClientOptions].
@@ -227,7 +227,7 @@ private constructor(
         /**
          * The base URL to use for every request.
          *
-         * Defaults to the production environment: `https://api.stagehand.browserbase.com/v1`.
+         * Defaults to the production environment: `https://api.stagehand.browserbase.com`.
          */
         fun baseUrl(baseUrl: String?) = apply { this.baseUrl = baseUrl }
 
@@ -375,12 +375,12 @@ private constructor(
          *
          * See this table for the available options:
          *
-         * |Setter                |System property                 |Environment variable    |Required|Default value                               |
-         * |----------------------|--------------------------------|------------------------|--------|--------------------------------------------|
-         * |`browserbaseApiKey`   |`stagehand.browserbaseApiKey`   |`BROWSERBASE_API_KEY`   |true    |-                                           |
-         * |`browserbaseProjectId`|`stagehand.browserbaseProjectId`|`BROWSERBASE_PROJECT_ID`|true    |-                                           |
-         * |`modelApiKey`         |`stagehand.modelApiKey`         |`MODEL_API_KEY`         |true    |-                                           |
-         * |`baseUrl`             |`stagehand.baseUrl`             |`STAGEHAND_BASE_URL`    |true    |`"https://api.stagehand.browserbase.com/v1"`|
+         * |Setter                |System property                 |Environment variable    |Required|Default value                            |
+         * |----------------------|--------------------------------|------------------------|--------|-----------------------------------------|
+         * |`browserbaseApiKey`   |`stagehand.browserbaseApiKey`   |`BROWSERBASE_API_KEY`   |true    |-                                        |
+         * |`browserbaseProjectId`|`stagehand.browserbaseProjectId`|`BROWSERBASE_PROJECT_ID`|true    |-                                        |
+         * |`modelApiKey`         |`stagehand.modelApiKey`         |`MODEL_API_KEY`         |true    |-                                        |
+         * |`baseUrl`             |`stagehand.baseUrl`             |`STAGEHAND_BASE_URL`    |true    |`"https://api.stagehand.browserbase.com"`|
          *
          * System properties take precedence over environment variables.
          */

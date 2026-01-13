@@ -70,7 +70,7 @@ Most existing browser automation tools either require you to write low-level cod
 ### Gradle
 
 ```kotlin
-implementation("com.browserbase.api:stagehand-kotlin:0.3.0")
+implementation("com.browserbase.api:stagehand-kotlin:0.4.0")
 ```
 
 ### Maven
@@ -79,7 +79,7 @@ implementation("com.browserbase.api:stagehand-kotlin:0.3.0")
 <dependency>
   <groupId>com.browserbase.api</groupId>
   <artifactId>stagehand-kotlin</artifactId>
-  <version>0.3.0</version>
+  <version>0.4.0</version>
 </dependency>
 ```
 
@@ -284,12 +284,12 @@ val client: StagehandClient = StagehandOkHttpClient.builder()
 
 See this table for the available options:
 
-| Setter                 | System property                  | Environment variable     | Required | Default value                                |
-| ---------------------- | -------------------------------- | ------------------------ | -------- | -------------------------------------------- |
-| `browserbaseApiKey`    | `stagehand.browserbaseApiKey`    | `BROWSERBASE_API_KEY`    | true     | -                                            |
-| `browserbaseProjectId` | `stagehand.browserbaseProjectId` | `BROWSERBASE_PROJECT_ID` | true     | -                                            |
-| `modelApiKey`          | `stagehand.modelApiKey`          | `MODEL_API_KEY`          | true     | -                                            |
-| `baseUrl`              | `stagehand.baseUrl`              | `STAGEHAND_BASE_URL`     | true     | `"https://api.stagehand.browserbase.com/v1"` |
+| Setter                 | System property                  | Environment variable     | Required | Default value                             |
+| ---------------------- | -------------------------------- | ------------------------ | -------- | ----------------------------------------- |
+| `browserbaseApiKey`    | `stagehand.browserbaseApiKey`    | `BROWSERBASE_API_KEY`    | true     | -                                         |
+| `browserbaseProjectId` | `stagehand.browserbaseProjectId` | `BROWSERBASE_PROJECT_ID` | true     | -                                         |
+| `modelApiKey`          | `stagehand.modelApiKey`          | `MODEL_API_KEY`          | true     | -                                         |
+| `baseUrl`              | `stagehand.baseUrl`              | `STAGEHAND_BASE_URL`     | true     | `"https://api.stagehand.browserbase.com"` |
 
 System properties take precedence over environment variables.
 
