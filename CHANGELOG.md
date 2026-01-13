@@ -19,6 +19,7 @@ Full Changelog: [v0.3.0...v0.4.0](https://github.com/browserbase/stagehand-kotli
 
 * **internal:** codegen related update ([030a77d](https://github.com/browserbase/stagehand-kotlin/commit/030a77d0c7bcbce7a12e7299ec02e0f9c7a9d0ab))
 * **internal:** codegen related update ([093e1da](https://github.com/browserbase/stagehand-kotlin/commit/093e1da55176a9fa6d100257c29cab675c3c7b19))
+* **internal:** refactor build files to support future stainless package uploads ([b95190a](https://github.com/browserbase/stagehand-kotlin/commit/b95190a82f547f1129bc5e9077c88a0d1f80fed0))
 
 
 ### Documentation
