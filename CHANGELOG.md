@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.0.1 (2026-01-15)
+
+Full Changelog: [v0.4.0...v3.0.1](https://github.com/browserbase/stagehand-kotlin/compare/v0.4.0...v3.0.1)
+
+### Features
+
+* **api:** manual updates ([5b42bfa](https://github.com/browserbase/stagehand-kotlin/commit/5b42bfaf14b4b3cdc0fe21cfdb5e8a88db2dc741))
+
 ## 0.4.0 (2026-01-13)
 
 Full Changelog: [v0.3.0...v0.4.0](https://github.com/browserbase/stagehand-kotlin/compare/v0.3.0...v0.4.0)
