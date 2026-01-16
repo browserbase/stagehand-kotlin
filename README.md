@@ -63,6 +63,14 @@ Most existing browser automation tools either require you to write low-level cod
 
 3. **Write once, run forever**: Stagehand's auto-caching combined with self-healing remembers previous actions, runs without LLM inference, and knows when to involve AI whenever the website changes and your automation breaks.
 
+# Stagehand Kotlin API Library
+
+<!-- x-release-please-start-version -->
+
+[![Maven Central](https://img.shields.io/maven-central/v/com.browserbase.api/stagehand-kotlin)](https://central.sonatype.com/artifact/com.browserbase.api/stagehand-kotlin/3.0.1)
+[![javadoc](https://javadoc.io/badge2/com.browserbase.api/stagehand-kotlin/3.0.1/javadoc.svg)](https://javadoc.io/doc/com.browserbase.api/stagehand-kotlin/3.0.1)
+
+
 ## Installation
 
 <!-- x-release-please-start-version -->
