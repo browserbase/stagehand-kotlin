@@ -28,34 +28,35 @@ import java.util.Collections
 import java.util.Objects
 
 /**
- * Model name string with provider prefix (e.g., 'openai/gpt-5-nano', 'anthropic/claude-4.5-opus')
+ * Model name string with provider prefix. Always use the format 'provider/model-name' (e.g.,
+ * 'openai/gpt-4o', 'anthropic/claude-sonnet-4-5-20250929', 'google/gemini-2.0-flash')
  */
 @JsonDeserialize(using = ModelConfig.Deserializer::class)
 @JsonSerialize(using = ModelConfig.Serializer::class)
 class ModelConfig
 private constructor(
-    private val name: String? = null,
+    private val string: String? = null,
     private val modelConfigObject: ModelConfigObject? = null,
     private val _json: JsonValue? = null,
 ) {
 
     /**
-     * Model name string with provider prefix (e.g., 'openai/gpt-5-nano',
-     * 'anthropic/claude-4.5-opus')
+     * Model name string with provider prefix. Always use the format 'provider/model-name' (e.g.,
+     * 'openai/gpt-4o', 'anthropic/claude-sonnet-4-5-20250929', 'google/gemini-2.0-flash')
      */
-    fun name(): String? = name
+    fun string(): String? = string
 
     fun modelConfigObject(): ModelConfigObject? = modelConfigObject
 
-    fun isName(): Boolean = name != null
+    fun isString(): Boolean = string != null
 
     fun isModelConfigObject(): Boolean = modelConfigObject != null
 
     /**
-     * Model name string with provider prefix (e.g., 'openai/gpt-5-nano',
-     * 'anthropic/claude-4.5-opus')
+     * Model name string with provider prefix. Always use the format 'provider/model-name' (e.g.,
+     * 'openai/gpt-4o', 'anthropic/claude-sonnet-4-5-20250929', 'google/gemini-2.0-flash')
      */
-    fun asName(): String = name.getOrThrow("name")
+    fun asString(): String = string.getOrThrow("string")
 
     fun asModelConfigObject(): ModelConfigObject = modelConfigObject.getOrThrow("modelConfigObject")
 
@@ -63,7 +64,7 @@ private constructor(
 
     fun <T> accept(visitor: Visitor<T>): T =
         when {
-            name != null -> visitor.visitName(name)
+            string != null -> visitor.visitString(string)
             modelConfigObject != null -> visitor.visitModelConfigObject(modelConfigObject)
             else -> visitor.unknown(_json)
         }
@@ -77,7 +78,7 @@ private constructor(
 
         accept(
             object : Visitor<Unit> {
-                override fun visitName(name: String) {}
+                override fun visitString(string: String) {}
 
                 override fun visitModelConfigObject(modelConfigObject: ModelConfigObject) {
                     modelConfigObject.validate()
@@ -103,7 +104,7 @@ private constructor(
     internal fun validity(): Int =
         accept(
             object : Visitor<Int> {
-                override fun visitName(name: String) = 1
+                override fun visitString(string: String) = 1
 
                 override fun visitModelConfigObject(modelConfigObject: ModelConfigObject) =
                     modelConfigObject.validity()
@@ -118,15 +119,15 @@ private constructor(
         }
 
         return other is ModelConfig &&
-            name == other.name &&
+            string == other.string &&
             modelConfigObject == other.modelConfigObject
     }
 
-    override fun hashCode(): Int = Objects.hash(name, modelConfigObject)
+    override fun hashCode(): Int = Objects.hash(string, modelConfigObject)
 
     override fun toString(): String =
         when {
-            name != null -> "ModelConfig{name=$name}"
+            string != null -> "ModelConfig{string=$string}"
             modelConfigObject != null -> "ModelConfig{modelConfigObject=$modelConfigObject}"
             _json != null -> "ModelConfig{_unknown=$_json}"
             else -> throw IllegalStateException("Invalid ModelConfig")
@@ -135,10 +136,11 @@ private constructor(
     companion object {
 
         /**
-         * Model name string with provider prefix (e.g., 'openai/gpt-5-nano',
-         * 'anthropic/claude-4.5-opus')
+         * Model name string with provider prefix. Always use the format 'provider/model-name'
+         * (e.g., 'openai/gpt-4o', 'anthropic/claude-sonnet-4-5-20250929',
+         * 'google/gemini-2.0-flash')
          */
-        fun ofName(name: String) = ModelConfig(name = name)
+        fun ofString(string: String) = ModelConfig(string = string)
 
         fun ofModelConfigObject(modelConfigObject: ModelConfigObject) =
             ModelConfig(modelConfigObject = modelConfigObject)
@@ -150,10 +152,11 @@ private constructor(
     interface Visitor<out T> {
 
         /**
-         * Model name string with provider prefix (e.g., 'openai/gpt-5-nano',
-         * 'anthropic/claude-4.5-opus')
+         * Model name string with provider prefix. Always use the format 'provider/model-name'
+         * (e.g., 'openai/gpt-4o', 'anthropic/claude-sonnet-4-5-20250929',
+         * 'google/gemini-2.0-flash')
          */
-        fun visitName(name: String): T
+        fun visitString(string: String): T
 
         fun visitModelConfigObject(modelConfigObject: ModelConfigObject): T
 
@@ -182,7 +185,7 @@ private constructor(
                             ModelConfig(modelConfigObject = it, _json = json)
                         },
                         tryDeserialize(node, jacksonTypeRef<String>())?.let {
-                            ModelConfig(name = it, _json = json)
+                            ModelConfig(string = it, _json = json)
                         },
                     )
                     .filterNotNull()
@@ -208,7 +211,7 @@ private constructor(
             provider: SerializerProvider,
         ) {
             when {
-                value.name != null -> generator.writeObject(value.name)
+                value.string != null -> generator.writeObject(value.string)
                 value.modelConfigObject != null -> generator.writeObject(value.modelConfigObject)
                 value._json != null -> generator.writeObject(value._json)
                 else -> throw IllegalStateException("Invalid ModelConfig")
@@ -239,7 +242,9 @@ private constructor(
         ) : this(modelName, apiKey, baseUrl, provider, mutableMapOf())
 
         /**
-         * Model name string (e.g., 'openai/gpt-5-nano', 'anthropic/claude-4.5-opus')
+         * Model name string with provider prefix. Always use the format 'provider/model-name'
+         * (e.g., 'openai/gpt-4o', 'anthropic/claude-sonnet-4-5-20250929',
+         * 'google/gemini-2.0-flash')
          *
          * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -340,7 +345,11 @@ private constructor(
                 additionalProperties = modelConfigObject.additionalProperties.toMutableMap()
             }
 
-            /** Model name string (e.g., 'openai/gpt-5-nano', 'anthropic/claude-4.5-opus') */
+            /**
+             * Model name string with provider prefix. Always use the format 'provider/model-name'
+             * (e.g., 'openai/gpt-4o', 'anthropic/claude-sonnet-4-5-20250929',
+             * 'google/gemini-2.0-flash')
+             */
             fun modelName(modelName: String) = modelName(JsonField.of(modelName))
 
             /**
