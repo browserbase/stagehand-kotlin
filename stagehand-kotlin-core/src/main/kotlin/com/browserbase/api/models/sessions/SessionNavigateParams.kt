@@ -16,8 +16,6 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
-import java.time.OffsetDateTime
-import java.time.format.DateTimeFormatter
 import java.util.Collections
 import java.util.Objects
 
@@ -25,7 +23,6 @@ import java.util.Objects
 class SessionNavigateParams
 private constructor(
     private val id: String?,
-    private val xSentAt: OffsetDateTime?,
     private val xStreamResponse: XStreamResponse?,
     private val body: Body,
     private val additionalHeaders: Headers,
@@ -34,9 +31,6 @@ private constructor(
 
     /** Unique session identifier */
     fun id(): String? = id
-
-    /** ISO timestamp when request was sent */
-    fun xSentAt(): OffsetDateTime? = xSentAt
 
     /** Whether to stream the response via SSE */
     fun xStreamResponse(): XStreamResponse? = xStreamResponse
@@ -126,7 +120,6 @@ private constructor(
     class Builder internal constructor() {
 
         private var id: String? = null
-        private var xSentAt: OffsetDateTime? = null
         private var xStreamResponse: XStreamResponse? = null
         private var body: Body.Builder = Body.builder()
         private var additionalHeaders: Headers.Builder = Headers.builder()
@@ -134,7 +127,6 @@ private constructor(
 
         internal fun from(sessionNavigateParams: SessionNavigateParams) = apply {
             id = sessionNavigateParams.id
-            xSentAt = sessionNavigateParams.xSentAt
             xStreamResponse = sessionNavigateParams.xStreamResponse
             body = sessionNavigateParams.body.toBuilder()
             additionalHeaders = sessionNavigateParams.additionalHeaders.toBuilder()
@@ -143,9 +135,6 @@ private constructor(
 
         /** Unique session identifier */
         fun id(id: String?) = apply { this.id = id }
-
-        /** ISO timestamp when request was sent */
-        fun xSentAt(xSentAt: OffsetDateTime?) = apply { this.xSentAt = xSentAt }
 
         /** Whether to stream the response via SSE */
         fun xStreamResponse(xStreamResponse: XStreamResponse?) = apply {
@@ -176,7 +165,7 @@ private constructor(
         fun url(url: JsonField<String>) = apply { body.url(url) }
 
         /** Target frame ID for the navigation */
-        fun frameId(frameId: String) = apply { body.frameId(frameId) }
+        fun frameId(frameId: String?) = apply { body.frameId(frameId) }
 
         /**
          * Sets [Builder.frameId] to an arbitrary JSON value.
@@ -342,7 +331,6 @@ private constructor(
         fun build(): SessionNavigateParams =
             SessionNavigateParams(
                 id,
-                xSentAt,
                 xStreamResponse,
                 body.build(),
                 additionalHeaders.build(),
@@ -361,7 +349,6 @@ private constructor(
     override fun _headers(): Headers =
         Headers.builder()
             .apply {
-                xSentAt?.let { put("x-sent-at", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(it)) }
                 xStreamResponse?.let { put("x-stream-response", it.toString()) }
                 putAll(additionalHeaders)
             }
@@ -505,7 +492,7 @@ private constructor(
             fun url(url: JsonField<String>) = apply { this.url = url }
 
             /** Target frame ID for the navigation */
-            fun frameId(frameId: String) = frameId(JsonField.of(frameId))
+            fun frameId(frameId: String?) = frameId(JsonField.ofNullable(frameId))
 
             /**
              * Sets [Builder.frameId] to an arbitrary JSON value.
@@ -1129,7 +1116,6 @@ private constructor(
 
         return other is SessionNavigateParams &&
             id == other.id &&
-            xSentAt == other.xSentAt &&
             xStreamResponse == other.xStreamResponse &&
             body == other.body &&
             additionalHeaders == other.additionalHeaders &&
@@ -1137,8 +1123,8 @@ private constructor(
     }
 
     override fun hashCode(): Int =
-        Objects.hash(id, xSentAt, xStreamResponse, body, additionalHeaders, additionalQueryParams)
+        Objects.hash(id, xStreamResponse, body, additionalHeaders, additionalQueryParams)
 
     override fun toString() =
-        "SessionNavigateParams{id=$id, xSentAt=$xSentAt, xStreamResponse=$xStreamResponse, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "SessionNavigateParams{id=$id, xStreamResponse=$xStreamResponse, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }
