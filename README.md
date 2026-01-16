@@ -97,6 +97,20 @@ implementation("com.browserbase.api:stagehand-kotlin:3.1.0")
 
 This library requires Java 8 or later.
 
+## Running the Example
+
+A complete working example is available at [`examples/basic.kt`](examples/basic.kt).
+
+To run it, first export the required environment variables, then use Gradle:
+
+```bash
+export BROWSERBASE_API_KEY="your-bb-api-key"
+export BROWSERBASE_PROJECT_ID="your-bb-project-uuid"
+export MODEL_API_KEY="sk-proj-your-llm-api-key"
+
+./gradlew run
+```
+
 ## Usage
 
 This example demonstrates the complete workflow of using Stagehand:
