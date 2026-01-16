@@ -67,8 +67,8 @@ Most existing browser automation tools either require you to write low-level cod
 
 <!-- x-release-please-start-version -->
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.browserbase.api/stagehand-kotlin)](https://central.sonatype.com/artifact/com.browserbase.api/stagehand-kotlin/3.0.1)
-[![javadoc](https://javadoc.io/badge2/com.browserbase.api/stagehand-kotlin/3.0.1/javadoc.svg)](https://javadoc.io/doc/com.browserbase.api/stagehand-kotlin/3.0.1)
+[![Maven Central](https://img.shields.io/maven-central/v/com.browserbase.api/stagehand-kotlin)](https://central.sonatype.com/artifact/com.browserbase.api/stagehand-kotlin/3.1.0)
+[![javadoc](https://javadoc.io/badge2/com.browserbase.api/stagehand-kotlin/3.1.0/javadoc.svg)](https://javadoc.io/doc/com.browserbase.api/stagehand-kotlin/3.1.0)
 
 
 ## Installation
@@ -78,7 +78,7 @@ Most existing browser automation tools either require you to write low-level cod
 ### Gradle
 
 ```kotlin
-implementation("com.browserbase.api:stagehand-kotlin:3.0.1")
+implementation("com.browserbase.api:stagehand-kotlin:3.1.0")
 ```
 
 ### Maven
@@ -87,7 +87,7 @@ implementation("com.browserbase.api:stagehand-kotlin:3.0.1")
 <dependency>
   <groupId>com.browserbase.api</groupId>
   <artifactId>stagehand-kotlin</artifactId>
-  <version>3.0.1</version>
+  <version>3.1.0</version>
 </dependency>
 ```
 
