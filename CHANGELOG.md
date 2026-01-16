@@ -1,5 +1,14 @@
 # Changelog
 
+## 3.1.0 (2026-01-16)
+
+Full Changelog: [v3.0.1...v3.1.0](https://github.com/browserbase/stagehand-kotlin/compare/v3.0.1...v3.1.0)
+
+### Features
+
+* **api:** manual updates ([7d61b03](https://github.com/browserbase/stagehand-kotlin/commit/7d61b03724dd81377ba91f9251279e042625c2d8))
+* x-stainless-any fix, optional frame id, ModelConfigString fix ([f105d86](https://github.com/browserbase/stagehand-kotlin/commit/f105d8681528485a5185d40d218a28c31dc531e1))
+
 ## 3.0.1 (2026-01-15)
 
 Full Changelog: [v0.4.0...v3.0.1](https://github.com/browserbase/stagehand-kotlin/compare/v0.4.0...v3.0.1)
