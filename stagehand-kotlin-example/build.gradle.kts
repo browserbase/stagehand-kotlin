@@ -4,7 +4,8 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":stagehand-kotlin"))
+    implementation(project(":stagehand-kotlin-core"))
+    implementation(project(":stagehand-kotlin-client-okhttp"))
 }
 
 application {
