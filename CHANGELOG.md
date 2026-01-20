@@ -1,5 +1,24 @@
 # Changelog
 
+## 3.1.1 (2026-01-20)
+
+Full Changelog: [v3.1.0...v3.1.1](https://github.com/browserbase/stagehand-kotlin/compare/v3.1.0...v3.1.1)
+
+### Bug Fixes
+
+* **client:** disallow coercion from float to int ([ed9ca07](https://github.com/browserbase/stagehand-kotlin/commit/ed9ca07d54e2d5cfbb8933b63a5db5b4ada26a24))
+* **client:** fully respect max retries ([e5cf19d](https://github.com/browserbase/stagehand-kotlin/commit/e5cf19d323c4ce65bf0ec8ce7d1f8ca10bf30063))
+* **client:** send retry count header for max retries 0 ([e5cf19d](https://github.com/browserbase/stagehand-kotlin/commit/e5cf19d323c4ce65bf0ec8ce7d1f8ca10bf30063))
+* date time deserialization leniency ([25b5f30](https://github.com/browserbase/stagehand-kotlin/commit/25b5f30210f958d1bc00dc0fcb97006445490cb0))
+
+
+### Chores
+
+* **ci:** upgrade `actions/setup-java` ([726a4da](https://github.com/browserbase/stagehand-kotlin/commit/726a4da0edc7340feb7215497636144f1d574888))
+* **internal:** depend on packages directly in example ([e5cf19d](https://github.com/browserbase/stagehand-kotlin/commit/e5cf19d323c4ce65bf0ec8ce7d1f8ca10bf30063))
+* **internal:** update `actions/checkout` version ([acb7383](https://github.com/browserbase/stagehand-kotlin/commit/acb7383da7c31b58fc5035ddce6908a90a1af19d))
+* test on Jackson 2.14.0 to avoid encountering FasterXML/jackson-databind[#3240](https://github.com/browserbase/stagehand-kotlin/issues/3240) in tests ([25b5f30](https://github.com/browserbase/stagehand-kotlin/commit/25b5f30210f958d1bc00dc0fcb97006445490cb0))
+
 ## 3.1.0 (2026-01-16)
 
 Full Changelog: [v3.0.1...v3.1.0](https://github.com/browserbase/stagehand-kotlin/compare/v3.0.1...v3.1.0)
