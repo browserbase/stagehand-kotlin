@@ -38,6 +38,7 @@ internal class SessionExecuteParamsTest {
                     .build()
             )
             .frameId("frameId")
+            .shouldCache(true)
             .build()
     }
 
@@ -92,6 +93,7 @@ internal class SessionExecuteParamsTest {
                         .build()
                 )
                 .frameId("frameId")
+                .shouldCache(true)
                 .build()
 
         val headers = params._headers()
@@ -150,6 +152,7 @@ internal class SessionExecuteParamsTest {
                         .build()
                 )
                 .frameId("frameId")
+                .shouldCache(true)
                 .build()
 
         val body = params._body()
@@ -181,6 +184,7 @@ internal class SessionExecuteParamsTest {
                     .build()
             )
         assertThat(body.frameId()).isEqualTo("frameId")
+        assertThat(body.shouldCache()).isEqualTo(true)
     }
 
     @Test
