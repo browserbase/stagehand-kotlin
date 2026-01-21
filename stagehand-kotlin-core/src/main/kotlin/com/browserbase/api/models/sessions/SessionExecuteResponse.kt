@@ -191,13 +191,17 @@ private constructor(
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val result: JsonField<Result>,
+        private val cacheEntry: JsonField<CacheEntry>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
         @JsonCreator
         private constructor(
-            @JsonProperty("result") @ExcludeMissing result: JsonField<Result> = JsonMissing.of()
-        ) : this(result, mutableMapOf())
+            @JsonProperty("result") @ExcludeMissing result: JsonField<Result> = JsonMissing.of(),
+            @JsonProperty("cacheEntry")
+            @ExcludeMissing
+            cacheEntry: JsonField<CacheEntry> = JsonMissing.of(),
+        ) : this(result, cacheEntry, mutableMapOf())
 
         /**
          * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
@@ -206,11 +210,26 @@ private constructor(
         fun result(): Result = result.getRequired("result")
 
         /**
+         * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun cacheEntry(): CacheEntry? = cacheEntry.getNullable("cacheEntry")
+
+        /**
          * Returns the raw JSON value of [result].
          *
          * Unlike [result], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("result") @ExcludeMissing fun _result(): JsonField<Result> = result
+
+        /**
+         * Returns the raw JSON value of [cacheEntry].
+         *
+         * Unlike [cacheEntry], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("cacheEntry")
+        @ExcludeMissing
+        fun _cacheEntry(): JsonField<CacheEntry> = cacheEntry
 
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -241,10 +260,12 @@ private constructor(
         class Builder internal constructor() {
 
             private var result: JsonField<Result>? = null
+            private var cacheEntry: JsonField<CacheEntry> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             internal fun from(data: Data) = apply {
                 result = data.result
+                cacheEntry = data.cacheEntry
                 additionalProperties = data.additionalProperties.toMutableMap()
             }
 
@@ -258,6 +279,19 @@ private constructor(
              * supported value.
              */
             fun result(result: JsonField<Result>) = apply { this.result = result }
+
+            fun cacheEntry(cacheEntry: CacheEntry) = cacheEntry(JsonField.of(cacheEntry))
+
+            /**
+             * Sets [Builder.cacheEntry] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.cacheEntry] with a well-typed [CacheEntry] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun cacheEntry(cacheEntry: JsonField<CacheEntry>) = apply {
+                this.cacheEntry = cacheEntry
+            }
 
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
@@ -291,7 +325,11 @@ private constructor(
              * @throws IllegalStateException if any required field is unset.
              */
             fun build(): Data =
-                Data(checkRequired("result", result), additionalProperties.toMutableMap())
+                Data(
+                    checkRequired("result", result),
+                    cacheEntry,
+                    additionalProperties.toMutableMap(),
+                )
         }
 
         private var validated: Boolean = false
@@ -302,6 +340,7 @@ private constructor(
             }
 
             result().validate()
+            cacheEntry()?.validate()
             validated = true
         }
 
@@ -319,7 +358,8 @@ private constructor(
          *
          * Used for best match union deserialization.
          */
-        internal fun validity(): Int = (result.asKnown()?.validity() ?: 0)
+        internal fun validity(): Int =
+            (result.asKnown()?.validity() ?: 0) + (cacheEntry.asKnown()?.validity() ?: 0)
 
         class Result
         @JsonCreator(mode = JsonCreator.Mode.DISABLED)
@@ -1607,6 +1647,187 @@ private constructor(
                 "Result{actions=$actions, completed=$completed, message=$message, success=$success, metadata=$metadata, usage=$usage, additionalProperties=$additionalProperties}"
         }
 
+        class CacheEntry
+        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+        private constructor(
+            private val cacheKey: JsonField<String>,
+            private val entry: JsonValue,
+            private val additionalProperties: MutableMap<String, JsonValue>,
+        ) {
+
+            @JsonCreator
+            private constructor(
+                @JsonProperty("cacheKey")
+                @ExcludeMissing
+                cacheKey: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("entry") @ExcludeMissing entry: JsonValue = JsonMissing.of(),
+            ) : this(cacheKey, entry, mutableMapOf())
+
+            /**
+             * Opaque cache identifier computed from instruction, URL, options, and config
+             *
+             * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
+             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun cacheKey(): String = cacheKey.getRequired("cacheKey")
+
+            /** Serialized cache entry that can be written to disk */
+            @JsonProperty("entry") @ExcludeMissing fun _entry(): JsonValue = entry
+
+            /**
+             * Returns the raw JSON value of [cacheKey].
+             *
+             * Unlike [cacheKey], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("cacheKey") @ExcludeMissing fun _cacheKey(): JsonField<String> = cacheKey
+
+            @JsonAnySetter
+            private fun putAdditionalProperty(key: String, value: JsonValue) {
+                additionalProperties.put(key, value)
+            }
+
+            @JsonAnyGetter
+            @ExcludeMissing
+            fun _additionalProperties(): Map<String, JsonValue> =
+                Collections.unmodifiableMap(additionalProperties)
+
+            fun toBuilder() = Builder().from(this)
+
+            companion object {
+
+                /**
+                 * Returns a mutable builder for constructing an instance of [CacheEntry].
+                 *
+                 * The following fields are required:
+                 * ```kotlin
+                 * .cacheKey()
+                 * .entry()
+                 * ```
+                 */
+                fun builder() = Builder()
+            }
+
+            /** A builder for [CacheEntry]. */
+            class Builder internal constructor() {
+
+                private var cacheKey: JsonField<String>? = null
+                private var entry: JsonValue? = null
+                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                internal fun from(cacheEntry: CacheEntry) = apply {
+                    cacheKey = cacheEntry.cacheKey
+                    entry = cacheEntry.entry
+                    additionalProperties = cacheEntry.additionalProperties.toMutableMap()
+                }
+
+                /** Opaque cache identifier computed from instruction, URL, options, and config */
+                fun cacheKey(cacheKey: String) = cacheKey(JsonField.of(cacheKey))
+
+                /**
+                 * Sets [Builder.cacheKey] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.cacheKey] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun cacheKey(cacheKey: JsonField<String>) = apply { this.cacheKey = cacheKey }
+
+                /** Serialized cache entry that can be written to disk */
+                fun entry(entry: JsonValue) = apply { this.entry = entry }
+
+                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                    this.additionalProperties.clear()
+                    putAllAdditionalProperties(additionalProperties)
+                }
+
+                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                    additionalProperties.put(key, value)
+                }
+
+                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                    apply {
+                        this.additionalProperties.putAll(additionalProperties)
+                    }
+
+                fun removeAdditionalProperty(key: String) = apply {
+                    additionalProperties.remove(key)
+                }
+
+                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                    keys.forEach(::removeAdditionalProperty)
+                }
+
+                /**
+                 * Returns an immutable instance of [CacheEntry].
+                 *
+                 * Further updates to this [Builder] will not mutate the returned instance.
+                 *
+                 * The following fields are required:
+                 * ```kotlin
+                 * .cacheKey()
+                 * .entry()
+                 * ```
+                 *
+                 * @throws IllegalStateException if any required field is unset.
+                 */
+                fun build(): CacheEntry =
+                    CacheEntry(
+                        checkRequired("cacheKey", cacheKey),
+                        checkRequired("entry", entry),
+                        additionalProperties.toMutableMap(),
+                    )
+            }
+
+            private var validated: Boolean = false
+
+            fun validate(): CacheEntry = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                cacheKey()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: StagehandInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            internal fun validity(): Int = (if (cacheKey.asKnown() == null) 0 else 1)
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is CacheEntry &&
+                    cacheKey == other.cacheKey &&
+                    entry == other.entry &&
+                    additionalProperties == other.additionalProperties
+            }
+
+            private val hashCode: Int by lazy {
+                Objects.hash(cacheKey, entry, additionalProperties)
+            }
+
+            override fun hashCode(): Int = hashCode
+
+            override fun toString() =
+                "CacheEntry{cacheKey=$cacheKey, entry=$entry, additionalProperties=$additionalProperties}"
+        }
+
         override fun equals(other: Any?): Boolean {
             if (this === other) {
                 return true
@@ -1614,14 +1835,16 @@ private constructor(
 
             return other is Data &&
                 result == other.result &&
+                cacheEntry == other.cacheEntry &&
                 additionalProperties == other.additionalProperties
         }
 
-        private val hashCode: Int by lazy { Objects.hash(result, additionalProperties) }
+        private val hashCode: Int by lazy { Objects.hash(result, cacheEntry, additionalProperties) }
 
         override fun hashCode(): Int = hashCode
 
-        override fun toString() = "Data{result=$result, additionalProperties=$additionalProperties}"
+        override fun toString() =
+            "Data{result=$result, cacheEntry=$cacheEntry, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {
