@@ -128,6 +128,7 @@ internal class SessionServiceAsyncTest {
                             .build()
                     )
                     .frameId("frameId")
+                    .shouldCache(true)
                     .build()
             )
 
