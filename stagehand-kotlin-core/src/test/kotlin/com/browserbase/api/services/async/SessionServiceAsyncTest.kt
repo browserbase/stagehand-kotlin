@@ -12,6 +12,7 @@ import com.browserbase.api.models.sessions.SessionExecuteParams
 import com.browserbase.api.models.sessions.SessionExtractParams
 import com.browserbase.api.models.sessions.SessionNavigateParams
 import com.browserbase.api.models.sessions.SessionObserveParams
+import com.browserbase.api.models.sessions.SessionReplayParams
 import com.browserbase.api.models.sessions.SessionStartParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -245,6 +246,29 @@ internal class SessionServiceAsyncTest {
                             .timeout(30000.0)
                             .build()
                     )
+                    .build()
+            )
+
+        response.validate()
+    }
+
+    @Disabled("Prism tests are disabled")
+    @Test
+    suspend fun replay() {
+        val client =
+            StagehandOkHttpClientAsync.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .browserbaseApiKey("My Browserbase API Key")
+                .browserbaseProjectId("My Browserbase Project ID")
+                .modelApiKey("My Model API Key")
+                .build()
+        val sessionServiceAsync = client.sessions()
+
+        val response =
+            sessionServiceAsync.replay(
+                SessionReplayParams.builder()
+                    .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
+                    .xStreamResponse(SessionReplayParams.XStreamResponse.TRUE)
                     .build()
             )
 
