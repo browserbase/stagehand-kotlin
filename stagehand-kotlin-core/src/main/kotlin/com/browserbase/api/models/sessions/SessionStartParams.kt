@@ -48,8 +48,7 @@ private constructor(
     fun xStreamResponse(): XStreamResponse? = xStreamResponse
 
     /**
-     * Model name to use for AI operations. Always use the format 'provider/model-name' (e.g.,
-     * 'openai/gpt-4o', 'anthropic/claude-sonnet-4-5-20250929', 'google/gemini-2.0-flash')
+     * Model name to use for AI operations
      *
      * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -270,10 +269,7 @@ private constructor(
          */
         fun body(body: Body) = apply { this.body = body.toBuilder() }
 
-        /**
-         * Model name to use for AI operations. Always use the format 'provider/model-name' (e.g.,
-         * 'openai/gpt-4o', 'anthropic/claude-sonnet-4-5-20250929', 'google/gemini-2.0-flash')
-         */
+        /** Model name to use for AI operations */
         fun modelName(modelName: String) = apply { body.modelName(modelName) }
 
         /**
@@ -637,8 +633,7 @@ private constructor(
         )
 
         /**
-         * Model name to use for AI operations. Always use the format 'provider/model-name' (e.g.,
-         * 'openai/gpt-4o', 'anthropic/claude-sonnet-4-5-20250929', 'google/gemini-2.0-flash')
+         * Model name to use for AI operations
          *
          * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -878,11 +873,7 @@ private constructor(
                 additionalProperties = body.additionalProperties.toMutableMap()
             }
 
-            /**
-             * Model name to use for AI operations. Always use the format 'provider/model-name'
-             * (e.g., 'openai/gpt-4o', 'anthropic/claude-sonnet-4-5-20250929',
-             * 'google/gemini-2.0-flash')
-             */
+            /** Model name to use for AI operations */
             fun modelName(modelName: String) = modelName(JsonField.of(modelName))
 
             /**
@@ -1381,6 +1372,7 @@ private constructor(
             private val ignoreDefaultArgs: JsonField<IgnoreDefaultArgs>,
             private val ignoreHttpsErrors: JsonField<Boolean>,
             private val locale: JsonField<String>,
+            private val port: JsonField<Double>,
             private val preserveUserDataDir: JsonField<Boolean>,
             private val proxy: JsonField<Proxy>,
             private val userDataDir: JsonField<String>,
@@ -1432,6 +1424,7 @@ private constructor(
                 @JsonProperty("locale")
                 @ExcludeMissing
                 locale: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("port") @ExcludeMissing port: JsonField<Double> = JsonMissing.of(),
                 @JsonProperty("preserveUserDataDir")
                 @ExcludeMissing
                 preserveUserDataDir: JsonField<Boolean> = JsonMissing.of(),
@@ -1457,6 +1450,7 @@ private constructor(
                 ignoreDefaultArgs,
                 ignoreHttpsErrors,
                 locale,
+                port,
                 preserveUserDataDir,
                 proxy,
                 userDataDir,
@@ -1548,6 +1542,12 @@ private constructor(
              *   if the server responded with an unexpected value).
              */
             fun locale(): String? = locale.getNullable("locale")
+
+            /**
+             * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g.
+             *   if the server responded with an unexpected value).
+             */
+            fun port(): Double? = port.getNullable("port")
 
             /**
              * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g.
@@ -1700,6 +1700,13 @@ private constructor(
             @JsonProperty("locale") @ExcludeMissing fun _locale(): JsonField<String> = locale
 
             /**
+             * Returns the raw JSON value of [port].
+             *
+             * Unlike [port], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("port") @ExcludeMissing fun _port(): JsonField<Double> = port
+
+            /**
              * Returns the raw JSON value of [preserveUserDataDir].
              *
              * Unlike [preserveUserDataDir], this method doesn't throw if the JSON field has an
@@ -1771,6 +1778,7 @@ private constructor(
                 private var ignoreDefaultArgs: JsonField<IgnoreDefaultArgs> = JsonMissing.of()
                 private var ignoreHttpsErrors: JsonField<Boolean> = JsonMissing.of()
                 private var locale: JsonField<String> = JsonMissing.of()
+                private var port: JsonField<Double> = JsonMissing.of()
                 private var preserveUserDataDir: JsonField<Boolean> = JsonMissing.of()
                 private var proxy: JsonField<Proxy> = JsonMissing.of()
                 private var userDataDir: JsonField<String> = JsonMissing.of()
@@ -1792,6 +1800,7 @@ private constructor(
                     ignoreDefaultArgs = launchOptions.ignoreDefaultArgs
                     ignoreHttpsErrors = launchOptions.ignoreHttpsErrors
                     locale = launchOptions.locale
+                    port = launchOptions.port
                     preserveUserDataDir = launchOptions.preserveUserDataDir
                     proxy = launchOptions.proxy
                     userDataDir = launchOptions.userDataDir
@@ -2005,6 +2014,17 @@ private constructor(
                  */
                 fun locale(locale: JsonField<String>) = apply { this.locale = locale }
 
+                fun port(port: Double) = port(JsonField.of(port))
+
+                /**
+                 * Sets [Builder.port] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.port] with a well-typed [Double] value instead.
+                 * This method is primarily for setting the field to an undocumented or not yet
+                 * supported value.
+                 */
+                fun port(port: JsonField<Double>) = apply { this.port = port }
+
                 fun preserveUserDataDir(preserveUserDataDir: Boolean) =
                     preserveUserDataDir(JsonField.of(preserveUserDataDir))
 
@@ -2097,6 +2117,7 @@ private constructor(
                         ignoreDefaultArgs,
                         ignoreHttpsErrors,
                         locale,
+                        port,
                         preserveUserDataDir,
                         proxy,
                         userDataDir,
@@ -2126,6 +2147,7 @@ private constructor(
                 ignoreDefaultArgs()?.validate()
                 ignoreHttpsErrors()
                 locale()
+                port()
                 preserveUserDataDir()
                 proxy()?.validate()
                 userDataDir()
@@ -2162,6 +2184,7 @@ private constructor(
                     (ignoreDefaultArgs.asKnown()?.validity() ?: 0) +
                     (if (ignoreHttpsErrors.asKnown() == null) 0 else 1) +
                     (if (locale.asKnown() == null) 0 else 1) +
+                    (if (port.asKnown() == null) 0 else 1) +
                     (if (preserveUserDataDir.asKnown() == null) 0 else 1) +
                     (proxy.asKnown()?.validity() ?: 0) +
                     (if (userDataDir.asKnown() == null) 0 else 1) +
@@ -2839,6 +2862,7 @@ private constructor(
                     ignoreDefaultArgs == other.ignoreDefaultArgs &&
                     ignoreHttpsErrors == other.ignoreHttpsErrors &&
                     locale == other.locale &&
+                    port == other.port &&
                     preserveUserDataDir == other.preserveUserDataDir &&
                     proxy == other.proxy &&
                     userDataDir == other.userDataDir &&
@@ -2862,6 +2886,7 @@ private constructor(
                     ignoreDefaultArgs,
                     ignoreHttpsErrors,
                     locale,
+                    port,
                     preserveUserDataDir,
                     proxy,
                     userDataDir,
@@ -2873,7 +2898,7 @@ private constructor(
             override fun hashCode(): Int = hashCode
 
             override fun toString() =
-                "LaunchOptions{acceptDownloads=$acceptDownloads, args=$args, cdpUrl=$cdpUrl, chromiumSandbox=$chromiumSandbox, connectTimeoutMs=$connectTimeoutMs, deviceScaleFactor=$deviceScaleFactor, devtools=$devtools, downloadsPath=$downloadsPath, executablePath=$executablePath, hasTouch=$hasTouch, headless=$headless, ignoreDefaultArgs=$ignoreDefaultArgs, ignoreHttpsErrors=$ignoreHttpsErrors, locale=$locale, preserveUserDataDir=$preserveUserDataDir, proxy=$proxy, userDataDir=$userDataDir, viewport=$viewport, additionalProperties=$additionalProperties}"
+                "LaunchOptions{acceptDownloads=$acceptDownloads, args=$args, cdpUrl=$cdpUrl, chromiumSandbox=$chromiumSandbox, connectTimeoutMs=$connectTimeoutMs, deviceScaleFactor=$deviceScaleFactor, devtools=$devtools, downloadsPath=$downloadsPath, executablePath=$executablePath, hasTouch=$hasTouch, headless=$headless, ignoreDefaultArgs=$ignoreDefaultArgs, ignoreHttpsErrors=$ignoreHttpsErrors, locale=$locale, port=$port, preserveUserDataDir=$preserveUserDataDir, proxy=$proxy, userDataDir=$userDataDir, viewport=$viewport, additionalProperties=$additionalProperties}"
         }
 
         /** Browser type to use */

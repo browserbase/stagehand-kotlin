@@ -16,7 +16,15 @@ internal class SessionExecuteParamsTest {
             .agentConfig(
                 SessionExecuteParams.AgentConfig.builder()
                     .cua(true)
-                    .model("openai/gpt-4o")
+                    .mode(SessionExecuteParams.AgentConfig.Mode.CUA)
+                    .model(
+                        ModelConfig.builder()
+                            .modelName("openai/gpt-5-nano")
+                            .apiKey("sk-some-openai-api-key")
+                            .baseUrl("https://api.openai.com/v1")
+                            .provider(ModelConfig.Provider.OPENAI)
+                            .build()
+                    )
                     .provider(SessionExecuteParams.AgentConfig.Provider.OPENAI)
                     .systemPrompt("systemPrompt")
                     .build()
@@ -31,6 +39,7 @@ internal class SessionExecuteParamsTest {
                     .build()
             )
             .frameId("frameId")
+            .shouldCache(true)
             .build()
     }
 
@@ -63,7 +72,15 @@ internal class SessionExecuteParamsTest {
                 .agentConfig(
                     SessionExecuteParams.AgentConfig.builder()
                         .cua(true)
-                        .model("openai/gpt-4o")
+                        .mode(SessionExecuteParams.AgentConfig.Mode.CUA)
+                        .model(
+                            ModelConfig.builder()
+                                .modelName("openai/gpt-5-nano")
+                                .apiKey("sk-some-openai-api-key")
+                                .baseUrl("https://api.openai.com/v1")
+                                .provider(ModelConfig.Provider.OPENAI)
+                                .build()
+                        )
                         .provider(SessionExecuteParams.AgentConfig.Provider.OPENAI)
                         .systemPrompt("systemPrompt")
                         .build()
@@ -78,6 +95,7 @@ internal class SessionExecuteParamsTest {
                         .build()
                 )
                 .frameId("frameId")
+                .shouldCache(true)
                 .build()
 
         val headers = params._headers()
@@ -114,7 +132,15 @@ internal class SessionExecuteParamsTest {
                 .agentConfig(
                     SessionExecuteParams.AgentConfig.builder()
                         .cua(true)
-                        .model("openai/gpt-4o")
+                        .mode(SessionExecuteParams.AgentConfig.Mode.CUA)
+                        .model(
+                            ModelConfig.builder()
+                                .modelName("openai/gpt-5-nano")
+                                .apiKey("sk-some-openai-api-key")
+                                .baseUrl("https://api.openai.com/v1")
+                                .provider(ModelConfig.Provider.OPENAI)
+                                .build()
+                        )
                         .provider(SessionExecuteParams.AgentConfig.Provider.OPENAI)
                         .systemPrompt("systemPrompt")
                         .build()
@@ -129,6 +155,7 @@ internal class SessionExecuteParamsTest {
                         .build()
                 )
                 .frameId("frameId")
+                .shouldCache(true)
                 .build()
 
         val body = params._body()
@@ -137,7 +164,15 @@ internal class SessionExecuteParamsTest {
             .isEqualTo(
                 SessionExecuteParams.AgentConfig.builder()
                     .cua(true)
-                    .model("openai/gpt-4o")
+                    .mode(SessionExecuteParams.AgentConfig.Mode.CUA)
+                    .model(
+                        ModelConfig.builder()
+                            .modelName("openai/gpt-5-nano")
+                            .apiKey("sk-some-openai-api-key")
+                            .baseUrl("https://api.openai.com/v1")
+                            .provider(ModelConfig.Provider.OPENAI)
+                            .build()
+                    )
                     .provider(SessionExecuteParams.AgentConfig.Provider.OPENAI)
                     .systemPrompt("systemPrompt")
                     .build()
@@ -153,6 +188,7 @@ internal class SessionExecuteParamsTest {
                     .build()
             )
         assertThat(body.frameId()).isEqualTo("frameId")
+        assertThat(body.shouldCache()).isEqualTo(true)
     }
 
     @Test

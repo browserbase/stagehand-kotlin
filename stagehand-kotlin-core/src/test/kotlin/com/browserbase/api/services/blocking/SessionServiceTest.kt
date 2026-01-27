@@ -5,12 +5,14 @@ package com.browserbase.api.services.blocking
 import com.browserbase.api.TestServerExtension
 import com.browserbase.api.client.okhttp.StagehandOkHttpClient
 import com.browserbase.api.core.JsonValue
+import com.browserbase.api.models.sessions.ModelConfig
 import com.browserbase.api.models.sessions.SessionActParams
 import com.browserbase.api.models.sessions.SessionEndParams
 import com.browserbase.api.models.sessions.SessionExecuteParams
 import com.browserbase.api.models.sessions.SessionExtractParams
 import com.browserbase.api.models.sessions.SessionNavigateParams
 import com.browserbase.api.models.sessions.SessionObserveParams
+import com.browserbase.api.models.sessions.SessionReplayParams
 import com.browserbase.api.models.sessions.SessionStartParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -40,7 +42,14 @@ internal class SessionServiceTest {
                     .frameId("frameId")
                     .options(
                         SessionActParams.Options.builder()
-                            .model("openai/gpt-4o")
+                            .model(
+                                ModelConfig.builder()
+                                    .modelName("openai/gpt-5-nano")
+                                    .apiKey("sk-some-openai-api-key")
+                                    .baseUrl("https://api.openai.com/v1")
+                                    .provider(ModelConfig.Provider.OPENAI)
+                                    .build()
+                            )
                             .timeout(30000.0)
                             .variables(
                                 SessionActParams.Options.Variables.builder()
@@ -76,7 +85,14 @@ internal class SessionServiceTest {
                     .frameId("frameId")
                     .options(
                         SessionActParams.Options.builder()
-                            .model("openai/gpt-4o")
+                            .model(
+                                ModelConfig.builder()
+                                    .modelName("openai/gpt-5-nano")
+                                    .apiKey("sk-some-openai-api-key")
+                                    .baseUrl("https://api.openai.com/v1")
+                                    .provider(ModelConfig.Provider.OPENAI)
+                                    .build()
+                            )
                             .timeout(30000.0)
                             .variables(
                                 SessionActParams.Options.Variables.builder()
@@ -110,7 +126,6 @@ internal class SessionServiceTest {
                 SessionEndParams.builder()
                     .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
                     .xStreamResponse(SessionEndParams.XStreamResponse.TRUE)
-                    ._forceBody(JsonValue.from(mapOf<String, Any>()))
                     .build()
             )
 
@@ -137,7 +152,15 @@ internal class SessionServiceTest {
                     .agentConfig(
                         SessionExecuteParams.AgentConfig.builder()
                             .cua(true)
-                            .model("openai/gpt-4o")
+                            .mode(SessionExecuteParams.AgentConfig.Mode.CUA)
+                            .model(
+                                ModelConfig.builder()
+                                    .modelName("openai/gpt-5-nano")
+                                    .apiKey("sk-some-openai-api-key")
+                                    .baseUrl("https://api.openai.com/v1")
+                                    .provider(ModelConfig.Provider.OPENAI)
+                                    .build()
+                            )
                             .provider(SessionExecuteParams.AgentConfig.Provider.OPENAI)
                             .systemPrompt("systemPrompt")
                             .build()
@@ -152,6 +175,7 @@ internal class SessionServiceTest {
                             .build()
                     )
                     .frameId("frameId")
+                    .shouldCache(true)
                     .build()
             )
 
@@ -178,7 +202,15 @@ internal class SessionServiceTest {
                     .agentConfig(
                         SessionExecuteParams.AgentConfig.builder()
                             .cua(true)
-                            .model("openai/gpt-4o")
+                            .mode(SessionExecuteParams.AgentConfig.Mode.CUA)
+                            .model(
+                                ModelConfig.builder()
+                                    .modelName("openai/gpt-5-nano")
+                                    .apiKey("sk-some-openai-api-key")
+                                    .baseUrl("https://api.openai.com/v1")
+                                    .provider(ModelConfig.Provider.OPENAI)
+                                    .build()
+                            )
                             .provider(SessionExecuteParams.AgentConfig.Provider.OPENAI)
                             .systemPrompt("systemPrompt")
                             .build()
@@ -193,6 +225,7 @@ internal class SessionServiceTest {
                             .build()
                     )
                     .frameId("frameId")
+                    .shouldCache(true)
                     .build()
             )
 
@@ -222,7 +255,14 @@ internal class SessionServiceTest {
                     .instruction("Extract all product names and prices from the page")
                     .options(
                         SessionExtractParams.Options.builder()
-                            .model("openai/gpt-4o")
+                            .model(
+                                ModelConfig.builder()
+                                    .modelName("openai/gpt-5-nano")
+                                    .apiKey("sk-some-openai-api-key")
+                                    .baseUrl("https://api.openai.com/v1")
+                                    .provider(ModelConfig.Provider.OPENAI)
+                                    .build()
+                            )
                             .selector("#main-content")
                             .timeout(30000.0)
                             .build()
@@ -259,7 +299,14 @@ internal class SessionServiceTest {
                     .instruction("Extract all product names and prices from the page")
                     .options(
                         SessionExtractParams.Options.builder()
-                            .model("openai/gpt-4o")
+                            .model(
+                                ModelConfig.builder()
+                                    .modelName("openai/gpt-5-nano")
+                                    .apiKey("sk-some-openai-api-key")
+                                    .baseUrl("https://api.openai.com/v1")
+                                    .provider(ModelConfig.Provider.OPENAI)
+                                    .build()
+                            )
                             .selector("#main-content")
                             .timeout(30000.0)
                             .build()
@@ -331,7 +378,14 @@ internal class SessionServiceTest {
                     .instruction("Find all clickable navigation links")
                     .options(
                         SessionObserveParams.Options.builder()
-                            .model("openai/gpt-4o")
+                            .model(
+                                ModelConfig.builder()
+                                    .modelName("openai/gpt-5-nano")
+                                    .apiKey("sk-some-openai-api-key")
+                                    .baseUrl("https://api.openai.com/v1")
+                                    .provider(ModelConfig.Provider.OPENAI)
+                                    .build()
+                            )
                             .selector("nav")
                             .timeout(30000.0)
                             .build()
@@ -363,7 +417,14 @@ internal class SessionServiceTest {
                     .instruction("Find all clickable navigation links")
                     .options(
                         SessionObserveParams.Options.builder()
-                            .model("openai/gpt-4o")
+                            .model(
+                                ModelConfig.builder()
+                                    .modelName("openai/gpt-5-nano")
+                                    .apiKey("sk-some-openai-api-key")
+                                    .baseUrl("https://api.openai.com/v1")
+                                    .provider(ModelConfig.Provider.OPENAI)
+                                    .build()
+                            )
                             .selector("nav")
                             .timeout(30000.0)
                             .build()
@@ -374,6 +435,29 @@ internal class SessionServiceTest {
         responseStreamResponse.use {
             responseStreamResponse.asSequence().forEach { response -> response.validate() }
         }
+    }
+
+    @Disabled("Prism tests are disabled")
+    @Test
+    fun replay() {
+        val client =
+            StagehandOkHttpClient.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .browserbaseApiKey("My Browserbase API Key")
+                .browserbaseProjectId("My Browserbase Project ID")
+                .modelApiKey("My Model API Key")
+                .build()
+        val sessionService = client.sessions()
+
+        val response =
+            sessionService.replay(
+                SessionReplayParams.builder()
+                    .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
+                    .xStreamResponse(SessionReplayParams.XStreamResponse.TRUE)
+                    .build()
+            )
+
+        response.validate()
     }
 
     @Disabled("Prism tests are disabled")
@@ -413,6 +497,7 @@ internal class SessionServiceTest {
                                     .ignoreDefaultArgs(true)
                                     .ignoreHttpsErrors(true)
                                     .locale("locale")
+                                    .port(0.0)
                                     .preserveUserDataDir(true)
                                     .proxy(
                                         SessionStartParams.Browser.LaunchOptions.Proxy.builder()
