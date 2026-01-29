@@ -28,6 +28,8 @@ import com.browserbase.api.models.sessions.SessionNavigateParams
 import com.browserbase.api.models.sessions.SessionNavigateResponse
 import com.browserbase.api.models.sessions.SessionObserveParams
 import com.browserbase.api.models.sessions.SessionObserveResponse
+import com.browserbase.api.models.sessions.SessionReplayParams
+import com.browserbase.api.models.sessions.SessionReplayResponse
 import com.browserbase.api.models.sessions.SessionStartParams
 import com.browserbase.api.models.sessions.SessionStartResponse
 
@@ -84,6 +86,13 @@ class SessionServiceAsyncImpl internal constructor(private val clientOptions: Cl
     ): SessionObserveResponse =
         // post /v1/sessions/{id}/observe
         withRawResponse().observe(params, requestOptions).parse()
+
+    override suspend fun replay(
+        params: SessionReplayParams,
+        requestOptions: RequestOptions,
+    ): SessionReplayResponse =
+        // get /v1/sessions/{id}/replay
+        withRawResponse().replay(params, requestOptions).parse()
 
     override suspend fun start(
         params: SessionStartParams,
@@ -151,7 +160,7 @@ class SessionServiceAsyncImpl internal constructor(private val clientOptions: Cl
                     .method(HttpMethod.POST)
                     .baseUrl(clientOptions.baseUrl())
                     .addPathSegments("v1", "sessions", params._pathParam(0), "end")
-                    .body(json(clientOptions.jsonMapper, params._body()))
+                    .apply { params._body()?.let { body(json(clientOptions.jsonMapper, it)) } }
                     .build()
                     .prepareAsync(clientOptions, params)
             val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
@@ -283,6 +292,36 @@ class SessionServiceAsyncImpl internal constructor(private val clientOptions: Cl
             return errorHandler.handle(response).parseable {
                 response
                     .use { observeHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+            }
+        }
+
+        private val replayHandler: Handler<SessionReplayResponse> =
+            jsonHandler<SessionReplayResponse>(clientOptions.jsonMapper)
+
+        override suspend fun replay(
+            params: SessionReplayParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<SessionReplayResponse> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("id", params.id())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("v1", "sessions", params._pathParam(0), "replay")
+                    .build()
+                    .prepareAsync(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.executeAsync(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { replayHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()
