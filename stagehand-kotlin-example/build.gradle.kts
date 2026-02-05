@@ -6,6 +6,7 @@ plugins {
 dependencies {
     implementation(project(":stagehand-kotlin-core"))
     implementation(project(":stagehand-kotlin-client-okhttp"))
+    implementation("com.microsoft.playwright:playwright:1.58.1")
 }
 
 application {
