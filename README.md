@@ -112,7 +112,10 @@ This library requires Java 8 or later.
 
 ## Running the Example
 
-A complete working example is available at [`examples/basic.kt`](examples/basic.kt).
+A complete working example is available at
+[`examples/remote_browser_playwright_example.kt`](examples/remote_browser_playwright_example.kt).
+
+This example uses Playwright for Java, so install Playwright and its browsers before running it.
 
 To run it, first export the required environment variables, then use Gradle:
 
