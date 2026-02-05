@@ -10,10 +10,6 @@ import com.browserbase.api.models.sessions.SessionExtractParams
 import com.browserbase.api.models.sessions.SessionObserveParams
 import com.browserbase.api.models.sessions.SessionStartParams
 import com.browserbase.api.models.sessions.StreamEvent
-import com.microsoft.playwright.Browser
-import com.microsoft.playwright.BrowserContext
-import com.microsoft.playwright.CDPSession
-import com.microsoft.playwright.Page
 import com.microsoft.playwright.Playwright
 import com.microsoft.playwright.options.LoadState
 
@@ -23,9 +19,10 @@ import com.microsoft.playwright.options.LoadState
  * This example demonstrates the full Stagehand flow: start -> observe -> act -> extract -> execute
  * -> end
  *
- * Set these environment variables before running: BROWSERBASE_API_KEY - Your Browserbase API key
- * BROWSERBASE_PROJECT_ID - Your Browserbase project ID MODEL_API_KEY - Your AI model API key (e.g.,
- * OpenAI)
+ * Set these environment variables before running:
+ * - BROWSERBASE_API_KEY
+ * - BROWSERBASE_PROJECT_ID
+ * - MODEL_API_KEY
  */
 fun main() {
     val modelApiKey = System.getenv("MODEL_API_KEY")
@@ -57,8 +54,8 @@ fun main() {
                 .build()
 
         val startResponse = client.sessions().start(startParams)
-        sessionId = startResponse.data.sessionId
-        val cdpUrl = startResponse.data.cdpUrl
+        sessionId = startResponse.data().sessionId()
+        val cdpUrl = startResponse.data().cdpUrl()
 
         if (cdpUrl.isNullOrBlank()) {
             println("No cdpUrl returned from the API for session $sessionId.")
@@ -70,24 +67,20 @@ fun main() {
 
         Playwright.create().use { playwright ->
             val browser = playwright.chromium().connectOverCDP(cdpUrl)
-            try {
-                val context = firstContext(browser)
-                val page = firstPage(context)
+            browser.use {
+                val context = browser.contexts().firstOrNull() ?: browser.newContext()
+                val page = context.pages().firstOrNull() ?: context.newPage()
 
                 page.navigate("https://example.com")
                 page.waitForLoadState(LoadState.DOMCONTENTLOADED)
 
-                val cdpSession = context.newCDPSession(page)
-                val pageTargetId = resolvePageTargetId(cdpSession, page.url())
-                if (pageTargetId.isNullOrBlank()) {
-                    println("No target id found for the Playwright page.")
-                    return
-                }
+                // Use Playwright to interact with the same remote browser.
+                page.click("a")
+                println("Playwright click completed")
 
                 val observeParams =
                     SessionObserveParams.builder()
                         .id(sessionId)
-                        .frameId(pageTargetId)
                         .instruction("Find the most relevant click target on this page")
                         .xStreamResponse(SessionObserveParams.XStreamResponse.TRUE)
                         .build()
@@ -99,7 +92,6 @@ fun main() {
                 val actParams =
                     SessionActParams.builder()
                         .id(sessionId)
-                        .frameId(pageTargetId)
                         .input("Click the 'Learn more' link")
                         .xStreamResponse(SessionActParams.XStreamResponse.TRUE)
                         .build()
@@ -111,7 +103,6 @@ fun main() {
                 val extractParams =
                     SessionExtractParams.builder()
                         .id(sessionId)
-                        .frameId(pageTargetId)
                         .instruction("Extract the page title and the primary heading (h1) text")
                         .schema(
                             mapOf(
@@ -135,7 +126,6 @@ fun main() {
                 val executeParams =
                     SessionExecuteParams.builder()
                         .id(sessionId)
-                        .frameId(pageTargetId)
                         .executeOptions(
                             SessionExecuteParams.ExecuteOptions.builder()
                                 .instruction("Click the 'Learn more' link if available")
@@ -161,8 +151,6 @@ fun main() {
                 client.sessions().executeStreaming(executeParams).use { stream ->
                     printStreamEvents("execute", stream)
                 }
-            } finally {
-                browser.close()
             }
         }
     } finally {
@@ -178,45 +166,3 @@ private fun printStreamEvents(label: String, stream: StreamResponse<StreamEvent>
     stream.asSequence().forEach { event -> println("[$label] ${event.type()} ${event.data()}") }
     println("[$label] stream complete")
 }
-
-private fun firstContext(browser: Browser): BrowserContext {
-    val contexts = browser.contexts()
-    return if (contexts.isNotEmpty()) contexts[0] else browser.newContext()
-}
-
-private fun firstPage(context: BrowserContext): Page {
-    val pages = context.pages()
-    return if (pages.isNotEmpty()) pages[0] else context.newPage()
-}
-
-private fun resolvePageTargetId(cdpSession: CDPSession, pageUrl: String): String? {
-    val targetInfoResult = cdpSession.send("Target.getTargetInfo")
-    val targetInfo = (targetInfoResult["targetInfo"] as? Map<*, *>)
-    val targetId = targetInfo?.get("targetId") as? String
-    if (!targetId.isNullOrBlank()) {
-        return targetId
-    }
-
-    val targetsResult = cdpSession.send("Target.getTargets")
-    val targetInfos = targetsResult["targetInfos"] as? List<*> ?: emptyList<Any>()
-    val normalized = normalizeUrl(pageUrl)
-
-    val exactMatch =
-        targetInfos.firstOrNull { entry ->
-            val info = entry as? Map<*, *>
-            val type = info?.get("type") as? String
-            val url = info?.get("url") as? String
-            type == "page" && normalizeUrl(url ?: "") == normalized
-        }
-
-    val fallbackMatch =
-        targetInfos.firstOrNull { entry ->
-            val info = entry as? Map<*, *>
-            info?.get("type") == "page"
-        }
-
-    val match = exactMatch ?: fallbackMatch
-    return (match as? Map<*, *>)?.get("targetId") as? String
-}
-
-private fun normalizeUrl(url: String): String = url.trimEnd('/')
