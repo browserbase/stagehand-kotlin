@@ -20,13 +20,12 @@ import com.microsoft.playwright.options.LoadState
 /**
  * Remote Browserbase + Playwright example (SSE streaming by default).
  *
- * This example demonstrates the full Stagehand flow:
- * start -> observe -> act -> extract -> execute -> end
+ * This example demonstrates the full Stagehand flow: start -> observe -> act -> extract -> execute
+ * -> end
  *
- * Set these environment variables before running:
- *   BROWSERBASE_API_KEY     - Your Browserbase API key
- *   BROWSERBASE_PROJECT_ID  - Your Browserbase project ID
- *   MODEL_API_KEY           - Your AI model API key (e.g., OpenAI)
+ * Set these environment variables before running: BROWSERBASE_API_KEY - Your Browserbase API key
+ * BROWSERBASE_PROJECT_ID - Your Browserbase project ID MODEL_API_KEY - Your AI model API key (e.g.,
+ * OpenAI)
  */
 fun main() {
     val modelApiKey = System.getenv("MODEL_API_KEY")
@@ -47,14 +46,15 @@ fun main() {
     var sessionId: String? = null
 
     try {
-        val startParams = SessionStartParams.builder()
-            .modelName("openai/gpt-5-nano")
-            .browser(
-                SessionStartParams.Browser.builder()
-                    .type(SessionStartParams.Browser.Type.BROWSERBASE)
-                    .build()
-            )
-            .build()
+        val startParams =
+            SessionStartParams.builder()
+                .modelName("openai/gpt-5-nano")
+                .browser(
+                    SessionStartParams.Browser.builder()
+                        .type(SessionStartParams.Browser.Type.BROWSERBASE)
+                        .build()
+                )
+                .build()
 
         val startResponse = client.sessions().start(startParams)
         sessionId = startResponse.data.sessionId
@@ -84,74 +84,79 @@ fun main() {
                     return
                 }
 
-                val observeParams = SessionObserveParams.builder()
-                    .id(sessionId)
-                    .frameId(pageTargetId)
-                    .instruction("Find the most relevant click target on this page")
-                    .xStreamResponse(SessionObserveParams.XStreamResponse.TRUE)
-                    .build()
+                val observeParams =
+                    SessionObserveParams.builder()
+                        .id(sessionId)
+                        .frameId(pageTargetId)
+                        .instruction("Find the most relevant click target on this page")
+                        .xStreamResponse(SessionObserveParams.XStreamResponse.TRUE)
+                        .build()
 
                 client.sessions().observeStreaming(observeParams).use { stream ->
                     printStreamEvents("observe", stream)
                 }
 
-                val actParams = SessionActParams.builder()
-                    .id(sessionId)
-                    .frameId(pageTargetId)
-                    .input("Click the 'Learn more' link")
-                    .xStreamResponse(SessionActParams.XStreamResponse.TRUE)
-                    .build()
+                val actParams =
+                    SessionActParams.builder()
+                        .id(sessionId)
+                        .frameId(pageTargetId)
+                        .input("Click the 'Learn more' link")
+                        .xStreamResponse(SessionActParams.XStreamResponse.TRUE)
+                        .build()
 
                 client.sessions().actStreaming(actParams).use { stream ->
                     printStreamEvents("act", stream)
                 }
 
-                val extractParams = SessionExtractParams.builder()
-                    .id(sessionId)
-                    .frameId(pageTargetId)
-                    .instruction("Extract the page title and the primary heading (h1) text")
-                    .schema(
-                        mapOf(
-                            "type" to "object",
-                            "properties" to mapOf(
-                                "title" to mapOf("type" to "string"),
-                                "h1" to mapOf("type" to "string")
-                            ),
-                            "required" to listOf("title", "h1"),
-                            "additionalProperties" to false
+                val extractParams =
+                    SessionExtractParams.builder()
+                        .id(sessionId)
+                        .frameId(pageTargetId)
+                        .instruction("Extract the page title and the primary heading (h1) text")
+                        .schema(
+                            mapOf(
+                                "type" to "object",
+                                "properties" to
+                                    mapOf(
+                                        "title" to mapOf("type" to "string"),
+                                        "h1" to mapOf("type" to "string"),
+                                    ),
+                                "required" to listOf("title", "h1"),
+                                "additionalProperties" to false,
+                            )
                         )
-                    )
-                    .xStreamResponse(SessionExtractParams.XStreamResponse.TRUE)
-                    .build()
+                        .xStreamResponse(SessionExtractParams.XStreamResponse.TRUE)
+                        .build()
 
                 client.sessions().extractStreaming(extractParams).use { stream ->
                     printStreamEvents("extract", stream)
                 }
 
-                val executeParams = SessionExecuteParams.builder()
-                    .id(sessionId)
-                    .frameId(pageTargetId)
-                    .executeOptions(
-                        SessionExecuteParams.ExecuteOptions.builder()
-                            .instruction("Click the 'Learn more' link if available")
-                            .maxSteps(3.0)
-                            .build()
-                    )
-                    .agentConfig(
-                        SessionExecuteParams.AgentConfig.builder()
-                            .model(
-                                SessionExecuteParams.ModelConfig.ofModelConfigObject(
-                                    SessionExecuteParams.ModelConfig.ModelConfigObject.builder()
-                                        .modelName("openai/gpt-5-nano")
-                                        .apiKey(modelApiKey)
-                                        .build()
+                val executeParams =
+                    SessionExecuteParams.builder()
+                        .id(sessionId)
+                        .frameId(pageTargetId)
+                        .executeOptions(
+                            SessionExecuteParams.ExecuteOptions.builder()
+                                .instruction("Click the 'Learn more' link if available")
+                                .maxSteps(3.0)
+                                .build()
+                        )
+                        .agentConfig(
+                            SessionExecuteParams.AgentConfig.builder()
+                                .model(
+                                    SessionExecuteParams.ModelConfig.ofModelConfigObject(
+                                        SessionExecuteParams.ModelConfig.ModelConfigObject.builder()
+                                            .modelName("openai/gpt-5-nano")
+                                            .apiKey(modelApiKey)
+                                            .build()
+                                    )
                                 )
-                            )
-                            .cua(false)
-                            .build()
-                    )
-                    .xStreamResponse(SessionExecuteParams.XStreamResponse.TRUE)
-                    .build()
+                                .cua(false)
+                                .build()
+                        )
+                        .xStreamResponse(SessionExecuteParams.XStreamResponse.TRUE)
+                        .build()
 
                 client.sessions().executeStreaming(executeParams).use { stream ->
                     printStreamEvents("execute", stream)
@@ -162,9 +167,7 @@ fun main() {
         }
     } finally {
         if (!sessionId.isNullOrBlank()) {
-            val endParams = SessionEndParams.builder()
-                .id(sessionId)
-                .build()
+            val endParams = SessionEndParams.builder().id(sessionId).build()
             client.sessions().end(endParams)
             println("Session ended")
         }
@@ -172,9 +175,7 @@ fun main() {
 }
 
 private fun printStreamEvents(label: String, stream: StreamResponse<StreamEvent>) {
-    stream.asSequence().forEach { event ->
-        println("[$label] ${event.type()} ${event.data()}")
-    }
+    stream.asSequence().forEach { event -> println("[$label] ${event.type()} ${event.data()}") }
     println("[$label] stream complete")
 }
 
@@ -200,17 +201,19 @@ private fun resolvePageTargetId(cdpSession: CDPSession, pageUrl: String): String
     val targetInfos = targetsResult["targetInfos"] as? List<*> ?: emptyList<Any>()
     val normalized = normalizeUrl(pageUrl)
 
-    val exactMatch = targetInfos.firstOrNull { entry ->
-        val info = entry as? Map<*, *>
-        val type = info?.get("type") as? String
-        val url = info?.get("url") as? String
-        type == "page" && normalizeUrl(url ?: "") == normalized
-    }
+    val exactMatch =
+        targetInfos.firstOrNull { entry ->
+            val info = entry as? Map<*, *>
+            val type = info?.get("type") as? String
+            val url = info?.get("url") as? String
+            type == "page" && normalizeUrl(url ?: "") == normalized
+        }
 
-    val fallbackMatch = targetInfos.firstOrNull { entry ->
-        val info = entry as? Map<*, *>
-        info?.get("type") == "page"
-    }
+    val fallbackMatch =
+        targetInfos.firstOrNull { entry ->
+            val info = entry as? Map<*, *>
+            info?.get("type") == "page"
+        }
 
     val match = exactMatch ?: fallbackMatch
     return (match as? Map<*, *>)?.get("targetId") as? String

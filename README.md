@@ -113,7 +113,7 @@ This library requires Java 8 or later.
 ## Running the Example
 
 A complete working example is available at
-[`examples/remote_browser_playwright_example.kt`](examples/remote_browser_playwright_example.kt).
+[`stagehand-kotlin-example/src/main/kotlin/com/browserbase/api/example/RemoteBrowserPlaywrightExample.kt`](stagehand-kotlin-example/src/main/kotlin/com/browserbase/api/example/RemoteBrowserPlaywrightExample.kt).
 
 This example uses Playwright for Java, so install Playwright and its browsers before running it.
 
@@ -124,7 +124,7 @@ export BROWSERBASE_API_KEY="your-bb-api-key"
 export BROWSERBASE_PROJECT_ID="your-bb-project-uuid"
 export MODEL_API_KEY="sk-proj-your-llm-api-key"
 
-./gradlew run
+./gradlew :stagehand-kotlin-example:run -Pexample=RemoteBrowserPlaywright
 ```
 
 ## Usage
