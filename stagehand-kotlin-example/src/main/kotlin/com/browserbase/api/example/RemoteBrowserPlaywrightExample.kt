@@ -2,7 +2,9 @@ package com.browserbase.api.example
 
 import com.browserbase.api.client.StagehandClient
 import com.browserbase.api.client.okhttp.StagehandOkHttpClient
+import com.browserbase.api.core.JsonValue
 import com.browserbase.api.core.http.StreamResponse
+import com.browserbase.api.models.sessions.ModelConfig
 import com.browserbase.api.models.sessions.SessionActParams
 import com.browserbase.api.models.sessions.SessionEndParams
 import com.browserbase.api.models.sessions.SessionExecuteParams
@@ -105,21 +107,31 @@ fun main() {
                         .id(sessionId)
                         .instruction("Extract the page title and the primary heading (h1) text")
                         .schema(
-                            mapOf(
-                                "type" to "object",
-                                "properties" to
-                                    mapOf(
-                                        "title" to mapOf("type" to "string"),
-                                        "h1" to mapOf("type" to "string"),
+                            SessionExtractParams.Schema.builder()
+                                .putAdditionalProperty("type", JsonValue.from("object"))
+                                .putAdditionalProperty(
+                                    "properties",
+                                    JsonValue.from(
+                                        mapOf(
+                                            "title" to mapOf("type" to "string"),
+                                            "h1" to mapOf("type" to "string"),
+                                        )
                                     ),
-                                "required" to listOf("title", "h1"),
-                                "additionalProperties" to false,
-                            )
+                                )
+                                .putAdditionalProperty(
+                                    "required",
+                                    JsonValue.from(listOf("title", "h1")),
+                                )
+                                .putAdditionalProperty(
+                                    "additionalProperties",
+                                    JsonValue.from(false),
+                                )
+                                .build()
                         )
                         .xStreamResponse(SessionExtractParams.XStreamResponse.TRUE)
                         .build()
 
-                client.sessions().extractStreaming(extractParams).use { stream ->
+                client.sessions().extractStreaming(params = extractParams).use { stream ->
                     printStreamEvents("extract", stream)
                 }
 
@@ -135,12 +147,10 @@ fun main() {
                         .agentConfig(
                             SessionExecuteParams.AgentConfig.builder()
                                 .model(
-                                    SessionExecuteParams.ModelConfig.ofModelConfigObject(
-                                        SessionExecuteParams.ModelConfig.ModelConfigObject.builder()
-                                            .modelName("openai/gpt-5-nano")
-                                            .apiKey(modelApiKey)
-                                            .build()
-                                    )
+                                    ModelConfig.builder()
+                                        .modelName("openai/gpt-5-nano")
+                                        .apiKey(modelApiKey)
+                                        .build()
                                 )
                                 .cua(false)
                                 .build()
