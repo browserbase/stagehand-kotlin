@@ -102,32 +102,29 @@ fun main() {
                     printStreamEvents("act", stream)
                 }
 
+                val schemaMap =
+                    mapOf(
+                        "type" to "object",
+                        "properties" to
+                            mapOf(
+                                "title" to mapOf("type" to "string"),
+                                "h1" to mapOf("type" to "string"),
+                            ),
+                        "required" to listOf("title", "h1"),
+                        "additionalProperties" to false,
+                    )
+                val schema =
+                    SessionExtractParams.Schema.builder()
+                        .putAllAdditionalProperties(
+                            schemaMap.mapValues { JsonValue.from(it.value) }
+                        )
+                        .build()
+
                 val extractParams =
                     SessionExtractParams.builder()
                         .id(sessionId)
                         .instruction("Extract the page title and the primary heading (h1) text")
-                        .schema(
-                            SessionExtractParams.Schema.builder()
-                                .putAdditionalProperty("type", JsonValue.from("object"))
-                                .putAdditionalProperty(
-                                    "properties",
-                                    JsonValue.from(
-                                        mapOf(
-                                            "title" to mapOf("type" to "string"),
-                                            "h1" to mapOf("type" to "string"),
-                                        )
-                                    ),
-                                )
-                                .putAdditionalProperty(
-                                    "required",
-                                    JsonValue.from(listOf("title", "h1")),
-                                )
-                                .putAdditionalProperty(
-                                    "additionalProperties",
-                                    JsonValue.from(false),
-                                )
-                                .build()
-                        )
+                        .schema(schema)
                         .xStreamResponse(SessionExtractParams.XStreamResponse.TRUE)
                         .build()
 
