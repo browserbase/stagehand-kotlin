@@ -67,9 +67,22 @@ Most existing browser automation tools either require you to write low-level cod
 
 <!-- x-release-please-start-version -->
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.browserbase.api/stagehand-kotlin)](https://central.sonatype.com/artifact/com.browserbase.api/stagehand-kotlin/3.1.1)
-[![javadoc](https://javadoc.io/badge2/com.browserbase.api/stagehand-kotlin/3.1.1/javadoc.svg)](https://javadoc.io/doc/com.browserbase.api/stagehand-kotlin/3.1.1)
+[![Maven Central](https://img.shields.io/maven-central/v/com.browserbase.api/stagehand-kotlin)](https://central.sonatype.com/artifact/com.browserbase.api/stagehand-kotlin/3.2.0)
+[![javadoc](https://javadoc.io/badge2/com.browserbase.api/stagehand-kotlin/3.2.0/javadoc.svg)](https://javadoc.io/doc/com.browserbase.api/stagehand-kotlin/3.2.0)
 
+<!-- x-release-please-end -->
+
+The Stagehand Kotlin SDK provides convenient access to the [Stagehand REST API](https://docs.stagehand.dev) from applications written in Kotlin.
+
+The Stagehand Kotlin SDK is similar to the Stagehand Java SDK but with minor differences that make it more ergonomic for use in Kotlin, such as nullable values instead of `Optional`, `Sequence` instead of `Stream`, and suspend functions instead of `CompletableFuture`.
+
+It is generated with [Stainless](https://www.stainless.com/).
+
+<!-- x-release-please-start-version -->
+
+The REST API documentation can be found on [docs.stagehand.dev](https://docs.stagehand.dev). KDocs are available on [javadoc.io](https://javadoc.io/doc/com.browserbase.api/stagehand-kotlin/3.2.0).
+
+<!-- x-release-please-end -->
 
 ## Installation
 
@@ -78,7 +91,7 @@ Most existing browser automation tools either require you to write low-level cod
 ### Gradle
 
 ```kotlin
-implementation("com.browserbase.api:stagehand-kotlin:3.1.1")
+implementation("com.browserbase.api:stagehand-kotlin:3.2.0")
 ```
 
 ### Maven
@@ -87,7 +100,7 @@ implementation("com.browserbase.api:stagehand-kotlin:3.1.1")
 <dependency>
   <groupId>com.browserbase.api</groupId>
   <artifactId>stagehand-kotlin</artifactId>
-  <version>3.1.1</version>
+  <version>3.2.0</version>
 </dependency>
 ```
 
@@ -99,7 +112,12 @@ This library requires Java 8 or later.
 
 ## Running the Example
 
-A complete working example is available at [`examples/basic.kt`](examples/basic.kt).
+A complete working example is available at
+[`stagehand-kotlin-example/src/main/kotlin/com/browserbase/api/example/RemoteBrowserPlaywrightExample.kt`](stagehand-kotlin-example/src/main/kotlin/com/browserbase/api/example/RemoteBrowserPlaywrightExample.kt).
+There is also a local-browser variant at
+[`stagehand-kotlin-example/src/main/kotlin/com/browserbase/api/example/LocalBrowserPlaywrightExample.kt`](stagehand-kotlin-example/src/main/kotlin/com/browserbase/api/example/LocalBrowserPlaywrightExample.kt).
+
+This example uses Playwright for Java, so install Playwright and its browsers before running it.
 
 To run it, first export the required environment variables, then use Gradle:
 
@@ -108,7 +126,11 @@ export BROWSERBASE_API_KEY="your-bb-api-key"
 export BROWSERBASE_PROJECT_ID="your-bb-project-uuid"
 export MODEL_API_KEY="sk-proj-your-llm-api-key"
 
-./gradlew run
+./gradlew :stagehand-kotlin-example:run -Pexample=RemoteBrowserPlaywright
+```
+
+```bash
+./gradlew :stagehand-kotlin-example:run -Pexample=LocalBrowserPlaywright
 ```
 
 ## Usage

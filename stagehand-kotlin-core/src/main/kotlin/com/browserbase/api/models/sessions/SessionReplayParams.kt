@@ -4,23 +4,20 @@ package com.browserbase.api.models.sessions
 
 import com.browserbase.api.core.Enum
 import com.browserbase.api.core.JsonField
-import com.browserbase.api.core.JsonValue
 import com.browserbase.api.core.Params
 import com.browserbase.api.core.http.Headers
 import com.browserbase.api.core.http.QueryParams
-import com.browserbase.api.core.toImmutable
 import com.browserbase.api.errors.StagehandInvalidDataException
 import com.fasterxml.jackson.annotation.JsonCreator
 import java.util.Objects
 
-/** Terminates the browser session and releases all associated resources. */
-class SessionEndParams
+/** Retrieves replay metrics for a session. */
+class SessionReplayParams
 private constructor(
     private val id: String?,
     private val xStreamResponse: XStreamResponse?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
-    private val additionalBodyProperties: Map<String, JsonValue>,
 ) : Params {
 
     /** Unique session identifier */
@@ -28,9 +25,6 @@ private constructor(
 
     /** Whether to stream the response via SSE */
     fun xStreamResponse(): XStreamResponse? = xStreamResponse
-
-    /** Additional body properties to send with the request. */
-    fun _additionalBodyProperties(): Map<String, JsonValue> = additionalBodyProperties
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -42,27 +36,25 @@ private constructor(
 
     companion object {
 
-        fun none(): SessionEndParams = builder().build()
+        fun none(): SessionReplayParams = builder().build()
 
-        /** Returns a mutable builder for constructing an instance of [SessionEndParams]. */
+        /** Returns a mutable builder for constructing an instance of [SessionReplayParams]. */
         fun builder() = Builder()
     }
 
-    /** A builder for [SessionEndParams]. */
+    /** A builder for [SessionReplayParams]. */
     class Builder internal constructor() {
 
         private var id: String? = null
         private var xStreamResponse: XStreamResponse? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
-        private var additionalBodyProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
-        internal fun from(sessionEndParams: SessionEndParams) = apply {
-            id = sessionEndParams.id
-            xStreamResponse = sessionEndParams.xStreamResponse
-            additionalHeaders = sessionEndParams.additionalHeaders.toBuilder()
-            additionalQueryParams = sessionEndParams.additionalQueryParams.toBuilder()
-            additionalBodyProperties = sessionEndParams.additionalBodyProperties.toMutableMap()
+        internal fun from(sessionReplayParams: SessionReplayParams) = apply {
+            id = sessionReplayParams.id
+            xStreamResponse = sessionReplayParams.xStreamResponse
+            additionalHeaders = sessionReplayParams.additionalHeaders.toBuilder()
+            additionalQueryParams = sessionReplayParams.additionalQueryParams.toBuilder()
         }
 
         /** Unique session identifier */
@@ -171,44 +163,19 @@ private constructor(
             additionalQueryParams.removeAll(keys)
         }
 
-        fun additionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) = apply {
-            this.additionalBodyProperties.clear()
-            putAllAdditionalBodyProperties(additionalBodyProperties)
-        }
-
-        fun putAdditionalBodyProperty(key: String, value: JsonValue) = apply {
-            additionalBodyProperties.put(key, value)
-        }
-
-        fun putAllAdditionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) =
-            apply {
-                this.additionalBodyProperties.putAll(additionalBodyProperties)
-            }
-
-        fun removeAdditionalBodyProperty(key: String) = apply {
-            additionalBodyProperties.remove(key)
-        }
-
-        fun removeAllAdditionalBodyProperties(keys: Set<String>) = apply {
-            keys.forEach(::removeAdditionalBodyProperty)
-        }
-
         /**
-         * Returns an immutable instance of [SessionEndParams].
+         * Returns an immutable instance of [SessionReplayParams].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          */
-        fun build(): SessionEndParams =
-            SessionEndParams(
+        fun build(): SessionReplayParams =
+            SessionReplayParams(
                 id,
                 xStreamResponse,
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
-                additionalBodyProperties.toImmutable(),
             )
     }
-
-    fun _body(): Map<String, JsonValue>? = additionalBodyProperties.ifEmpty { null }
 
     fun _pathParam(index: Int): String =
         when (index) {
@@ -361,23 +328,16 @@ private constructor(
             return true
         }
 
-        return other is SessionEndParams &&
+        return other is SessionReplayParams &&
             id == other.id &&
             xStreamResponse == other.xStreamResponse &&
             additionalHeaders == other.additionalHeaders &&
-            additionalQueryParams == other.additionalQueryParams &&
-            additionalBodyProperties == other.additionalBodyProperties
+            additionalQueryParams == other.additionalQueryParams
     }
 
     override fun hashCode(): Int =
-        Objects.hash(
-            id,
-            xStreamResponse,
-            additionalHeaders,
-            additionalQueryParams,
-            additionalBodyProperties,
-        )
+        Objects.hash(id, xStreamResponse, additionalHeaders, additionalQueryParams)
 
     override fun toString() =
-        "SessionEndParams{id=$id, xStreamResponse=$xStreamResponse, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams, additionalBodyProperties=$additionalBodyProperties}"
+        "SessionReplayParams{id=$id, xStreamResponse=$xStreamResponse, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }
