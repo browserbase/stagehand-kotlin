@@ -119,15 +119,16 @@ There is also a local-browser variant at
 
 This example uses Playwright for Java, so install Playwright and its browsers before running it.
 
-To run it, first export the required environment variables, then use Gradle:
+To run it, first set up the example environment file, then use Gradle:
 
 ```bash
-export BROWSERBASE_API_KEY="your-bb-api-key"
-export BROWSERBASE_PROJECT_ID="your-bb-project-uuid"
-export MODEL_API_KEY="sk-proj-your-llm-api-key"
+cp examples/.env.example examples/.env
+# Edit examples/.env with your credentials.
 
 ./gradlew :stagehand-kotlin-example:run -Pexample=RemoteBrowserPlaywright
 ```
+
+The examples load `examples/.env` automatically.
 
 ```bash
 ./gradlew :stagehand-kotlin-example:run -Pexample=LocalBrowserPlaywright
