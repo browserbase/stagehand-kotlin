@@ -27,19 +27,10 @@ import com.microsoft.playwright.options.LoadState
  * - MODEL_API_KEY
  */
 fun main() {
-    val modelApiKey = System.getenv("MODEL_API_KEY")
-    val browserbaseApiKey = System.getenv("BROWSERBASE_API_KEY")
-    val browserbaseProjectId = System.getenv("BROWSERBASE_PROJECT_ID")
-
-    val missing = mutableListOf<String>()
-    if (modelApiKey.isNullOrBlank()) missing.add("MODEL_API_KEY")
-    if (browserbaseApiKey.isNullOrBlank()) missing.add("BROWSERBASE_API_KEY")
-    if (browserbaseProjectId.isNullOrBlank()) missing.add("BROWSERBASE_PROJECT_ID")
-
-    if (missing.isNotEmpty()) {
-        println("Missing required environment variables: ${missing.joinToString(", ")}")
-        return
-    }
+    Env.load()
+    val modelApiKey = Env.require("MODEL_API_KEY")
+    val browserbaseApiKey = Env.require("BROWSERBASE_API_KEY")
+    val browserbaseProjectId = Env.require("BROWSERBASE_PROJECT_ID")
 
     val client: StagehandClient = StagehandOkHttpClient.fromEnv()
     var sessionId: String? = null
