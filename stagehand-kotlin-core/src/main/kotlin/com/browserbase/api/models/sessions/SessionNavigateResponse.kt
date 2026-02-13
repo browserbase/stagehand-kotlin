@@ -199,7 +199,14 @@ private constructor(
             @JsonProperty("actionId") @ExcludeMissing actionId: JsonField<String> = JsonMissing.of(),
         ) : this(result, actionId, mutableMapOf())
 
-        /** Navigation response (Playwright Response object or null) */
+        /**
+         * Navigation response (Playwright Response object or null)
+         *
+         * This arbitrary value can be deserialized into a custom type using the `convert` method:
+         * ```kotlin
+         * val myObject: MyClass = data.result().convert(MyClass::class.java)
+         * ```
+         */
         @JsonProperty("result") @ExcludeMissing fun _result(): JsonValue = result
 
         /**
