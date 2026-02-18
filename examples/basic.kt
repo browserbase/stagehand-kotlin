@@ -41,7 +41,7 @@ fun main() {
 
     // Start a new browser session
     val startParams = SessionStartParams.builder()
-        .modelName("openai/gpt-4o")
+        .modelName("anthropic/claude-sonnet-4-6")
         .build()
 
     val startResponse = client.sessions().start(startParams)
@@ -169,7 +169,7 @@ fun main() {
                 SessionExecuteParams.AgentConfig.builder()
                     .model(
                         ModelConfig.builder()
-                            .modelName("openai/gpt-4.1-mini")
+                            .modelName("anthropic/claude-opus-4-6")
                             .apiKey(Env.require("MODEL_API_KEY"))
                             .build()
                     )
