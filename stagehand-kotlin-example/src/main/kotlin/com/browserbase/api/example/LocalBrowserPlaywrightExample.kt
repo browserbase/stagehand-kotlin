@@ -41,7 +41,7 @@ fun main() {
     try {
         val startParams =
             SessionStartParams.builder()
-                .modelName("openai/gpt-5-nano")
+                .modelName("anthropic/claude-sonnet-4-6")
                 .browser(
                     SessionStartParams.Browser.builder()
                         .type(SessionStartParams.Browser.Type.LOCAL)
@@ -144,7 +144,7 @@ fun main() {
                             SessionExecuteParams.AgentConfig.builder()
                                 .model(
                                     ModelConfig.builder()
-                                        .modelName("openai/gpt-5-nano")
+                                        .modelName("anthropic/claude-opus-4-6")
                                         .apiKey(modelApiKey)
                                         .build()
                                 )
