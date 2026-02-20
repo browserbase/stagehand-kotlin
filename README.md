@@ -69,8 +69,8 @@ Most existing browser automation tools either require you to write low-level cod
 
 <!-- x-release-please-start-version -->
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.browserbase.api/stagehand-kotlin)](https://central.sonatype.com/artifact/com.browserbase.api/stagehand-kotlin/3.1.1)
-[![javadoc](https://javadoc.io/badge2/com.browserbase.api/stagehand-kotlin/3.1.1/javadoc.svg)](https://javadoc.io/doc/com.browserbase.api/stagehand-kotlin/3.1.1)
+[![Maven Central](https://img.shields.io/maven-central/v/com.browserbase.api/stagehand-kotlin)](https://central.sonatype.com/artifact/com.browserbase.api/stagehand-kotlin/3.2.0)
+[![javadoc](https://javadoc.io/badge2/com.browserbase.api/stagehand-kotlin/3.2.0/javadoc.svg)](https://javadoc.io/doc/com.browserbase.api/stagehand-kotlin/3.2.0)
 
 <!-- x-release-please-end -->
 
@@ -82,7 +82,7 @@ It is generated with [Stainless](https://www.stainless.com/).
 
 <!-- x-release-please-start-version -->
 
-The REST API documentation can be found on [docs.stagehand.dev](https://docs.stagehand.dev). KDocs are available on [javadoc.io](https://javadoc.io/doc/com.browserbase.api/stagehand-kotlin/3.1.1).
+The REST API documentation can be found on [docs.stagehand.dev](https://docs.stagehand.dev). KDocs are available on [javadoc.io](https://javadoc.io/doc/com.browserbase.api/stagehand-kotlin/3.2.0).
 
 <!-- x-release-please-end -->
 
@@ -93,7 +93,7 @@ The REST API documentation can be found on [docs.stagehand.dev](https://docs.sta
 ### Gradle
 
 ```kotlin
-implementation("com.browserbase.api:stagehand-kotlin:3.1.1")
+implementation("com.browserbase.api:stagehand-kotlin:3.2.0")
 ```
 
 ### Maven
@@ -102,7 +102,7 @@ implementation("com.browserbase.api:stagehand-kotlin:3.1.1")
 <dependency>
   <groupId>com.browserbase.api</groupId>
   <artifactId>stagehand-kotlin</artifactId>
-  <version>3.1.1</version>
+  <version>3.2.0</version>
 </dependency>
 ```
 
