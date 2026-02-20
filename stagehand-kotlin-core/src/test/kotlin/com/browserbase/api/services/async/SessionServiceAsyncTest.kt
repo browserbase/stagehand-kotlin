@@ -2,29 +2,27 @@
 
 package com.browserbase.api.services.async
 
-import com.browserbase.api.TestServerExtension
 import com.browserbase.api.client.okhttp.StagehandOkHttpClientAsync
 import com.browserbase.api.core.JsonValue
+import com.browserbase.api.models.sessions.ModelConfig
 import com.browserbase.api.models.sessions.SessionActParams
 import com.browserbase.api.models.sessions.SessionEndParams
 import com.browserbase.api.models.sessions.SessionExecuteParams
 import com.browserbase.api.models.sessions.SessionExtractParams
 import com.browserbase.api.models.sessions.SessionNavigateParams
 import com.browserbase.api.models.sessions.SessionObserveParams
+import com.browserbase.api.models.sessions.SessionReplayParams
 import com.browserbase.api.models.sessions.SessionStartParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(TestServerExtension::class)
 internal class SessionServiceAsyncTest {
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     suspend fun act() {
         val client =
             StagehandOkHttpClientAsync.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
                 .browserbaseApiKey("My Browserbase API Key")
                 .browserbaseProjectId("My Browserbase Project ID")
                 .modelApiKey("My Model API Key")
@@ -40,7 +38,14 @@ internal class SessionServiceAsyncTest {
                     .frameId("frameId")
                     .options(
                         SessionActParams.Options.builder()
-                            .model("openai/gpt-4o")
+                            .model(
+                                ModelConfig.builder()
+                                    .modelName("openai/gpt-5-nano")
+                                    .apiKey("sk-some-openai-api-key")
+                                    .baseUrl("https://api.openai.com/v1")
+                                    .provider(ModelConfig.Provider.OPENAI)
+                                    .build()
+                            )
                             .timeout(30000.0)
                             .variables(
                                 SessionActParams.Options.Variables.builder()
@@ -55,12 +60,11 @@ internal class SessionServiceAsyncTest {
         response.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     suspend fun end() {
         val client =
             StagehandOkHttpClientAsync.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
                 .browserbaseApiKey("My Browserbase API Key")
                 .browserbaseProjectId("My Browserbase Project ID")
                 .modelApiKey("My Model API Key")
@@ -72,19 +76,17 @@ internal class SessionServiceAsyncTest {
                 SessionEndParams.builder()
                     .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
                     .xStreamResponse(SessionEndParams.XStreamResponse.TRUE)
-                    ._forceBody(JsonValue.from(mapOf<String, Any>()))
                     .build()
             )
 
         response.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     suspend fun execute() {
         val client =
             StagehandOkHttpClientAsync.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
                 .browserbaseApiKey("My Browserbase API Key")
                 .browserbaseProjectId("My Browserbase Project ID")
                 .modelApiKey("My Model API Key")
@@ -99,7 +101,23 @@ internal class SessionServiceAsyncTest {
                     .agentConfig(
                         SessionExecuteParams.AgentConfig.builder()
                             .cua(true)
-                            .model("openai/gpt-4o")
+                            .executionModel(
+                                ModelConfig.builder()
+                                    .modelName("openai/gpt-5-nano")
+                                    .apiKey("sk-some-openai-api-key")
+                                    .baseUrl("https://api.openai.com/v1")
+                                    .provider(ModelConfig.Provider.OPENAI)
+                                    .build()
+                            )
+                            .mode(SessionExecuteParams.AgentConfig.Mode.CUA)
+                            .model(
+                                ModelConfig.builder()
+                                    .modelName("openai/gpt-5-nano")
+                                    .apiKey("sk-some-openai-api-key")
+                                    .baseUrl("https://api.openai.com/v1")
+                                    .provider(ModelConfig.Provider.OPENAI)
+                                    .build()
+                            )
                             .provider(SessionExecuteParams.AgentConfig.Provider.OPENAI)
                             .systemPrompt("systemPrompt")
                             .build()
@@ -114,18 +132,18 @@ internal class SessionServiceAsyncTest {
                             .build()
                     )
                     .frameId("frameId")
+                    .shouldCache(true)
                     .build()
             )
 
         response.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     suspend fun extract() {
         val client =
             StagehandOkHttpClientAsync.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
                 .browserbaseApiKey("My Browserbase API Key")
                 .browserbaseProjectId("My Browserbase Project ID")
                 .modelApiKey("My Model API Key")
@@ -141,7 +159,14 @@ internal class SessionServiceAsyncTest {
                     .instruction("Extract all product names and prices from the page")
                     .options(
                         SessionExtractParams.Options.builder()
-                            .model("openai/gpt-4o")
+                            .model(
+                                ModelConfig.builder()
+                                    .modelName("openai/gpt-5-nano")
+                                    .apiKey("sk-some-openai-api-key")
+                                    .baseUrl("https://api.openai.com/v1")
+                                    .provider(ModelConfig.Provider.OPENAI)
+                                    .build()
+                            )
                             .selector("#main-content")
                             .timeout(30000.0)
                             .build()
@@ -157,12 +182,11 @@ internal class SessionServiceAsyncTest {
         response.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     suspend fun navigate() {
         val client =
             StagehandOkHttpClientAsync.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
                 .browserbaseApiKey("My Browserbase API Key")
                 .browserbaseProjectId("My Browserbase Project ID")
                 .modelApiKey("My Model API Key")
@@ -190,12 +214,11 @@ internal class SessionServiceAsyncTest {
         response.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     suspend fun observe() {
         val client =
             StagehandOkHttpClientAsync.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
                 .browserbaseApiKey("My Browserbase API Key")
                 .browserbaseProjectId("My Browserbase Project ID")
                 .modelApiKey("My Model API Key")
@@ -211,7 +234,14 @@ internal class SessionServiceAsyncTest {
                     .instruction("Find all clickable navigation links")
                     .options(
                         SessionObserveParams.Options.builder()
-                            .model("openai/gpt-4o")
+                            .model(
+                                ModelConfig.builder()
+                                    .modelName("openai/gpt-5-nano")
+                                    .apiKey("sk-some-openai-api-key")
+                                    .baseUrl("https://api.openai.com/v1")
+                                    .provider(ModelConfig.Provider.OPENAI)
+                                    .build()
+                            )
                             .selector("nav")
                             .timeout(30000.0)
                             .build()
@@ -222,12 +252,33 @@ internal class SessionServiceAsyncTest {
         response.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
+    @Test
+    suspend fun replay() {
+        val client =
+            StagehandOkHttpClientAsync.builder()
+                .browserbaseApiKey("My Browserbase API Key")
+                .browserbaseProjectId("My Browserbase Project ID")
+                .modelApiKey("My Model API Key")
+                .build()
+        val sessionServiceAsync = client.sessions()
+
+        val response =
+            sessionServiceAsync.replay(
+                SessionReplayParams.builder()
+                    .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
+                    .xStreamResponse(SessionReplayParams.XStreamResponse.TRUE)
+                    .build()
+            )
+
+        response.validate()
+    }
+
+    @Disabled("Mock server tests are disabled")
     @Test
     suspend fun start() {
         val client =
             StagehandOkHttpClientAsync.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
                 .browserbaseApiKey("My Browserbase API Key")
                 .browserbaseProjectId("My Browserbase Project ID")
                 .modelApiKey("My Model API Key")
@@ -259,6 +310,7 @@ internal class SessionServiceAsyncTest {
                                     .ignoreDefaultArgs(true)
                                     .ignoreHttpsErrors(true)
                                     .locale("locale")
+                                    .port(0.0)
                                     .preserveUserDataDir(true)
                                     .proxy(
                                         SessionStartParams.Browser.LaunchOptions.Proxy.builder()

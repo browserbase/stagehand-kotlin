@@ -1,3 +1,4 @@
+<!-- x-stagehand-custom-start -->
 <div id="toc" align="center" style="margin-bottom: 0;">
   <ul style="list-style: none; margin: 0; padding: 0;">
     <a href="https://stagehand.dev">
@@ -48,6 +49,7 @@ If you're looking for other languages, you can find them
     <img alt="Director" src="https://raw.githubusercontent.com/browserbase/stagehand/main/media/director_icon.svg" width="25" />
   </picture>
 </div>
+<!-- x-stagehand-custom-end -->
 
 ## What is Stagehand?
 
@@ -67,9 +69,22 @@ Most existing browser automation tools either require you to write low-level cod
 
 <!-- x-release-please-start-version -->
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.browserbase.api/stagehand-kotlin)](https://central.sonatype.com/artifact/com.browserbase.api/stagehand-kotlin/3.1.1)
-[![javadoc](https://javadoc.io/badge2/com.browserbase.api/stagehand-kotlin/3.1.1/javadoc.svg)](https://javadoc.io/doc/com.browserbase.api/stagehand-kotlin/3.1.1)
+[![Maven Central](https://img.shields.io/maven-central/v/com.browserbase.api/stagehand-kotlin)](https://central.sonatype.com/artifact/com.browserbase.api/stagehand-kotlin/3.2.0)
+[![javadoc](https://javadoc.io/badge2/com.browserbase.api/stagehand-kotlin/3.2.0/javadoc.svg)](https://javadoc.io/doc/com.browserbase.api/stagehand-kotlin/3.2.0)
 
+<!-- x-release-please-end -->
+
+The Stagehand Kotlin SDK provides convenient access to the [Stagehand REST API](https://docs.stagehand.dev) from applications written in Kotlin.
+
+The Stagehand Kotlin SDK is similar to the Stagehand Java SDK but with minor differences that make it more ergonomic for use in Kotlin, such as nullable values instead of `Optional`, `Sequence` instead of `Stream`, and suspend functions instead of `CompletableFuture`.
+
+It is generated with [Stainless](https://www.stainless.com/).
+
+<!-- x-release-please-start-version -->
+
+The REST API documentation can be found on [docs.stagehand.dev](https://docs.stagehand.dev). KDocs are available on [javadoc.io](https://javadoc.io/doc/com.browserbase.api/stagehand-kotlin/3.2.0).
+
+<!-- x-release-please-end -->
 
 ## Installation
 
@@ -78,7 +93,7 @@ Most existing browser automation tools either require you to write low-level cod
 ### Gradle
 
 ```kotlin
-implementation("com.browserbase.api:stagehand-kotlin:3.1.1")
+implementation("com.browserbase.api:stagehand-kotlin:3.2.0")
 ```
 
 ### Maven
@@ -87,7 +102,7 @@ implementation("com.browserbase.api:stagehand-kotlin:3.1.1")
 <dependency>
   <groupId>com.browserbase.api</groupId>
   <artifactId>stagehand-kotlin</artifactId>
-  <version>3.1.1</version>
+  <version>3.2.0</version>
 </dependency>
 ```
 
@@ -99,168 +114,166 @@ This library requires Java 8 or later.
 
 ## Running the Example
 
-A complete working example is available at [`examples/basic.kt`](examples/basic.kt).
+Examples live at:
+- `stagehand-kotlin-example/src/main/kotlin/com/browserbase/api/example/RemoteBrowserPlaywrightExample.kt`
+- `stagehand-kotlin-example/src/main/kotlin/com/browserbase/api/example/LocalBrowserPlaywrightExample.kt`
 
-To run it, first export the required environment variables, then use Gradle:
+Set your environment variables (from `examples/.env.example`):
+
+- `STAGEHAND_API_URL`
+- `MODEL_API_KEY`
+- `BROWSERBASE_API_KEY`
+- `BROWSERBASE_PROJECT_ID`
 
 ```bash
-export BROWSERBASE_API_KEY="your-bb-api-key"
-export BROWSERBASE_PROJECT_ID="your-bb-project-uuid"
-export MODEL_API_KEY="sk-proj-your-llm-api-key"
+cp examples/.env.example examples/.env
+# Edit examples/.env with your credentials.
+```
 
-./gradlew run
+The examples load `examples/.env` automatically.
+
+Example dependencies:
+
+- `RemoteBrowserPlaywrightExample.kt`: Playwright for Java + Playwright browsers
+- `LocalBrowserPlaywrightExample.kt`: Playwright for Java + Playwright browsers
+
+Install Playwright for Java and its browsers before running the examples.
+
+```bash
+./gradlew :stagehand-kotlin-example:run -Pexample=RemoteBrowserPlaywright
+./gradlew :stagehand-kotlin-example:run -Pexample=LocalBrowserPlaywright
 ```
 
 ## Usage
 
-This example demonstrates the complete workflow of using Stagehand:
+This mirrors `stagehand-kotlin-example/src/main/kotlin/com/browserbase/api/example/RemoteBrowserPlaywrightExample.kt`.
 
 ```kotlin
 import com.browserbase.api.client.StagehandClient
 import com.browserbase.api.client.okhttp.StagehandOkHttpClient
-import com.browserbase.api.models.sessions.SessionStartParams
-import com.browserbase.api.models.sessions.SessionNavigateParams
-import com.browserbase.api.models.sessions.SessionObserveParams
-import com.browserbase.api.models.sessions.SessionActParams
-import com.browserbase.api.models.sessions.SessionExtractParams
-import com.browserbase.api.models.sessions.SessionExecuteParams
-import com.browserbase.api.models.sessions.SessionEndParams
-import com.browserbase.api.models.sessions.ActionParam
+import com.browserbase.api.core.JsonValue
+import com.browserbase.api.models.sessions.*
+import com.microsoft.playwright.Playwright
+import com.microsoft.playwright.options.LoadState
 
 fun main() {
-    // Create a new Stagehand client using environment variables
-    // Configures using BROWSERBASE_API_KEY, BROWSERBASE_PROJECT_ID, and MODEL_API_KEY
+    Env.load()
+    val modelApiKey = Env.require("MODEL_API_KEY")
+
     val client: StagehandClient = StagehandOkHttpClient.fromEnv()
+    var sessionId: String? = null
 
-    // Start a new browser session
-    val startParams = SessionStartParams.builder()
-        .modelName("openai/gpt-4o")
-        .build()
+    try {
+        val startParams =
+            SessionStartParams.builder()
+                .modelName("anthropic/claude-sonnet-4-6")
+                .browser(
+                    SessionStartParams.Browser.builder()
+                        .type(SessionStartParams.Browser.Type.BROWSERBASE)
+                        .build()
+                )
+                .build()
 
-    val startResponse = client.sessions().start(startParams)
-    println("Session started: ${startResponse.data.sessionId}")
+        val startResponse = client.sessions().start(startParams)
+        sessionId = startResponse.data().sessionId()
+        val cdpUrl = startResponse.data().cdpUrl()
 
-    val sessionId = startResponse.data.sessionId
+        require(!cdpUrl.isNullOrBlank()) { "No cdpUrl returned for remote session." }
 
-    // Navigate to Hacker News
-    val navigateParams = SessionNavigateParams.builder()
-        .id(sessionId)
-        .url("https://news.ycombinator.com")
-        .build()
+        Playwright.create().use { playwright ->
+            val browser = playwright.chromium().connectOverCDP(cdpUrl)
+            browser.use {
+                val context = browser.contexts().firstOrNull() ?: browser.newContext()
+                val page = context.pages().firstOrNull() ?: context.newPage()
 
-    client.sessions().navigate(navigateParams)
-    println("Navigated to Hacker News")
+                client.sessions().navigate(
+                    SessionNavigateParams.builder()
+                        .id(sessionId)
+                        .url("https://news.ycombinator.com")
+                        .build()
+                )
+                page.waitForLoadState(LoadState.DOMCONTENTLOADED)
 
-    // Use Observe to find possible actions on the page
-    val observeParams = SessionObserveParams.builder()
-        .id(sessionId)
-        .instruction("find the link to view comments for the top post")
-        .build()
+                client.sessions().observeStreaming(
+                    SessionObserveParams.builder()
+                        .id(sessionId)
+                        .instruction("find the link to view comments for the top post")
+                        .xStreamResponse(SessionObserveParams.XStreamResponse.TRUE)
+                        .build()
+                ).use { stream ->
+                    stream.stream().forEach { println("[observe] $it") }
+                }
 
-    val observeResponse = client.sessions().observe(observeParams)
-    val actions = observeResponse.data.result
-    println("Found ${actions.size} possible actions")
+                client.sessions().actStreaming(
+                    SessionActParams.builder()
+                        .id(sessionId)
+                        .input("Click the comments link for the top post")
+                        .xStreamResponse(SessionActParams.XStreamResponse.TRUE)
+                        .build()
+                ).use { stream ->
+                    stream.stream().forEach { println("[act] $it") }
+                }
 
-    if (actions.isEmpty()) {
-        println("No actions found")
-        return
+                val schema =
+                    SessionExtractParams.Schema.builder()
+                        .putAllAdditionalProperties(
+                            mapOf(
+                                "type" to JsonValue.from("object"),
+                                "properties" to JsonValue.from(
+                                    mapOf(
+                                        "commentText" to mapOf("type" to "string"),
+                                        "author" to mapOf("type" to "string")
+                                    )
+                                ),
+                                "required" to JsonValue.from(listOf("commentText"))
+                            )
+                        )
+                        .build()
+
+                client.sessions().extractStreaming(
+                    SessionExtractParams.builder()
+                        .id(sessionId)
+                        .instruction("extract the text of the top comment on this page")
+                        .schema(schema)
+                        .xStreamResponse(SessionExtractParams.XStreamResponse.TRUE)
+                        .build()
+                ).use { stream ->
+                    stream.stream().forEach { println("[extract] $it") }
+                }
+
+                client.sessions().executeStreaming(
+                    SessionExecuteParams.builder()
+                        .id(sessionId)
+                        .executeOptions(
+                            SessionExecuteParams.ExecuteOptions.builder()
+                                .instruction("Click the 'Learn more' link if available")
+                                .maxSteps(3.0)
+                                .build()
+                        )
+                        .agentConfig(
+                            SessionExecuteParams.AgentConfig.builder()
+                                .model(
+                                    ModelConfig.builder()
+                                        .modelName("anthropic/claude-opus-4-6")
+                                        .apiKey(modelApiKey)
+                                        .build()
+                                )
+                                .cua(false)
+                                .build()
+                        )
+                        .xStreamResponse(SessionExecuteParams.XStreamResponse.TRUE)
+                        .build()
+                ).use { stream ->
+                    stream.stream().forEach { println("[execute] $it") }
+                }
+            }
+        }
+    } finally {
+        if (!sessionId.isNullOrBlank()) {
+            val endParams = SessionEndParams.builder().id(sessionId).build()
+            client.sessions().end(endParams)
+        }
     }
-
-    // Take the first action returned by Observe
-    val action = actions[0]
-    println("Acting on: ${action.description}")
-
-    // Pass the structured action to Act
-    val actParams = SessionActParams.builder()
-        .id(sessionId)
-        .input(
-            SessionActParams.Input.ofAction(
-                ActionParam.builder()
-                    .description(action.description)
-                    .selector(action.selector)
-                    .method(action.method ?: "click")
-                    .arguments(action.arguments)
-                    .build()
-            )
-        )
-        .build()
-
-    val actResponse = client.sessions().act(actParams)
-    println("Act completed: ${actResponse.data.result.message}")
-
-    // Extract data from the page
-    // We're now on the comments page, so extract the top comment text
-    val extractParams = SessionExtractParams.builder()
-        .id(sessionId)
-        .instruction("extract the text of the top comment on this page")
-        .schema(
-            mapOf(
-                "type" to "object",
-                "properties" to mapOf(
-                    "commentText" to mapOf(
-                        "type" to "string",
-                        "description" to "The text content of the top comment"
-                    ),
-                    "author" to mapOf(
-                        "type" to "string",
-                        "description" to "The username of the comment author"
-                    )
-                ),
-                "required" to listOf("commentText")
-            )
-        )
-        .build()
-
-    val extractResponse = client.sessions().extract(extractParams)
-    println("Extracted data: ${extractResponse.data.result}")
-
-    // Get the author from the extracted data
-    @Suppress("UNCHECKED_CAST")
-    val extractedData = extractResponse.data.result as Map<String, Any>
-    val author = extractedData["author"] as String
-    println("Looking up profile for author: $author")
-
-    // Use the Agent to find the author's profile
-    // Execute runs an autonomous agent that can navigate and interact with pages
-    val executeParams = SessionExecuteParams.builder()
-        .id(sessionId)
-        .executeOptions(
-            SessionExecuteParams.ExecuteOptions.builder()
-                .instruction(
-                    "Find any personal website, GitHub, LinkedIn, or other best profile URL for the Hacker News user '$author'. " +
-                    "Click on their username to go to their profile page and look for any links they have shared. " +
-                    "Use Google Search with their username or other details from their profile if you don't find any direct links."
-                )
-                .maxSteps(15.0)
-                .build()
-        )
-        .agentConfig(
-            SessionExecuteParams.AgentConfig.builder()
-                .model(
-                    SessionExecuteParams.ModelConfig.ofModelConfigObject(
-                        SessionExecuteParams.ModelConfig.ModelConfigObject.builder()
-                            .modelName("openai/gpt-4.1-mini")
-                            .apiKey(System.getenv("MODEL_API_KEY"))
-                            .build()
-                    )
-                )
-                .cua(false)
-                .build()
-        )
-        .build()
-
-    val executeResponse = client.sessions().execute(executeParams)
-    println("Agent completed: ${executeResponse.data.result.message}")
-    println("Agent success: ${executeResponse.data.result.success}")
-    println("Agent actions taken: ${executeResponse.data.result.actions?.size ?: 0}")
-
-    // End the session to cleanup browser resources
-    val endParams = SessionEndParams.builder()
-        .id(sessionId)
-        .build()
-
-    client.sessions().end(endParams)
-    println("Session ended")
 }
 ```
 
@@ -418,7 +431,7 @@ import com.browserbase.api.models.sessions.SessionStartParams
 import com.browserbase.api.models.sessions.SessionStartResponse
 
 val params: SessionStartParams = SessionStartParams.builder()
-    .modelName("openai/gpt-5-nano")
+    .modelName("anthropic/claude-sonnet-4-6")
     .build()
 val response: HttpResponseFor<SessionStartResponse> = client.sessions().withRawResponse().start(params)
 
@@ -570,6 +583,25 @@ val client: StagehandClient = StagehandOkHttpClient.builder()
     ))
     .build()
 ```
+
+### Connection pooling
+
+To customize the underlying OkHttp connection pool, configure the client using the `maxIdleConnections` and `keepAliveDuration` methods:
+
+```kotlin
+import com.browserbase.api.client.StagehandClient
+import com.browserbase.api.client.okhttp.StagehandOkHttpClient
+import java.time.Duration
+
+val client: StagehandClient = StagehandOkHttpClient.builder()
+    .fromEnv()
+    // If `maxIdleConnections` is set, then `keepAliveDuration` must be set, and vice versa.
+    .maxIdleConnections(10)
+    .keepAliveDuration(Duration.ofMinutes(2))
+    .build()
+```
+
+If both options are unset, OkHttp's default connection pool settings are used.
 
 ### HTTPS
 

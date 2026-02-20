@@ -478,7 +478,15 @@ private constructor(
              */
             fun error(): String? = error.getNullable("error")
 
-            /** Operation result (present when status is 'finished') */
+            /**
+             * Operation result (present when status is 'finished')
+             *
+             * This arbitrary value can be deserialized into a custom type using the `convert`
+             * method:
+             * ```kotlin
+             * val myObject: MyClass = streamEventSystemDataOutput.result().convert(MyClass::class.java)
+             * ```
+             */
             @JsonProperty("result") @ExcludeMissing fun _result(): JsonValue = result
 
             /**

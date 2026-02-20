@@ -5,6 +5,7 @@ package com.browserbase.api.services
 import com.browserbase.api.client.StagehandClient
 import com.browserbase.api.client.okhttp.StagehandOkHttpClient
 import com.browserbase.api.core.JsonValue
+import com.browserbase.api.models.sessions.ModelConfig
 import com.browserbase.api.models.sessions.SessionActParams
 import com.browserbase.api.models.sessions.SessionStartParams
 import com.github.tomakehurst.wiremock.client.WireMock.anyUrl
@@ -39,7 +40,7 @@ internal class ServiceParamsTest {
                 .build()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun start() {
         val sessionService = client.sessions()
@@ -69,6 +70,7 @@ internal class ServiceParamsTest {
                                 .ignoreDefaultArgs(true)
                                 .ignoreHttpsErrors(true)
                                 .locale("locale")
+                                .port(0.0)
                                 .preserveUserDataDir(true)
                                 .proxy(
                                     SessionStartParams.Browser.LaunchOptions.Proxy.builder()
@@ -203,7 +205,7 @@ internal class ServiceParamsTest {
         )
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun act() {
         val sessionService = client.sessions()
@@ -217,7 +219,14 @@ internal class ServiceParamsTest {
                 .frameId("frameId")
                 .options(
                     SessionActParams.Options.builder()
-                        .model("openai/gpt-4o")
+                        .model(
+                            ModelConfig.builder()
+                                .modelName("openai/gpt-5-nano")
+                                .apiKey("sk-some-openai-api-key")
+                                .baseUrl("https://api.openai.com/v1")
+                                .provider(ModelConfig.Provider.OPENAI)
+                                .build()
+                        )
                         .timeout(30000.0)
                         .variables(
                             SessionActParams.Options.Variables.builder()
