@@ -118,6 +118,8 @@ Examples live at:
 - `stagehand-kotlin-example/src/main/kotlin/com/browserbase/api/example/RemoteBrowserPlaywrightExample.kt`
 - `stagehand-kotlin-example/src/main/kotlin/com/browserbase/api/example/LocalBrowserPlaywrightExample.kt`
 
+Multiregion support: see `stagehand-kotlin-example/src/main/kotlin/com/browserbase/api/example/LocalServerMultiregionBrowserExample.kt`.
+
 Set your environment variables (from `examples/.env.example`):
 
 - `STAGEHAND_API_URL`
