@@ -74,7 +74,7 @@ Most existing browser automation tools either require you to write low-level cod
 
 <!-- x-release-please-end -->
 
-The Stagehand Kotlin SDK provides convenient access to the [Stagehand REST API](https://docs.stagehand.dev) from applications written in Kotlin.
+The Stagehand Kotlin SDK provides direct access to the [Stagehand REST API](https://docs.stagehand.dev) from applications written in Kotlin.
 
 The Stagehand Kotlin SDK is similar to the Stagehand Java SDK but with minor differences that make it more ergonomic for use in Kotlin, such as nullable values instead of `Optional`, `Sequence` instead of `Stream`, and suspend functions instead of `CompletableFuture`.
 
