@@ -1,5 +1,81 @@
 # Changelog
 
+## 3.3.0 (2026-03-04)
+
+Full Changelog: [v3.2.1...v3.3.0](https://github.com/browserbase/stagehand-kotlin/compare/v3.2.1...v3.3.0)
+
+### Features
+
+* [docsrevert spec gen changes ([6fbfc81](https://github.com/browserbase/stagehand-kotlin/commit/6fbfc81c15e7721a3838c30c07d44b5f1e368e39))
+* [feat]: add support for local caching of agent when using api (2) ([709f20e](https://github.com/browserbase/stagehand-kotlin/commit/709f20efde5dbda0a2883df1108c391ab3794e65))
+* add auto-bedrock support based on bedrock/provider.model-name ([94271b1](https://github.com/browserbase/stagehand-kotlin/commit/94271b12352b7edb875187a84f082c18975bb3ac))
+* Add executionModel serialization to api client ([9fe0fd5](https://github.com/browserbase/stagehand-kotlin/commit/9fe0fd5f0c4dc587d9330e90404c566e963964a6))
+* add v3 integration tests matching cloud exactly ([1d3296c](https://github.com/browserbase/stagehand-kotlin/commit/1d3296c4562edebf47d2fdba30f4ad548091a6b4))
+* **api:** manual updates ([b4cc609](https://github.com/browserbase/stagehand-kotlin/commit/b4cc60978e0c6b87b0cd81a821473357422b1902))
+* **api:** manual updates ([441fff1](https://github.com/browserbase/stagehand-kotlin/commit/441fff113a3e1b5cf91864a2c01e3a5a177938ed))
+* **api:** manual updates ([de89ef0](https://github.com/browserbase/stagehand-kotlin/commit/de89ef0a33fe52bc6b0bdb828079d5a3935566aa))
+* **api:** manual updates ([81df74d](https://github.com/browserbase/stagehand-kotlin/commit/81df74d8e0d066805c4efc0739e25237e4954854))
+* **api:** manual updates ([b06de97](https://github.com/browserbase/stagehand-kotlin/commit/b06de9710dfdf82d021a43603ac74dde10754558))
+* **api:** manual updates ([d3793d7](https://github.com/browserbase/stagehand-kotlin/commit/d3793d75a6fe307869eddf909c70f45812fbe571))
+* **api:** manual updates ([3e6ea1d](https://github.com/browserbase/stagehand-kotlin/commit/3e6ea1db002bf6140d274faf6352ff52389232dd))
+* **api:** manual updates ([488fd2f](https://github.com/browserbase/stagehand-kotlin/commit/488fd2f2610090fb71ee7247322dee1421e7b531))
+* **api:** manual updates ([768c9a4](https://github.com/browserbase/stagehand-kotlin/commit/768c9a453a639799fc3b7b35a6ff9f1b50663644))
+* **api:** manual updates ([954c814](https://github.com/browserbase/stagehand-kotlin/commit/954c8146a466d27825d43b9840605f974df0750d))
+* **api:** manual updates ([65db682](https://github.com/browserbase/stagehand-kotlin/commit/65db682493f28611bebe1cc732778a6b82b41eac))
+* **api:** manual updates ([2ec3278](https://github.com/browserbase/stagehand-kotlin/commit/2ec32782d487e539c251868b2ce99c6084692b79))
+* **api:** manual updates ([4ff4f78](https://github.com/browserbase/stagehand-kotlin/commit/4ff4f7801e19b08b0d7773110d12defab0fc799d))
+* **api:** manual updates ([6d7a0d7](https://github.com/browserbase/stagehand-kotlin/commit/6d7a0d71e34b76abe5382b832e99af0d8957e6a7))
+* **api:** manual updates ([ad16a4e](https://github.com/browserbase/stagehand-kotlin/commit/ad16a4ec0e6559dd94f0399bca2e2a46db07b3b2))
+* **api:** manual updates ([58f01cf](https://github.com/browserbase/stagehand-kotlin/commit/58f01cfab9aeff0ac3a512c422d4a693511cadde))
+* **api:** manual updates ([a9c7b13](https://github.com/browserbase/stagehand-kotlin/commit/a9c7b13c19cbdf53b63f8c6e39c628e6c7f90d9d))
+* **api:** manual updates ([52fae2b](https://github.com/browserbase/stagehand-kotlin/commit/52fae2b9de3ab8b5c648731d4c6c4cd34eec3fe5))
+* **api:** manual updates ([841a039](https://github.com/browserbase/stagehand-kotlin/commit/841a039eea51d7e4782ce98b6233c24f508fea66))
+* **api:** manual updates ([d557a5b](https://github.com/browserbase/stagehand-kotlin/commit/d557a5b17e11f141acd852cba1b5315e20c019eb))
+* **api:** tweak branding and fix some config fields ([ff2327e](https://github.com/browserbase/stagehand-kotlin/commit/ff2327e57e9957167f25f26b07b5cc68627888c3))
+* **client:** add connection pooling option ([31a80ac](https://github.com/browserbase/stagehand-kotlin/commit/31a80ac1edbcb567f0f5676292eb7711ba8e8509))
+* **client:** send `X-Stainless-Kotlin-Version` header ([821bece](https://github.com/browserbase/stagehand-kotlin/commit/821bececa610450889f88f4c99846cc0491a6ba3))
+* End endpoint cleanup ([ca7d7b2](https://github.com/browserbase/stagehand-kotlin/commit/ca7d7b23f9f199bab919e4cc9966c7d4789895d7))
+* Include replay endpoint in stainless spec so SDK clients can get run metrics ([5c9074e](https://github.com/browserbase/stagehand-kotlin/commit/5c9074eb35d81b87a0be339390ee47763ae73fa4))
+* move Stainless compatibility transforms from gen-openapi.ts into stainless.yml ([47eb8a9](https://github.com/browserbase/stagehand-kotlin/commit/47eb8a9a64ae78cb9233e8f4d95b55db5a47d7ac))
+* Multi-region stagehand api support ([25d3723](https://github.com/browserbase/stagehand-kotlin/commit/25d3723d71176afffc4656a7d128cdbd97fc3460))
+* randomize region used for evals, split out pnpm and turbo cache, veri… ([8380e6d](https://github.com/browserbase/stagehand-kotlin/commit/8380e6d0b3fde5d94be3fd1e6d23e734d9030f36))
+* Removed MCP from readme for now ([dc1b964](https://github.com/browserbase/stagehand-kotlin/commit/dc1b964154c625e8600204c2f496652465921c80))
+* Update stainless.yml for project and publish settings ([84c3825](https://github.com/browserbase/stagehand-kotlin/commit/84c3825a2cdc0b68c87d710274e16a3081582917))
+
+
+### Bug Fixes
+
+* **client:** disallow coercion from float to int ([00c42ca](https://github.com/browserbase/stagehand-kotlin/commit/00c42cafb9c1e81014fead3a655224590c88768a))
+* **client:** fully respect max retries ([3240860](https://github.com/browserbase/stagehand-kotlin/commit/3240860c3aa3591ecd662d5894a1cb4e08589ac6))
+* **client:** preserve time zone in lenient date-time parsing ([35065a8](https://github.com/browserbase/stagehand-kotlin/commit/35065a803f535312865655386f7e4079c5830e06))
+* **client:** send retry count header for max retries 0 ([3240860](https://github.com/browserbase/stagehand-kotlin/commit/3240860c3aa3591ecd662d5894a1cb4e08589ac6))
+* date time deserialization leniency ([2d11ff4](https://github.com/browserbase/stagehand-kotlin/commit/2d11ff4e5195e1cc75a765aaa0dc9d45378ec458))
+* set Accept header in more places ([8cc8cd1](https://github.com/browserbase/stagehand-kotlin/commit/8cc8cd1faee2bf754c4dcd4c2edeba865eb54ca5))
+
+
+### Chores
+
+* **ci:** upgrade `actions/setup-java` ([cc2f41d](https://github.com/browserbase/stagehand-kotlin/commit/cc2f41d28a364fbef83a2f190077931e28f0e695))
+* configure new SDK language ([6ef25f2](https://github.com/browserbase/stagehand-kotlin/commit/6ef25f2cf1b23be91f2cf9d0ca4dbad7e8924205))
+* drop apache dependency ([6683c7f](https://github.com/browserbase/stagehand-kotlin/commit/6683c7f66e60f5c16b054eff7d408baccc7d4bd1))
+* **internal:** allow passing args to `./scripts/test` ([9b4a28d](https://github.com/browserbase/stagehand-kotlin/commit/9b4a28d400d3163f2fc9e42f752939089a5e00a7))
+* **internal:** correct cache invalidation for `SKIP_MOCK_TESTS` ([0d3d2ee](https://github.com/browserbase/stagehand-kotlin/commit/0d3d2ee4dc1cc165463276bad9cbc946624f36d1))
+* **internal:** depend on packages directly in example ([3240860](https://github.com/browserbase/stagehand-kotlin/commit/3240860c3aa3591ecd662d5894a1cb4e08589ac6))
+* **internal:** expand imports ([528cf91](https://github.com/browserbase/stagehand-kotlin/commit/528cf91d65e9d32ce91f1c0170f9f75d9479e710))
+* **internal:** make `OkHttp` constructor internal ([6a2fd20](https://github.com/browserbase/stagehand-kotlin/commit/6a2fd2056a7aa18193e60dce55d55eb60d4b1701))
+* **internal:** remove mock server code ([3aca2ca](https://github.com/browserbase/stagehand-kotlin/commit/3aca2ca447f6b4e83469124a89785651cf3a7571))
+* **internal:** update `actions/checkout` version ([ceef730](https://github.com/browserbase/stagehand-kotlin/commit/ceef730879c4de602438ecbc1dc2a395514d8c8f))
+* **internal:** update `TestServerExtension` comment ([150492f](https://github.com/browserbase/stagehand-kotlin/commit/150492f26964cb5e0a6d6e73e8fc6fdd546e6cfc))
+* **internal:** upgrade AssertJ ([abed5cf](https://github.com/browserbase/stagehand-kotlin/commit/abed5cf60ae318787859fa6743e629b6a4d165fd))
+* make `Properties` more resilient to `null` ([8623c8a](https://github.com/browserbase/stagehand-kotlin/commit/8623c8a44a8e248f76ec3dddd800e9e477a3ae87))
+* test on Jackson 2.14.0 to avoid encountering FasterXML/jackson-databind[#3240](https://github.com/browserbase/stagehand-kotlin/issues/3240) in tests ([2d11ff4](https://github.com/browserbase/stagehand-kotlin/commit/2d11ff4e5195e1cc75a765aaa0dc9d45378ec458))
+* update mock server docs ([3fc00a6](https://github.com/browserbase/stagehand-kotlin/commit/3fc00a61faf4eeecc64b63dcf9b32d0021f10b41))
+
+
+### Documentation
+
+* add comment for arbitrary value fields ([77a5eea](https://github.com/browserbase/stagehand-kotlin/commit/77a5eea0364965d678b350d3118574bc0f1fe083))
+
 ## 3.2.1 (2026-03-04)
 
 Full Changelog: [v3.2.0...v3.2.1](https://github.com/browserbase/stagehand-kotlin/compare/v3.2.0...v3.2.1)
