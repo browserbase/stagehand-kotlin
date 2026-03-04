@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.2.1 (2026-03-04)
+
+Full Changelog: [v3.2.0...v3.2.1](https://github.com/browserbase/stagehand-kotlin/compare/v3.2.0...v3.2.1)
+
+### Documentation
+
+* tweak README wording for release validation ([a37cd95](https://github.com/browserbase/stagehand-kotlin/commit/a37cd951ad692580fb25109c0f0c3853c5ddc6dd))
+
 ## 3.2.0 (2026-02-26)
 
 Full Changelog: [v3.1.1...v3.2.0](https://github.com/browserbase/stagehand-kotlin/compare/v3.1.1...v3.2.0)
