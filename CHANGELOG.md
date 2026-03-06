@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.3.1 (2026-03-06)
+
+Full Changelog: [v3.3.0...v3.3.1](https://github.com/browserbase/stagehand-kotlin/compare/v3.3.0...v3.3.1)
+
+### Chores
+
+* **internal:** codegen related update ([bc06d37](https://github.com/browserbase/stagehand-kotlin/commit/bc06d37df3c6cb4417d1c7c603484da289c97fc0))
+
 ## 3.3.0 (2026-03-04)
 
 Full Changelog: [v3.2.1...v3.3.0](https://github.com/browserbase/stagehand-kotlin/compare/v3.2.1...v3.3.0)
