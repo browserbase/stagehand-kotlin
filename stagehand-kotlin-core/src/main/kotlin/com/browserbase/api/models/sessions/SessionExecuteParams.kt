@@ -1658,6 +1658,8 @@ private constructor(
         private val instruction: JsonField<String>,
         private val highlightCursor: JsonField<Boolean>,
         private val maxSteps: JsonField<Double>,
+        private val toolTimeout: JsonField<Double>,
+        private val useSearch: JsonField<Boolean>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
@@ -1669,8 +1671,16 @@ private constructor(
             @JsonProperty("highlightCursor")
             @ExcludeMissing
             highlightCursor: JsonField<Boolean> = JsonMissing.of(),
-            @JsonProperty("maxSteps") @ExcludeMissing maxSteps: JsonField<Double> = JsonMissing.of(),
-        ) : this(instruction, highlightCursor, maxSteps, mutableMapOf())
+            @JsonProperty("maxSteps")
+            @ExcludeMissing
+            maxSteps: JsonField<Double> = JsonMissing.of(),
+            @JsonProperty("toolTimeout")
+            @ExcludeMissing
+            toolTimeout: JsonField<Double> = JsonMissing.of(),
+            @JsonProperty("useSearch")
+            @ExcludeMissing
+            useSearch: JsonField<Boolean> = JsonMissing.of(),
+        ) : this(instruction, highlightCursor, maxSteps, toolTimeout, useSearch, mutableMapOf())
 
         /**
          * Natural language instruction for the agent
@@ -1697,6 +1707,22 @@ private constructor(
         fun maxSteps(): Double? = maxSteps.getNullable("maxSteps")
 
         /**
+         * Timeout in milliseconds for each agent tool call
+         *
+         * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun toolTimeout(): Double? = toolTimeout.getNullable("toolTimeout")
+
+        /**
+         * Whether to enable the web search tool powered by Browserbase Search API
+         *
+         * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun useSearch(): Boolean? = useSearch.getNullable("useSearch")
+
+        /**
          * Returns the raw JSON value of [instruction].
          *
          * Unlike [instruction], this method doesn't throw if the JSON field has an unexpected type.
@@ -1721,6 +1747,22 @@ private constructor(
          * Unlike [maxSteps], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("maxSteps") @ExcludeMissing fun _maxSteps(): JsonField<Double> = maxSteps
+
+        /**
+         * Returns the raw JSON value of [toolTimeout].
+         *
+         * Unlike [toolTimeout], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("toolTimeout")
+        @ExcludeMissing
+        fun _toolTimeout(): JsonField<Double> = toolTimeout
+
+        /**
+         * Returns the raw JSON value of [useSearch].
+         *
+         * Unlike [useSearch], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("useSearch") @ExcludeMissing fun _useSearch(): JsonField<Boolean> = useSearch
 
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -1753,12 +1795,16 @@ private constructor(
             private var instruction: JsonField<String>? = null
             private var highlightCursor: JsonField<Boolean> = JsonMissing.of()
             private var maxSteps: JsonField<Double> = JsonMissing.of()
+            private var toolTimeout: JsonField<Double> = JsonMissing.of()
+            private var useSearch: JsonField<Boolean> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             internal fun from(executeOptions: ExecuteOptions) = apply {
                 instruction = executeOptions.instruction
                 highlightCursor = executeOptions.highlightCursor
                 maxSteps = executeOptions.maxSteps
+                toolTimeout = executeOptions.toolTimeout
+                useSearch = executeOptions.useSearch
                 additionalProperties = executeOptions.additionalProperties.toMutableMap()
             }
 
@@ -1803,6 +1849,32 @@ private constructor(
              */
             fun maxSteps(maxSteps: JsonField<Double>) = apply { this.maxSteps = maxSteps }
 
+            /** Timeout in milliseconds for each agent tool call */
+            fun toolTimeout(toolTimeout: Double) = toolTimeout(JsonField.of(toolTimeout))
+
+            /**
+             * Sets [Builder.toolTimeout] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.toolTimeout] with a well-typed [Double] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun toolTimeout(toolTimeout: JsonField<Double>) = apply {
+                this.toolTimeout = toolTimeout
+            }
+
+            /** Whether to enable the web search tool powered by Browserbase Search API */
+            fun useSearch(useSearch: Boolean) = useSearch(JsonField.of(useSearch))
+
+            /**
+             * Sets [Builder.useSearch] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.useSearch] with a well-typed [Boolean] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun useSearch(useSearch: JsonField<Boolean>) = apply { this.useSearch = useSearch }
+
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
                 putAllAdditionalProperties(additionalProperties)
@@ -1839,6 +1911,8 @@ private constructor(
                     checkRequired("instruction", instruction),
                     highlightCursor,
                     maxSteps,
+                    toolTimeout,
+                    useSearch,
                     additionalProperties.toMutableMap(),
                 )
         }
@@ -1853,6 +1927,8 @@ private constructor(
             instruction()
             highlightCursor()
             maxSteps()
+            toolTimeout()
+            useSearch()
             validated = true
         }
 
@@ -1873,7 +1949,9 @@ private constructor(
         internal fun validity(): Int =
             (if (instruction.asKnown() == null) 0 else 1) +
                 (if (highlightCursor.asKnown() == null) 0 else 1) +
-                (if (maxSteps.asKnown() == null) 0 else 1)
+                (if (maxSteps.asKnown() == null) 0 else 1) +
+                (if (toolTimeout.asKnown() == null) 0 else 1) +
+                (if (useSearch.asKnown() == null) 0 else 1)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
@@ -1884,17 +1962,26 @@ private constructor(
                 instruction == other.instruction &&
                 highlightCursor == other.highlightCursor &&
                 maxSteps == other.maxSteps &&
+                toolTimeout == other.toolTimeout &&
+                useSearch == other.useSearch &&
                 additionalProperties == other.additionalProperties
         }
 
         private val hashCode: Int by lazy {
-            Objects.hash(instruction, highlightCursor, maxSteps, additionalProperties)
+            Objects.hash(
+                instruction,
+                highlightCursor,
+                maxSteps,
+                toolTimeout,
+                useSearch,
+                additionalProperties,
+            )
         }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "ExecuteOptions{instruction=$instruction, highlightCursor=$highlightCursor, maxSteps=$maxSteps, additionalProperties=$additionalProperties}"
+            "ExecuteOptions{instruction=$instruction, highlightCursor=$highlightCursor, maxSteps=$maxSteps, toolTimeout=$toolTimeout, useSearch=$useSearch, additionalProperties=$additionalProperties}"
     }
 
     /** Whether to stream the response via SSE */
