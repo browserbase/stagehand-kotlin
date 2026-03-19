@@ -129,6 +129,8 @@ internal class SessionServiceAsyncTest {
                             )
                             .highlightCursor(true)
                             .maxSteps(20.0)
+                            .toolTimeout(30000.0)
+                            .useSearch(true)
                             .build()
                     )
                     .frameId("frameId")
