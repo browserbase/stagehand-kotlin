@@ -786,7 +786,8 @@ private constructor(
         fun timeout(): Double? = timeout.getNullable("timeout")
 
         /**
-         * Variables to substitute in the action instruction
+         * Variables to substitute in the action instruction. Accepts flat primitives or { value,
+         * description? } objects.
          *
          * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -879,7 +880,10 @@ private constructor(
              */
             fun timeout(timeout: JsonField<Double>) = apply { this.timeout = timeout }
 
-            /** Variables to substitute in the action instruction */
+            /**
+             * Variables to substitute in the action instruction. Accepts flat primitives or {
+             * value, description? } objects.
+             */
             fun variables(variables: Variables) = variables(JsonField.of(variables))
 
             /**
@@ -1122,7 +1126,10 @@ private constructor(
             }
         }
 
-        /** Variables to substitute in the action instruction */
+        /**
+         * Variables to substitute in the action instruction. Accepts flat primitives or { value,
+         * description? } objects.
+         */
         class Variables
         @JsonCreator
         private constructor(
