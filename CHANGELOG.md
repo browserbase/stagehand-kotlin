@@ -1,5 +1,36 @@
 # Changelog
 
+## 3.18.0 (2026-03-25)
+
+Full Changelog: [v3.3.0...v3.18.0](https://github.com/browserbase/stagehand-kotlin/compare/v3.3.0...v3.18.0)
+
+### Features
+
+* [fix]: add `useSearch` & `toolTimeout` to stainless types ([85184c8](https://github.com/browserbase/stagehand-kotlin/commit/85184c8b635d26e4439f122cd68ecf065fd9cc11))
+* [STG-1607] Yield finished SSE event instead of silently dropping it ([8677f2f](https://github.com/browserbase/stagehand-kotlin/commit/8677f2f8e674a598a30176239ee6a94821a64b4e))
+* Add explicit SSE event names for local v3 streaming ([7adca8f](https://github.com/browserbase/stagehand-kotlin/commit/7adca8ff4661ea6b6c2322e96387fa5153d52c9a))
+* Add missing cdpHeaders field to v3 server openapi spec ([00007cb](https://github.com/browserbase/stagehand-kotlin/commit/00007cbc5ae7cc18441ff1090d22b15202cea90f))
+* Include LLM headers in ModelConfig ([9ffa9ad](https://github.com/browserbase/stagehand-kotlin/commit/9ffa9ade714bfebf97140cdf5f73e10aa57ae405))
+* Revert broken finished SSE yield config ([0f9ab63](https://github.com/browserbase/stagehand-kotlin/commit/0f9ab6326664a87d75668a5039b8b53ef301596f))
+* variables for observe ([0f04893](https://github.com/browserbase/stagehand-kotlin/commit/0f04893475635c3d3488345ae0ece6a93119a4d9))
+
+
+### Bug Fixes
+
+* **client:** allow updating header/query affecting fields in `toBuilder()` ([8421b9a](https://github.com/browserbase/stagehand-kotlin/commit/8421b9adfc0b572661057807cb7ec20663647e53))
+* **client:** incorrect `Retry-After` parsing ([410b74d](https://github.com/browserbase/stagehand-kotlin/commit/410b74d2d8b98fa8d0d02c0b3889f3c613cd1615))
+
+
+### Chores
+
+* **ci:** skip lint on metadata-only changes ([6589ef7](https://github.com/browserbase/stagehand-kotlin/commit/6589ef7ceeb243da9a377dbedd5f1ccc4c088f9f))
+* **internal:** bump ktfmt ([430f0f6](https://github.com/browserbase/stagehand-kotlin/commit/430f0f6d2c44eb94dffc426da9f91f1031012f66))
+* **internal:** bump palantir-java-format ([5e7cb91](https://github.com/browserbase/stagehand-kotlin/commit/5e7cb91b767fb514a23da2e0194cae5dfd3f1a99))
+* **internal:** codegen related update ([bc06d37](https://github.com/browserbase/stagehand-kotlin/commit/bc06d37df3c6cb4417d1c7c603484da289c97fc0))
+* **internal:** tweak CI branches ([d4678e6](https://github.com/browserbase/stagehand-kotlin/commit/d4678e68698541e602d36daba9c9a0e514d9f287))
+* **internal:** update gitignore ([f8ea1b5](https://github.com/browserbase/stagehand-kotlin/commit/f8ea1b5891707df44ba473b1f151b0bf981521c6))
+* **internal:** update retry delay tests ([6ce8f3a](https://github.com/browserbase/stagehand-kotlin/commit/6ce8f3ab786a18caf6dc6f74ea7c52be3c522b96))
+
 ## 3.3.0 (2026-03-04)
 
 Full Changelog: [v3.2.1...v3.3.0](https://github.com/browserbase/stagehand-kotlin/compare/v3.2.1...v3.3.0)
