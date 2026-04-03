@@ -40,7 +40,7 @@ internal class SessionServiceAsyncTest {
                         SessionActParams.Options.builder()
                             .model(
                                 ModelConfig.builder()
-                                    .modelName("openai/gpt-5-nano")
+                                    .modelName("openai/gpt-5.4-mini")
                                     .apiKey("sk-some-openai-api-key")
                                     .baseUrl("https://api.openai.com/v1")
                                     .headers(
@@ -117,7 +117,7 @@ internal class SessionServiceAsyncTest {
                             .cua(true)
                             .executionModel(
                                 ModelConfig.builder()
-                                    .modelName("openai/gpt-5-nano")
+                                    .modelName("openai/gpt-5.4-mini")
                                     .apiKey("sk-some-openai-api-key")
                                     .baseUrl("https://api.openai.com/v1")
                                     .headers(
@@ -131,7 +131,7 @@ internal class SessionServiceAsyncTest {
                             .mode(SessionExecuteParams.AgentConfig.Mode.CUA)
                             .model(
                                 ModelConfig.builder()
-                                    .modelName("openai/gpt-5-nano")
+                                    .modelName("openai/gpt-5.4-mini")
                                     .apiKey("sk-some-openai-api-key")
                                     .baseUrl("https://api.openai.com/v1")
                                     .headers(
@@ -187,7 +187,7 @@ internal class SessionServiceAsyncTest {
                         SessionExtractParams.Options.builder()
                             .model(
                                 ModelConfig.builder()
-                                    .modelName("openai/gpt-5-nano")
+                                    .modelName("openai/gpt-5.4-mini")
                                     .apiKey("sk-some-openai-api-key")
                                     .baseUrl("https://api.openai.com/v1")
                                     .headers(
@@ -267,7 +267,7 @@ internal class SessionServiceAsyncTest {
                         SessionObserveParams.Options.builder()
                             .model(
                                 ModelConfig.builder()
-                                    .modelName("openai/gpt-5-nano")
+                                    .modelName("openai/gpt-5.4-mini")
                                     .apiKey("sk-some-openai-api-key")
                                     .baseUrl("https://api.openai.com/v1")
                                     .headers(
@@ -339,7 +339,7 @@ internal class SessionServiceAsyncTest {
             sessionServiceAsync.start(
                 SessionStartParams.builder()
                     .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
-                    .modelName("openai/gpt-4o")
+                    .modelName("openai/gpt-5.4-mini")
                     .actTimeoutMs(0.0)
                     .browser(
                         SessionStartParams.Browser.builder()
