@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.19.3 (2026-04-03)
+
+Full Changelog: [v3.18.0...v3.19.3](https://github.com/browserbase/stagehand-kotlin/compare/v3.18.0...v3.19.3)
+
+### Features
+
+* Replace default model used in server-v3 api spec examples ([0b7c5c0](https://github.com/browserbase/stagehand-kotlin/commit/0b7c5c045935a9b034ffc43cff5f7ffb9dca8b37))
+
 ## 3.18.0 (2026-03-25)
 
 Full Changelog: [v3.3.0...v3.18.0](https://github.com/browserbase/stagehand-kotlin/compare/v3.3.0...v3.18.0)
