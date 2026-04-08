@@ -99,6 +99,15 @@ private constructor(
     fun experimental(): Boolean? = body.experimental()
 
     /**
+     * Optional provider-specific configuration for the session model (for example Bedrock region
+     * and credentials)
+     *
+     * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun modelClientOptions(): ModelClientOptions? = body.modelClientOptions()
+
+    /**
      * Enable self-healing for failed actions
      *
      * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if the
@@ -182,6 +191,14 @@ private constructor(
      * Unlike [experimental], this method doesn't throw if the JSON field has an unexpected type.
      */
     fun _experimental(): JsonField<Boolean> = body._experimental()
+
+    /**
+     * Returns the raw JSON value of [modelClientOptions].
+     *
+     * Unlike [modelClientOptions], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    fun _modelClientOptions(): JsonField<ModelClientOptions> = body._modelClientOptions()
 
     /**
      * Returns the raw JSON value of [selfHeal].
@@ -363,6 +380,47 @@ private constructor(
          */
         fun experimental(experimental: JsonField<Boolean>) = apply {
             body.experimental(experimental)
+        }
+
+        /**
+         * Optional provider-specific configuration for the session model (for example Bedrock
+         * region and credentials)
+         */
+        fun modelClientOptions(modelClientOptions: ModelClientOptions) = apply {
+            body.modelClientOptions(modelClientOptions)
+        }
+
+        /**
+         * Sets [Builder.modelClientOptions] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.modelClientOptions] with a well-typed
+         * [ModelClientOptions] value instead. This method is primarily for setting the field to an
+         * undocumented or not yet supported value.
+         */
+        fun modelClientOptions(modelClientOptions: JsonField<ModelClientOptions>) = apply {
+            body.modelClientOptions(modelClientOptions)
+        }
+
+        /**
+         * Alias for calling [modelClientOptions] with
+         * `ModelClientOptions.ofBedrockApiKey(bedrockApiKey)`.
+         */
+        fun modelClientOptions(bedrockApiKey: ModelClientOptions.BedrockApiKeyModelClientOptions) =
+            apply {
+                body.modelClientOptions(bedrockApiKey)
+            }
+
+        /**
+         * Alias for calling [modelClientOptions] with
+         * `ModelClientOptions.ofBedrockAwsCredentials(bedrockAwsCredentials)`.
+         */
+        fun modelClientOptions(
+            bedrockAwsCredentials: ModelClientOptions.BedrockAwsCredentialsModelClientOptions
+        ) = apply { body.modelClientOptions(bedrockAwsCredentials) }
+
+        /** Alias for calling [modelClientOptions] with `ModelClientOptions.ofGeneric(generic)`. */
+        fun modelClientOptions(generic: ModelClientOptions.GenericModelClientOptions) = apply {
+            body.modelClientOptions(generic)
         }
 
         /** Enable self-healing for failed actions */
@@ -578,6 +636,7 @@ private constructor(
         private val browserbaseSessionId: JsonField<String>,
         private val domSettleTimeoutMs: JsonField<Double>,
         private val experimental: JsonField<Boolean>,
+        private val modelClientOptions: JsonField<ModelClientOptions>,
         private val selfHeal: JsonField<Boolean>,
         private val systemPrompt: JsonField<String>,
         private val verbose: JsonField<Verbose>,
@@ -607,6 +666,9 @@ private constructor(
             @JsonProperty("experimental")
             @ExcludeMissing
             experimental: JsonField<Boolean> = JsonMissing.of(),
+            @JsonProperty("modelClientOptions")
+            @ExcludeMissing
+            modelClientOptions: JsonField<ModelClientOptions> = JsonMissing.of(),
             @JsonProperty("selfHeal")
             @ExcludeMissing
             selfHeal: JsonField<Boolean> = JsonMissing.of(),
@@ -625,6 +687,7 @@ private constructor(
             browserbaseSessionId,
             domSettleTimeoutMs,
             experimental,
+            modelClientOptions,
             selfHeal,
             systemPrompt,
             verbose,
@@ -683,6 +746,16 @@ private constructor(
          *   the server responded with an unexpected value).
          */
         fun experimental(): Boolean? = experimental.getNullable("experimental")
+
+        /**
+         * Optional provider-specific configuration for the session model (for example Bedrock
+         * region and credentials)
+         *
+         * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun modelClientOptions(): ModelClientOptions? =
+            modelClientOptions.getNullable("modelClientOptions")
 
         /**
          * Enable self-healing for failed actions
@@ -783,6 +856,16 @@ private constructor(
         fun _experimental(): JsonField<Boolean> = experimental
 
         /**
+         * Returns the raw JSON value of [modelClientOptions].
+         *
+         * Unlike [modelClientOptions], this method doesn't throw if the JSON field has an
+         * unexpected type.
+         */
+        @JsonProperty("modelClientOptions")
+        @ExcludeMissing
+        fun _modelClientOptions(): JsonField<ModelClientOptions> = modelClientOptions
+
+        /**
          * Returns the raw JSON value of [selfHeal].
          *
          * Unlike [selfHeal], this method doesn't throw if the JSON field has an unexpected type.
@@ -852,6 +935,7 @@ private constructor(
             private var browserbaseSessionId: JsonField<String> = JsonMissing.of()
             private var domSettleTimeoutMs: JsonField<Double> = JsonMissing.of()
             private var experimental: JsonField<Boolean> = JsonMissing.of()
+            private var modelClientOptions: JsonField<ModelClientOptions> = JsonMissing.of()
             private var selfHeal: JsonField<Boolean> = JsonMissing.of()
             private var systemPrompt: JsonField<String> = JsonMissing.of()
             private var verbose: JsonField<Verbose> = JsonMissing.of()
@@ -866,6 +950,7 @@ private constructor(
                 browserbaseSessionId = body.browserbaseSessionId
                 domSettleTimeoutMs = body.domSettleTimeoutMs
                 experimental = body.experimental
+                modelClientOptions = body.modelClientOptions
                 selfHeal = body.selfHeal
                 systemPrompt = body.systemPrompt
                 verbose = body.verbose
@@ -968,6 +1053,49 @@ private constructor(
                 this.experimental = experimental
             }
 
+            /**
+             * Optional provider-specific configuration for the session model (for example Bedrock
+             * region and credentials)
+             */
+            fun modelClientOptions(modelClientOptions: ModelClientOptions) =
+                modelClientOptions(JsonField.of(modelClientOptions))
+
+            /**
+             * Sets [Builder.modelClientOptions] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.modelClientOptions] with a well-typed
+             * [ModelClientOptions] value instead. This method is primarily for setting the field to
+             * an undocumented or not yet supported value.
+             */
+            fun modelClientOptions(modelClientOptions: JsonField<ModelClientOptions>) = apply {
+                this.modelClientOptions = modelClientOptions
+            }
+
+            /**
+             * Alias for calling [modelClientOptions] with
+             * `ModelClientOptions.ofBedrockApiKey(bedrockApiKey)`.
+             */
+            fun modelClientOptions(
+                bedrockApiKey: ModelClientOptions.BedrockApiKeyModelClientOptions
+            ) = modelClientOptions(ModelClientOptions.ofBedrockApiKey(bedrockApiKey))
+
+            /**
+             * Alias for calling [modelClientOptions] with
+             * `ModelClientOptions.ofBedrockAwsCredentials(bedrockAwsCredentials)`.
+             */
+            fun modelClientOptions(
+                bedrockAwsCredentials: ModelClientOptions.BedrockAwsCredentialsModelClientOptions
+            ) =
+                modelClientOptions(
+                    ModelClientOptions.ofBedrockAwsCredentials(bedrockAwsCredentials)
+                )
+
+            /**
+             * Alias for calling [modelClientOptions] with `ModelClientOptions.ofGeneric(generic)`.
+             */
+            fun modelClientOptions(generic: ModelClientOptions.GenericModelClientOptions) =
+                modelClientOptions(ModelClientOptions.ofGeneric(generic))
+
             /** Enable self-healing for failed actions */
             fun selfHeal(selfHeal: Boolean) = selfHeal(JsonField.of(selfHeal))
 
@@ -1061,6 +1189,7 @@ private constructor(
                     browserbaseSessionId,
                     domSettleTimeoutMs,
                     experimental,
+                    modelClientOptions,
                     selfHeal,
                     systemPrompt,
                     verbose,
@@ -1083,6 +1212,7 @@ private constructor(
             browserbaseSessionId()
             domSettleTimeoutMs()
             experimental()
+            modelClientOptions()?.validate()
             selfHeal()
             systemPrompt()
             verbose()?.validate()
@@ -1112,6 +1242,7 @@ private constructor(
                 (if (browserbaseSessionId.asKnown() == null) 0 else 1) +
                 (if (domSettleTimeoutMs.asKnown() == null) 0 else 1) +
                 (if (experimental.asKnown() == null) 0 else 1) +
+                (modelClientOptions.asKnown()?.validity() ?: 0) +
                 (if (selfHeal.asKnown() == null) 0 else 1) +
                 (if (systemPrompt.asKnown() == null) 0 else 1) +
                 (verbose.asKnown()?.validity() ?: 0) +
@@ -1130,6 +1261,7 @@ private constructor(
                 browserbaseSessionId == other.browserbaseSessionId &&
                 domSettleTimeoutMs == other.domSettleTimeoutMs &&
                 experimental == other.experimental &&
+                modelClientOptions == other.modelClientOptions &&
                 selfHeal == other.selfHeal &&
                 systemPrompt == other.systemPrompt &&
                 verbose == other.verbose &&
@@ -1146,6 +1278,7 @@ private constructor(
                 browserbaseSessionId,
                 domSettleTimeoutMs,
                 experimental,
+                modelClientOptions,
                 selfHeal,
                 systemPrompt,
                 verbose,
@@ -1157,7 +1290,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Body{modelName=$modelName, actTimeoutMs=$actTimeoutMs, browser=$browser, browserbaseSessionCreateParams=$browserbaseSessionCreateParams, browserbaseSessionId=$browserbaseSessionId, domSettleTimeoutMs=$domSettleTimeoutMs, experimental=$experimental, selfHeal=$selfHeal, systemPrompt=$systemPrompt, verbose=$verbose, waitForCaptchaSolves=$waitForCaptchaSolves, additionalProperties=$additionalProperties}"
+            "Body{modelName=$modelName, actTimeoutMs=$actTimeoutMs, browser=$browser, browserbaseSessionCreateParams=$browserbaseSessionCreateParams, browserbaseSessionId=$browserbaseSessionId, domSettleTimeoutMs=$domSettleTimeoutMs, experimental=$experimental, modelClientOptions=$modelClientOptions, selfHeal=$selfHeal, systemPrompt=$systemPrompt, verbose=$verbose, waitForCaptchaSolves=$waitForCaptchaSolves, additionalProperties=$additionalProperties}"
     }
 
     class Browser
@@ -7125,6 +7258,3915 @@ private constructor(
 
         override fun toString() =
             "BrowserbaseSessionCreateParams{browserSettings=$browserSettings, extensionId=$extensionId, keepAlive=$keepAlive, projectId=$projectId, proxies=$proxies, region=$region, timeout=$timeout, userMetadata=$userMetadata, additionalProperties=$additionalProperties}"
+    }
+
+    /**
+     * Optional provider-specific configuration for the session model (for example Bedrock region
+     * and credentials)
+     */
+    @JsonDeserialize(using = ModelClientOptions.Deserializer::class)
+    @JsonSerialize(using = ModelClientOptions.Serializer::class)
+    class ModelClientOptions
+    private constructor(
+        private val bedrockApiKey: BedrockApiKeyModelClientOptions? = null,
+        private val bedrockAwsCredentials: BedrockAwsCredentialsModelClientOptions? = null,
+        private val generic: GenericModelClientOptions? = null,
+        private val _json: JsonValue? = null,
+    ) {
+
+        fun bedrockApiKey(): BedrockApiKeyModelClientOptions? = bedrockApiKey
+
+        fun bedrockAwsCredentials(): BedrockAwsCredentialsModelClientOptions? =
+            bedrockAwsCredentials
+
+        fun generic(): GenericModelClientOptions? = generic
+
+        fun isBedrockApiKey(): Boolean = bedrockApiKey != null
+
+        fun isBedrockAwsCredentials(): Boolean = bedrockAwsCredentials != null
+
+        fun isGeneric(): Boolean = generic != null
+
+        fun asBedrockApiKey(): BedrockApiKeyModelClientOptions =
+            bedrockApiKey.getOrThrow("bedrockApiKey")
+
+        fun asBedrockAwsCredentials(): BedrockAwsCredentialsModelClientOptions =
+            bedrockAwsCredentials.getOrThrow("bedrockAwsCredentials")
+
+        fun asGeneric(): GenericModelClientOptions = generic.getOrThrow("generic")
+
+        fun _json(): JsonValue? = _json
+
+        fun <T> accept(visitor: Visitor<T>): T =
+            when {
+                bedrockApiKey != null -> visitor.visitBedrockApiKey(bedrockApiKey)
+                bedrockAwsCredentials != null ->
+                    visitor.visitBedrockAwsCredentials(bedrockAwsCredentials)
+                generic != null -> visitor.visitGeneric(generic)
+                else -> visitor.unknown(_json)
+            }
+
+        private var validated: Boolean = false
+
+        fun validate(): ModelClientOptions = apply {
+            if (validated) {
+                return@apply
+            }
+
+            accept(
+                object : Visitor<Unit> {
+                    override fun visitBedrockApiKey(
+                        bedrockApiKey: BedrockApiKeyModelClientOptions
+                    ) {
+                        bedrockApiKey.validate()
+                    }
+
+                    override fun visitBedrockAwsCredentials(
+                        bedrockAwsCredentials: BedrockAwsCredentialsModelClientOptions
+                    ) {
+                        bedrockAwsCredentials.validate()
+                    }
+
+                    override fun visitGeneric(generic: GenericModelClientOptions) {
+                        generic.validate()
+                    }
+                }
+            )
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: StagehandInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int =
+            accept(
+                object : Visitor<Int> {
+                    override fun visitBedrockApiKey(
+                        bedrockApiKey: BedrockApiKeyModelClientOptions
+                    ) = bedrockApiKey.validity()
+
+                    override fun visitBedrockAwsCredentials(
+                        bedrockAwsCredentials: BedrockAwsCredentialsModelClientOptions
+                    ) = bedrockAwsCredentials.validity()
+
+                    override fun visitGeneric(generic: GenericModelClientOptions) =
+                        generic.validity()
+
+                    override fun unknown(json: JsonValue?) = 0
+                }
+            )
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is ModelClientOptions &&
+                bedrockApiKey == other.bedrockApiKey &&
+                bedrockAwsCredentials == other.bedrockAwsCredentials &&
+                generic == other.generic
+        }
+
+        override fun hashCode(): Int = Objects.hash(bedrockApiKey, bedrockAwsCredentials, generic)
+
+        override fun toString(): String =
+            when {
+                bedrockApiKey != null -> "ModelClientOptions{bedrockApiKey=$bedrockApiKey}"
+                bedrockAwsCredentials != null ->
+                    "ModelClientOptions{bedrockAwsCredentials=$bedrockAwsCredentials}"
+                generic != null -> "ModelClientOptions{generic=$generic}"
+                _json != null -> "ModelClientOptions{_unknown=$_json}"
+                else -> throw IllegalStateException("Invalid ModelClientOptions")
+            }
+
+        companion object {
+
+            fun ofBedrockApiKey(bedrockApiKey: BedrockApiKeyModelClientOptions) =
+                ModelClientOptions(bedrockApiKey = bedrockApiKey)
+
+            fun ofBedrockAwsCredentials(
+                bedrockAwsCredentials: BedrockAwsCredentialsModelClientOptions
+            ) = ModelClientOptions(bedrockAwsCredentials = bedrockAwsCredentials)
+
+            fun ofGeneric(generic: GenericModelClientOptions) =
+                ModelClientOptions(generic = generic)
+        }
+
+        /**
+         * An interface that defines how to map each variant of [ModelClientOptions] to a value of
+         * type [T].
+         */
+        interface Visitor<out T> {
+
+            fun visitBedrockApiKey(bedrockApiKey: BedrockApiKeyModelClientOptions): T
+
+            fun visitBedrockAwsCredentials(
+                bedrockAwsCredentials: BedrockAwsCredentialsModelClientOptions
+            ): T
+
+            fun visitGeneric(generic: GenericModelClientOptions): T
+
+            /**
+             * Maps an unknown variant of [ModelClientOptions] to a value of type [T].
+             *
+             * An instance of [ModelClientOptions] can contain an unknown variant if it was
+             * deserialized from data that doesn't match any known variant. For example, if the SDK
+             * is on an older version than the API, then the API may respond with new variants that
+             * the SDK is unaware of.
+             *
+             * @throws StagehandInvalidDataException in the default implementation.
+             */
+            fun unknown(json: JsonValue?): T {
+                throw StagehandInvalidDataException("Unknown ModelClientOptions: $json")
+            }
+        }
+
+        internal class Deserializer :
+            BaseDeserializer<ModelClientOptions>(ModelClientOptions::class) {
+
+            override fun ObjectCodec.deserialize(node: JsonNode): ModelClientOptions {
+                val json = JsonValue.fromJsonNode(node)
+
+                val bestMatches =
+                    sequenceOf(
+                            tryDeserialize(node, jacksonTypeRef<BedrockApiKeyModelClientOptions>())
+                                ?.let { ModelClientOptions(bedrockApiKey = it, _json = json) },
+                            tryDeserialize(
+                                    node,
+                                    jacksonTypeRef<BedrockAwsCredentialsModelClientOptions>(),
+                                )
+                                ?.let {
+                                    ModelClientOptions(bedrockAwsCredentials = it, _json = json)
+                                },
+                            tryDeserialize(node, jacksonTypeRef<GenericModelClientOptions>())?.let {
+                                ModelClientOptions(generic = it, _json = json)
+                            },
+                        )
+                        .filterNotNull()
+                        .allMaxBy { it.validity() }
+                        .toList()
+                return when (bestMatches.size) {
+                    // This can happen if what we're deserializing is completely incompatible with
+                    // all the possible variants (e.g. deserializing from boolean).
+                    0 -> ModelClientOptions(_json = json)
+                    1 -> bestMatches.single()
+                    // If there's more than one match with the highest validity, then use the first
+                    // completely valid match, or simply the first match if none are completely
+                    // valid.
+                    else -> bestMatches.firstOrNull { it.isValid() } ?: bestMatches.first()
+                }
+            }
+        }
+
+        internal class Serializer : BaseSerializer<ModelClientOptions>(ModelClientOptions::class) {
+
+            override fun serialize(
+                value: ModelClientOptions,
+                generator: JsonGenerator,
+                provider: SerializerProvider,
+            ) {
+                when {
+                    value.bedrockApiKey != null -> generator.writeObject(value.bedrockApiKey)
+                    value.bedrockAwsCredentials != null ->
+                        generator.writeObject(value.bedrockAwsCredentials)
+                    value.generic != null -> generator.writeObject(value.generic)
+                    value._json != null -> generator.writeObject(value._json)
+                    else -> throw IllegalStateException("Invalid ModelClientOptions")
+                }
+            }
+        }
+
+        class BedrockApiKeyModelClientOptions
+        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+        private constructor(
+            private val apiKey: JsonField<String>,
+            private val providerOptions: JsonField<ProviderOptions>,
+            private val baseUrl: JsonField<String>,
+            private val headers: JsonField<Headers>,
+            private val skipApiKeyFallback: JsonField<Boolean>,
+            private val additionalProperties: MutableMap<String, JsonValue>,
+        ) {
+
+            @JsonCreator
+            private constructor(
+                @JsonProperty("apiKey")
+                @ExcludeMissing
+                apiKey: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("providerOptions")
+                @ExcludeMissing
+                providerOptions: JsonField<ProviderOptions> = JsonMissing.of(),
+                @JsonProperty("baseURL")
+                @ExcludeMissing
+                baseUrl: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("headers")
+                @ExcludeMissing
+                headers: JsonField<Headers> = JsonMissing.of(),
+                @JsonProperty("skipApiKeyFallback")
+                @ExcludeMissing
+                skipApiKeyFallback: JsonField<Boolean> = JsonMissing.of(),
+            ) : this(apiKey, providerOptions, baseUrl, headers, skipApiKeyFallback, mutableMapOf())
+
+            /**
+             * Short-term Bedrock API key for bearer-token auth
+             *
+             * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
+             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun apiKey(): String = apiKey.getRequired("apiKey")
+
+            /**
+             * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
+             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun providerOptions(): ProviderOptions = providerOptions.getRequired("providerOptions")
+
+            /**
+             * Base URL for the model provider
+             *
+             * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g.
+             *   if the server responded with an unexpected value).
+             */
+            fun baseUrl(): String? = baseUrl.getNullable("baseURL")
+
+            /**
+             * Custom headers for the model provider
+             *
+             * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g.
+             *   if the server responded with an unexpected value).
+             */
+            fun headers(): Headers? = headers.getNullable("headers")
+
+            /**
+             * When true, hosted sessions will not copy x-model-api-key into model.apiKey. Use this
+             * when auth is carried through providerOptions instead of an API key.
+             *
+             * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g.
+             *   if the server responded with an unexpected value).
+             */
+            fun skipApiKeyFallback(): Boolean? =
+                skipApiKeyFallback.getNullable("skipApiKeyFallback")
+
+            /**
+             * Returns the raw JSON value of [apiKey].
+             *
+             * Unlike [apiKey], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("apiKey") @ExcludeMissing fun _apiKey(): JsonField<String> = apiKey
+
+            /**
+             * Returns the raw JSON value of [providerOptions].
+             *
+             * Unlike [providerOptions], this method doesn't throw if the JSON field has an
+             * unexpected type.
+             */
+            @JsonProperty("providerOptions")
+            @ExcludeMissing
+            fun _providerOptions(): JsonField<ProviderOptions> = providerOptions
+
+            /**
+             * Returns the raw JSON value of [baseUrl].
+             *
+             * Unlike [baseUrl], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("baseURL") @ExcludeMissing fun _baseUrl(): JsonField<String> = baseUrl
+
+            /**
+             * Returns the raw JSON value of [headers].
+             *
+             * Unlike [headers], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("headers") @ExcludeMissing fun _headers(): JsonField<Headers> = headers
+
+            /**
+             * Returns the raw JSON value of [skipApiKeyFallback].
+             *
+             * Unlike [skipApiKeyFallback], this method doesn't throw if the JSON field has an
+             * unexpected type.
+             */
+            @JsonProperty("skipApiKeyFallback")
+            @ExcludeMissing
+            fun _skipApiKeyFallback(): JsonField<Boolean> = skipApiKeyFallback
+
+            @JsonAnySetter
+            private fun putAdditionalProperty(key: String, value: JsonValue) {
+                additionalProperties.put(key, value)
+            }
+
+            @JsonAnyGetter
+            @ExcludeMissing
+            fun _additionalProperties(): Map<String, JsonValue> =
+                Collections.unmodifiableMap(additionalProperties)
+
+            fun toBuilder() = Builder().from(this)
+
+            companion object {
+
+                /**
+                 * Returns a mutable builder for constructing an instance of
+                 * [BedrockApiKeyModelClientOptions].
+                 *
+                 * The following fields are required:
+                 * ```kotlin
+                 * .apiKey()
+                 * .providerOptions()
+                 * ```
+                 */
+                fun builder() = Builder()
+            }
+
+            /** A builder for [BedrockApiKeyModelClientOptions]. */
+            class Builder internal constructor() {
+
+                private var apiKey: JsonField<String>? = null
+                private var providerOptions: JsonField<ProviderOptions>? = null
+                private var baseUrl: JsonField<String> = JsonMissing.of()
+                private var headers: JsonField<Headers> = JsonMissing.of()
+                private var skipApiKeyFallback: JsonField<Boolean> = JsonMissing.of()
+                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                internal fun from(
+                    bedrockApiKeyModelClientOptions: BedrockApiKeyModelClientOptions
+                ) = apply {
+                    apiKey = bedrockApiKeyModelClientOptions.apiKey
+                    providerOptions = bedrockApiKeyModelClientOptions.providerOptions
+                    baseUrl = bedrockApiKeyModelClientOptions.baseUrl
+                    headers = bedrockApiKeyModelClientOptions.headers
+                    skipApiKeyFallback = bedrockApiKeyModelClientOptions.skipApiKeyFallback
+                    additionalProperties =
+                        bedrockApiKeyModelClientOptions.additionalProperties.toMutableMap()
+                }
+
+                /** Short-term Bedrock API key for bearer-token auth */
+                fun apiKey(apiKey: String) = apiKey(JsonField.of(apiKey))
+
+                /**
+                 * Sets [Builder.apiKey] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.apiKey] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun apiKey(apiKey: JsonField<String>) = apply { this.apiKey = apiKey }
+
+                fun providerOptions(providerOptions: ProviderOptions) =
+                    providerOptions(JsonField.of(providerOptions))
+
+                /**
+                 * Sets [Builder.providerOptions] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.providerOptions] with a well-typed
+                 * [ProviderOptions] value instead. This method is primarily for setting the field
+                 * to an undocumented or not yet supported value.
+                 */
+                fun providerOptions(providerOptions: JsonField<ProviderOptions>) = apply {
+                    this.providerOptions = providerOptions
+                }
+
+                /** Base URL for the model provider */
+                fun baseUrl(baseUrl: String) = baseUrl(JsonField.of(baseUrl))
+
+                /**
+                 * Sets [Builder.baseUrl] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.baseUrl] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun baseUrl(baseUrl: JsonField<String>) = apply { this.baseUrl = baseUrl }
+
+                /** Custom headers for the model provider */
+                fun headers(headers: Headers) = headers(JsonField.of(headers))
+
+                /**
+                 * Sets [Builder.headers] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.headers] with a well-typed [Headers] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun headers(headers: JsonField<Headers>) = apply { this.headers = headers }
+
+                /**
+                 * When true, hosted sessions will not copy x-model-api-key into model.apiKey. Use
+                 * this when auth is carried through providerOptions instead of an API key.
+                 */
+                fun skipApiKeyFallback(skipApiKeyFallback: Boolean) =
+                    skipApiKeyFallback(JsonField.of(skipApiKeyFallback))
+
+                /**
+                 * Sets [Builder.skipApiKeyFallback] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.skipApiKeyFallback] with a well-typed [Boolean]
+                 * value instead. This method is primarily for setting the field to an undocumented
+                 * or not yet supported value.
+                 */
+                fun skipApiKeyFallback(skipApiKeyFallback: JsonField<Boolean>) = apply {
+                    this.skipApiKeyFallback = skipApiKeyFallback
+                }
+
+                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                    this.additionalProperties.clear()
+                    putAllAdditionalProperties(additionalProperties)
+                }
+
+                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                    additionalProperties.put(key, value)
+                }
+
+                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                    apply {
+                        this.additionalProperties.putAll(additionalProperties)
+                    }
+
+                fun removeAdditionalProperty(key: String) = apply {
+                    additionalProperties.remove(key)
+                }
+
+                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                    keys.forEach(::removeAdditionalProperty)
+                }
+
+                /**
+                 * Returns an immutable instance of [BedrockApiKeyModelClientOptions].
+                 *
+                 * Further updates to this [Builder] will not mutate the returned instance.
+                 *
+                 * The following fields are required:
+                 * ```kotlin
+                 * .apiKey()
+                 * .providerOptions()
+                 * ```
+                 *
+                 * @throws IllegalStateException if any required field is unset.
+                 */
+                fun build(): BedrockApiKeyModelClientOptions =
+                    BedrockApiKeyModelClientOptions(
+                        checkRequired("apiKey", apiKey),
+                        checkRequired("providerOptions", providerOptions),
+                        baseUrl,
+                        headers,
+                        skipApiKeyFallback,
+                        additionalProperties.toMutableMap(),
+                    )
+            }
+
+            private var validated: Boolean = false
+
+            fun validate(): BedrockApiKeyModelClientOptions = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                apiKey()
+                providerOptions().validate()
+                baseUrl()
+                headers()?.validate()
+                skipApiKeyFallback()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: StagehandInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            internal fun validity(): Int =
+                (if (apiKey.asKnown() == null) 0 else 1) +
+                    (providerOptions.asKnown()?.validity() ?: 0) +
+                    (if (baseUrl.asKnown() == null) 0 else 1) +
+                    (headers.asKnown()?.validity() ?: 0) +
+                    (if (skipApiKeyFallback.asKnown() == null) 0 else 1)
+
+            class ProviderOptions
+            @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+            private constructor(
+                private val region: JsonField<String>,
+                private val additionalProperties: MutableMap<String, JsonValue>,
+            ) {
+
+                @JsonCreator
+                private constructor(
+                    @JsonProperty("region")
+                    @ExcludeMissing
+                    region: JsonField<String> = JsonMissing.of()
+                ) : this(region, mutableMapOf())
+
+                /**
+                 * AWS region for Amazon Bedrock
+                 *
+                 * @throws StagehandInvalidDataException if the JSON field has an unexpected type or
+                 *   is unexpectedly missing or null (e.g. if the server responded with an
+                 *   unexpected value).
+                 */
+                fun region(): String = region.getRequired("region")
+
+                /**
+                 * Returns the raw JSON value of [region].
+                 *
+                 * Unlike [region], this method doesn't throw if the JSON field has an unexpected
+                 * type.
+                 */
+                @JsonProperty("region") @ExcludeMissing fun _region(): JsonField<String> = region
+
+                @JsonAnySetter
+                private fun putAdditionalProperty(key: String, value: JsonValue) {
+                    additionalProperties.put(key, value)
+                }
+
+                @JsonAnyGetter
+                @ExcludeMissing
+                fun _additionalProperties(): Map<String, JsonValue> =
+                    Collections.unmodifiableMap(additionalProperties)
+
+                fun toBuilder() = Builder().from(this)
+
+                companion object {
+
+                    /**
+                     * Returns a mutable builder for constructing an instance of [ProviderOptions].
+                     *
+                     * The following fields are required:
+                     * ```kotlin
+                     * .region()
+                     * ```
+                     */
+                    fun builder() = Builder()
+                }
+
+                /** A builder for [ProviderOptions]. */
+                class Builder internal constructor() {
+
+                    private var region: JsonField<String>? = null
+                    private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                    internal fun from(providerOptions: ProviderOptions) = apply {
+                        region = providerOptions.region
+                        additionalProperties = providerOptions.additionalProperties.toMutableMap()
+                    }
+
+                    /** AWS region for Amazon Bedrock */
+                    fun region(region: String) = region(JsonField.of(region))
+
+                    /**
+                     * Sets [Builder.region] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.region] with a well-typed [String] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun region(region: JsonField<String>) = apply { this.region = region }
+
+                    fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                        this.additionalProperties.clear()
+                        putAllAdditionalProperties(additionalProperties)
+                    }
+
+                    fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                        additionalProperties.put(key, value)
+                    }
+
+                    fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                        apply {
+                            this.additionalProperties.putAll(additionalProperties)
+                        }
+
+                    fun removeAdditionalProperty(key: String) = apply {
+                        additionalProperties.remove(key)
+                    }
+
+                    fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                        keys.forEach(::removeAdditionalProperty)
+                    }
+
+                    /**
+                     * Returns an immutable instance of [ProviderOptions].
+                     *
+                     * Further updates to this [Builder] will not mutate the returned instance.
+                     *
+                     * The following fields are required:
+                     * ```kotlin
+                     * .region()
+                     * ```
+                     *
+                     * @throws IllegalStateException if any required field is unset.
+                     */
+                    fun build(): ProviderOptions =
+                        ProviderOptions(
+                            checkRequired("region", region),
+                            additionalProperties.toMutableMap(),
+                        )
+                }
+
+                private var validated: Boolean = false
+
+                fun validate(): ProviderOptions = apply {
+                    if (validated) {
+                        return@apply
+                    }
+
+                    region()
+                    validated = true
+                }
+
+                fun isValid(): Boolean =
+                    try {
+                        validate()
+                        true
+                    } catch (e: StagehandInvalidDataException) {
+                        false
+                    }
+
+                /**
+                 * Returns a score indicating how many valid values are contained in this object
+                 * recursively.
+                 *
+                 * Used for best match union deserialization.
+                 */
+                internal fun validity(): Int = (if (region.asKnown() == null) 0 else 1)
+
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) {
+                        return true
+                    }
+
+                    return other is ProviderOptions &&
+                        region == other.region &&
+                        additionalProperties == other.additionalProperties
+                }
+
+                private val hashCode: Int by lazy { Objects.hash(region, additionalProperties) }
+
+                override fun hashCode(): Int = hashCode
+
+                override fun toString() =
+                    "ProviderOptions{region=$region, additionalProperties=$additionalProperties}"
+            }
+
+            /** Custom headers for the model provider */
+            class Headers
+            @JsonCreator
+            private constructor(
+                @com.fasterxml.jackson.annotation.JsonValue
+                private val additionalProperties: Map<String, JsonValue>
+            ) {
+
+                @JsonAnyGetter
+                @ExcludeMissing
+                fun _additionalProperties(): Map<String, JsonValue> = additionalProperties
+
+                fun toBuilder() = Builder().from(this)
+
+                companion object {
+
+                    /** Returns a mutable builder for constructing an instance of [Headers]. */
+                    fun builder() = Builder()
+                }
+
+                /** A builder for [Headers]. */
+                class Builder internal constructor() {
+
+                    private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                    internal fun from(headers: Headers) = apply {
+                        additionalProperties = headers.additionalProperties.toMutableMap()
+                    }
+
+                    fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                        this.additionalProperties.clear()
+                        putAllAdditionalProperties(additionalProperties)
+                    }
+
+                    fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                        additionalProperties.put(key, value)
+                    }
+
+                    fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                        apply {
+                            this.additionalProperties.putAll(additionalProperties)
+                        }
+
+                    fun removeAdditionalProperty(key: String) = apply {
+                        additionalProperties.remove(key)
+                    }
+
+                    fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                        keys.forEach(::removeAdditionalProperty)
+                    }
+
+                    /**
+                     * Returns an immutable instance of [Headers].
+                     *
+                     * Further updates to this [Builder] will not mutate the returned instance.
+                     */
+                    fun build(): Headers = Headers(additionalProperties.toImmutable())
+                }
+
+                private var validated: Boolean = false
+
+                fun validate(): Headers = apply {
+                    if (validated) {
+                        return@apply
+                    }
+
+                    validated = true
+                }
+
+                fun isValid(): Boolean =
+                    try {
+                        validate()
+                        true
+                    } catch (e: StagehandInvalidDataException) {
+                        false
+                    }
+
+                /**
+                 * Returns a score indicating how many valid values are contained in this object
+                 * recursively.
+                 *
+                 * Used for best match union deserialization.
+                 */
+                internal fun validity(): Int =
+                    additionalProperties.count { (_, value) ->
+                        !value.isNull() && !value.isMissing()
+                    }
+
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) {
+                        return true
+                    }
+
+                    return other is Headers && additionalProperties == other.additionalProperties
+                }
+
+                private val hashCode: Int by lazy { Objects.hash(additionalProperties) }
+
+                override fun hashCode(): Int = hashCode
+
+                override fun toString() = "Headers{additionalProperties=$additionalProperties}"
+            }
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is BedrockApiKeyModelClientOptions &&
+                    apiKey == other.apiKey &&
+                    providerOptions == other.providerOptions &&
+                    baseUrl == other.baseUrl &&
+                    headers == other.headers &&
+                    skipApiKeyFallback == other.skipApiKeyFallback &&
+                    additionalProperties == other.additionalProperties
+            }
+
+            private val hashCode: Int by lazy {
+                Objects.hash(
+                    apiKey,
+                    providerOptions,
+                    baseUrl,
+                    headers,
+                    skipApiKeyFallback,
+                    additionalProperties,
+                )
+            }
+
+            override fun hashCode(): Int = hashCode
+
+            override fun toString() =
+                "BedrockApiKeyModelClientOptions{apiKey=$apiKey, providerOptions=$providerOptions, baseUrl=$baseUrl, headers=$headers, skipApiKeyFallback=$skipApiKeyFallback, additionalProperties=$additionalProperties}"
+        }
+
+        class BedrockAwsCredentialsModelClientOptions
+        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+        private constructor(
+            private val providerOptions: JsonField<ProviderOptions>,
+            private val baseUrl: JsonField<String>,
+            private val headers: JsonField<Headers>,
+            private val skipApiKeyFallback: JsonField<Boolean>,
+            private val additionalProperties: MutableMap<String, JsonValue>,
+        ) {
+
+            @JsonCreator
+            private constructor(
+                @JsonProperty("providerOptions")
+                @ExcludeMissing
+                providerOptions: JsonField<ProviderOptions> = JsonMissing.of(),
+                @JsonProperty("baseURL")
+                @ExcludeMissing
+                baseUrl: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("headers")
+                @ExcludeMissing
+                headers: JsonField<Headers> = JsonMissing.of(),
+                @JsonProperty("skipApiKeyFallback")
+                @ExcludeMissing
+                skipApiKeyFallback: JsonField<Boolean> = JsonMissing.of(),
+            ) : this(providerOptions, baseUrl, headers, skipApiKeyFallback, mutableMapOf())
+
+            /**
+             * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
+             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun providerOptions(): ProviderOptions = providerOptions.getRequired("providerOptions")
+
+            /**
+             * Base URL for the model provider
+             *
+             * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g.
+             *   if the server responded with an unexpected value).
+             */
+            fun baseUrl(): String? = baseUrl.getNullable("baseURL")
+
+            /**
+             * Custom headers for the model provider
+             *
+             * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g.
+             *   if the server responded with an unexpected value).
+             */
+            fun headers(): Headers? = headers.getNullable("headers")
+
+            /**
+             * When true, hosted sessions will not copy x-model-api-key into model.apiKey. Use this
+             * when auth is carried through providerOptions instead of an API key.
+             *
+             * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g.
+             *   if the server responded with an unexpected value).
+             */
+            fun skipApiKeyFallback(): Boolean? =
+                skipApiKeyFallback.getNullable("skipApiKeyFallback")
+
+            /**
+             * Returns the raw JSON value of [providerOptions].
+             *
+             * Unlike [providerOptions], this method doesn't throw if the JSON field has an
+             * unexpected type.
+             */
+            @JsonProperty("providerOptions")
+            @ExcludeMissing
+            fun _providerOptions(): JsonField<ProviderOptions> = providerOptions
+
+            /**
+             * Returns the raw JSON value of [baseUrl].
+             *
+             * Unlike [baseUrl], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("baseURL") @ExcludeMissing fun _baseUrl(): JsonField<String> = baseUrl
+
+            /**
+             * Returns the raw JSON value of [headers].
+             *
+             * Unlike [headers], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("headers") @ExcludeMissing fun _headers(): JsonField<Headers> = headers
+
+            /**
+             * Returns the raw JSON value of [skipApiKeyFallback].
+             *
+             * Unlike [skipApiKeyFallback], this method doesn't throw if the JSON field has an
+             * unexpected type.
+             */
+            @JsonProperty("skipApiKeyFallback")
+            @ExcludeMissing
+            fun _skipApiKeyFallback(): JsonField<Boolean> = skipApiKeyFallback
+
+            @JsonAnySetter
+            private fun putAdditionalProperty(key: String, value: JsonValue) {
+                additionalProperties.put(key, value)
+            }
+
+            @JsonAnyGetter
+            @ExcludeMissing
+            fun _additionalProperties(): Map<String, JsonValue> =
+                Collections.unmodifiableMap(additionalProperties)
+
+            fun toBuilder() = Builder().from(this)
+
+            companion object {
+
+                /**
+                 * Returns a mutable builder for constructing an instance of
+                 * [BedrockAwsCredentialsModelClientOptions].
+                 *
+                 * The following fields are required:
+                 * ```kotlin
+                 * .providerOptions()
+                 * ```
+                 */
+                fun builder() = Builder()
+            }
+
+            /** A builder for [BedrockAwsCredentialsModelClientOptions]. */
+            class Builder internal constructor() {
+
+                private var providerOptions: JsonField<ProviderOptions>? = null
+                private var baseUrl: JsonField<String> = JsonMissing.of()
+                private var headers: JsonField<Headers> = JsonMissing.of()
+                private var skipApiKeyFallback: JsonField<Boolean> = JsonMissing.of()
+                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                internal fun from(
+                    bedrockAwsCredentialsModelClientOptions: BedrockAwsCredentialsModelClientOptions
+                ) = apply {
+                    providerOptions = bedrockAwsCredentialsModelClientOptions.providerOptions
+                    baseUrl = bedrockAwsCredentialsModelClientOptions.baseUrl
+                    headers = bedrockAwsCredentialsModelClientOptions.headers
+                    skipApiKeyFallback = bedrockAwsCredentialsModelClientOptions.skipApiKeyFallback
+                    additionalProperties =
+                        bedrockAwsCredentialsModelClientOptions.additionalProperties.toMutableMap()
+                }
+
+                fun providerOptions(providerOptions: ProviderOptions) =
+                    providerOptions(JsonField.of(providerOptions))
+
+                /**
+                 * Sets [Builder.providerOptions] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.providerOptions] with a well-typed
+                 * [ProviderOptions] value instead. This method is primarily for setting the field
+                 * to an undocumented or not yet supported value.
+                 */
+                fun providerOptions(providerOptions: JsonField<ProviderOptions>) = apply {
+                    this.providerOptions = providerOptions
+                }
+
+                /** Base URL for the model provider */
+                fun baseUrl(baseUrl: String) = baseUrl(JsonField.of(baseUrl))
+
+                /**
+                 * Sets [Builder.baseUrl] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.baseUrl] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun baseUrl(baseUrl: JsonField<String>) = apply { this.baseUrl = baseUrl }
+
+                /** Custom headers for the model provider */
+                fun headers(headers: Headers) = headers(JsonField.of(headers))
+
+                /**
+                 * Sets [Builder.headers] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.headers] with a well-typed [Headers] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun headers(headers: JsonField<Headers>) = apply { this.headers = headers }
+
+                /**
+                 * When true, hosted sessions will not copy x-model-api-key into model.apiKey. Use
+                 * this when auth is carried through providerOptions instead of an API key.
+                 */
+                fun skipApiKeyFallback(skipApiKeyFallback: Boolean) =
+                    skipApiKeyFallback(JsonField.of(skipApiKeyFallback))
+
+                /**
+                 * Sets [Builder.skipApiKeyFallback] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.skipApiKeyFallback] with a well-typed [Boolean]
+                 * value instead. This method is primarily for setting the field to an undocumented
+                 * or not yet supported value.
+                 */
+                fun skipApiKeyFallback(skipApiKeyFallback: JsonField<Boolean>) = apply {
+                    this.skipApiKeyFallback = skipApiKeyFallback
+                }
+
+                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                    this.additionalProperties.clear()
+                    putAllAdditionalProperties(additionalProperties)
+                }
+
+                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                    additionalProperties.put(key, value)
+                }
+
+                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                    apply {
+                        this.additionalProperties.putAll(additionalProperties)
+                    }
+
+                fun removeAdditionalProperty(key: String) = apply {
+                    additionalProperties.remove(key)
+                }
+
+                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                    keys.forEach(::removeAdditionalProperty)
+                }
+
+                /**
+                 * Returns an immutable instance of [BedrockAwsCredentialsModelClientOptions].
+                 *
+                 * Further updates to this [Builder] will not mutate the returned instance.
+                 *
+                 * The following fields are required:
+                 * ```kotlin
+                 * .providerOptions()
+                 * ```
+                 *
+                 * @throws IllegalStateException if any required field is unset.
+                 */
+                fun build(): BedrockAwsCredentialsModelClientOptions =
+                    BedrockAwsCredentialsModelClientOptions(
+                        checkRequired("providerOptions", providerOptions),
+                        baseUrl,
+                        headers,
+                        skipApiKeyFallback,
+                        additionalProperties.toMutableMap(),
+                    )
+            }
+
+            private var validated: Boolean = false
+
+            fun validate(): BedrockAwsCredentialsModelClientOptions = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                providerOptions().validate()
+                baseUrl()
+                headers()?.validate()
+                skipApiKeyFallback()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: StagehandInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            internal fun validity(): Int =
+                (providerOptions.asKnown()?.validity() ?: 0) +
+                    (if (baseUrl.asKnown() == null) 0 else 1) +
+                    (headers.asKnown()?.validity() ?: 0) +
+                    (if (skipApiKeyFallback.asKnown() == null) 0 else 1)
+
+            class ProviderOptions
+            @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+            private constructor(
+                private val accessKeyId: JsonField<String>,
+                private val region: JsonField<String>,
+                private val secretAccessKey: JsonField<String>,
+                private val sessionToken: JsonField<String>,
+                private val additionalProperties: MutableMap<String, JsonValue>,
+            ) {
+
+                @JsonCreator
+                private constructor(
+                    @JsonProperty("accessKeyId")
+                    @ExcludeMissing
+                    accessKeyId: JsonField<String> = JsonMissing.of(),
+                    @JsonProperty("region")
+                    @ExcludeMissing
+                    region: JsonField<String> = JsonMissing.of(),
+                    @JsonProperty("secretAccessKey")
+                    @ExcludeMissing
+                    secretAccessKey: JsonField<String> = JsonMissing.of(),
+                    @JsonProperty("sessionToken")
+                    @ExcludeMissing
+                    sessionToken: JsonField<String> = JsonMissing.of(),
+                ) : this(accessKeyId, region, secretAccessKey, sessionToken, mutableMapOf())
+
+                /**
+                 * AWS access key ID for Bedrock
+                 *
+                 * @throws StagehandInvalidDataException if the JSON field has an unexpected type or
+                 *   is unexpectedly missing or null (e.g. if the server responded with an
+                 *   unexpected value).
+                 */
+                fun accessKeyId(): String = accessKeyId.getRequired("accessKeyId")
+
+                /**
+                 * AWS region for Amazon Bedrock
+                 *
+                 * @throws StagehandInvalidDataException if the JSON field has an unexpected type or
+                 *   is unexpectedly missing or null (e.g. if the server responded with an
+                 *   unexpected value).
+                 */
+                fun region(): String = region.getRequired("region")
+
+                /**
+                 * AWS secret access key for Bedrock
+                 *
+                 * @throws StagehandInvalidDataException if the JSON field has an unexpected type or
+                 *   is unexpectedly missing or null (e.g. if the server responded with an
+                 *   unexpected value).
+                 */
+                fun secretAccessKey(): String = secretAccessKey.getRequired("secretAccessKey")
+
+                /**
+                 * Optional AWS session token for temporary credentials
+                 *
+                 * @throws StagehandInvalidDataException if the JSON field has an unexpected type
+                 *   (e.g. if the server responded with an unexpected value).
+                 */
+                fun sessionToken(): String? = sessionToken.getNullable("sessionToken")
+
+                /**
+                 * Returns the raw JSON value of [accessKeyId].
+                 *
+                 * Unlike [accessKeyId], this method doesn't throw if the JSON field has an
+                 * unexpected type.
+                 */
+                @JsonProperty("accessKeyId")
+                @ExcludeMissing
+                fun _accessKeyId(): JsonField<String> = accessKeyId
+
+                /**
+                 * Returns the raw JSON value of [region].
+                 *
+                 * Unlike [region], this method doesn't throw if the JSON field has an unexpected
+                 * type.
+                 */
+                @JsonProperty("region") @ExcludeMissing fun _region(): JsonField<String> = region
+
+                /**
+                 * Returns the raw JSON value of [secretAccessKey].
+                 *
+                 * Unlike [secretAccessKey], this method doesn't throw if the JSON field has an
+                 * unexpected type.
+                 */
+                @JsonProperty("secretAccessKey")
+                @ExcludeMissing
+                fun _secretAccessKey(): JsonField<String> = secretAccessKey
+
+                /**
+                 * Returns the raw JSON value of [sessionToken].
+                 *
+                 * Unlike [sessionToken], this method doesn't throw if the JSON field has an
+                 * unexpected type.
+                 */
+                @JsonProperty("sessionToken")
+                @ExcludeMissing
+                fun _sessionToken(): JsonField<String> = sessionToken
+
+                @JsonAnySetter
+                private fun putAdditionalProperty(key: String, value: JsonValue) {
+                    additionalProperties.put(key, value)
+                }
+
+                @JsonAnyGetter
+                @ExcludeMissing
+                fun _additionalProperties(): Map<String, JsonValue> =
+                    Collections.unmodifiableMap(additionalProperties)
+
+                fun toBuilder() = Builder().from(this)
+
+                companion object {
+
+                    /**
+                     * Returns a mutable builder for constructing an instance of [ProviderOptions].
+                     *
+                     * The following fields are required:
+                     * ```kotlin
+                     * .accessKeyId()
+                     * .region()
+                     * .secretAccessKey()
+                     * ```
+                     */
+                    fun builder() = Builder()
+                }
+
+                /** A builder for [ProviderOptions]. */
+                class Builder internal constructor() {
+
+                    private var accessKeyId: JsonField<String>? = null
+                    private var region: JsonField<String>? = null
+                    private var secretAccessKey: JsonField<String>? = null
+                    private var sessionToken: JsonField<String> = JsonMissing.of()
+                    private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                    internal fun from(providerOptions: ProviderOptions) = apply {
+                        accessKeyId = providerOptions.accessKeyId
+                        region = providerOptions.region
+                        secretAccessKey = providerOptions.secretAccessKey
+                        sessionToken = providerOptions.sessionToken
+                        additionalProperties = providerOptions.additionalProperties.toMutableMap()
+                    }
+
+                    /** AWS access key ID for Bedrock */
+                    fun accessKeyId(accessKeyId: String) = accessKeyId(JsonField.of(accessKeyId))
+
+                    /**
+                     * Sets [Builder.accessKeyId] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.accessKeyId] with a well-typed [String]
+                     * value instead. This method is primarily for setting the field to an
+                     * undocumented or not yet supported value.
+                     */
+                    fun accessKeyId(accessKeyId: JsonField<String>) = apply {
+                        this.accessKeyId = accessKeyId
+                    }
+
+                    /** AWS region for Amazon Bedrock */
+                    fun region(region: String) = region(JsonField.of(region))
+
+                    /**
+                     * Sets [Builder.region] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.region] with a well-typed [String] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun region(region: JsonField<String>) = apply { this.region = region }
+
+                    /** AWS secret access key for Bedrock */
+                    fun secretAccessKey(secretAccessKey: String) =
+                        secretAccessKey(JsonField.of(secretAccessKey))
+
+                    /**
+                     * Sets [Builder.secretAccessKey] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.secretAccessKey] with a well-typed [String]
+                     * value instead. This method is primarily for setting the field to an
+                     * undocumented or not yet supported value.
+                     */
+                    fun secretAccessKey(secretAccessKey: JsonField<String>) = apply {
+                        this.secretAccessKey = secretAccessKey
+                    }
+
+                    /** Optional AWS session token for temporary credentials */
+                    fun sessionToken(sessionToken: String) =
+                        sessionToken(JsonField.of(sessionToken))
+
+                    /**
+                     * Sets [Builder.sessionToken] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.sessionToken] with a well-typed [String]
+                     * value instead. This method is primarily for setting the field to an
+                     * undocumented or not yet supported value.
+                     */
+                    fun sessionToken(sessionToken: JsonField<String>) = apply {
+                        this.sessionToken = sessionToken
+                    }
+
+                    fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                        this.additionalProperties.clear()
+                        putAllAdditionalProperties(additionalProperties)
+                    }
+
+                    fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                        additionalProperties.put(key, value)
+                    }
+
+                    fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                        apply {
+                            this.additionalProperties.putAll(additionalProperties)
+                        }
+
+                    fun removeAdditionalProperty(key: String) = apply {
+                        additionalProperties.remove(key)
+                    }
+
+                    fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                        keys.forEach(::removeAdditionalProperty)
+                    }
+
+                    /**
+                     * Returns an immutable instance of [ProviderOptions].
+                     *
+                     * Further updates to this [Builder] will not mutate the returned instance.
+                     *
+                     * The following fields are required:
+                     * ```kotlin
+                     * .accessKeyId()
+                     * .region()
+                     * .secretAccessKey()
+                     * ```
+                     *
+                     * @throws IllegalStateException if any required field is unset.
+                     */
+                    fun build(): ProviderOptions =
+                        ProviderOptions(
+                            checkRequired("accessKeyId", accessKeyId),
+                            checkRequired("region", region),
+                            checkRequired("secretAccessKey", secretAccessKey),
+                            sessionToken,
+                            additionalProperties.toMutableMap(),
+                        )
+                }
+
+                private var validated: Boolean = false
+
+                fun validate(): ProviderOptions = apply {
+                    if (validated) {
+                        return@apply
+                    }
+
+                    accessKeyId()
+                    region()
+                    secretAccessKey()
+                    sessionToken()
+                    validated = true
+                }
+
+                fun isValid(): Boolean =
+                    try {
+                        validate()
+                        true
+                    } catch (e: StagehandInvalidDataException) {
+                        false
+                    }
+
+                /**
+                 * Returns a score indicating how many valid values are contained in this object
+                 * recursively.
+                 *
+                 * Used for best match union deserialization.
+                 */
+                internal fun validity(): Int =
+                    (if (accessKeyId.asKnown() == null) 0 else 1) +
+                        (if (region.asKnown() == null) 0 else 1) +
+                        (if (secretAccessKey.asKnown() == null) 0 else 1) +
+                        (if (sessionToken.asKnown() == null) 0 else 1)
+
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) {
+                        return true
+                    }
+
+                    return other is ProviderOptions &&
+                        accessKeyId == other.accessKeyId &&
+                        region == other.region &&
+                        secretAccessKey == other.secretAccessKey &&
+                        sessionToken == other.sessionToken &&
+                        additionalProperties == other.additionalProperties
+                }
+
+                private val hashCode: Int by lazy {
+                    Objects.hash(
+                        accessKeyId,
+                        region,
+                        secretAccessKey,
+                        sessionToken,
+                        additionalProperties,
+                    )
+                }
+
+                override fun hashCode(): Int = hashCode
+
+                override fun toString() =
+                    "ProviderOptions{accessKeyId=$accessKeyId, region=$region, secretAccessKey=$secretAccessKey, sessionToken=$sessionToken, additionalProperties=$additionalProperties}"
+            }
+
+            /** Custom headers for the model provider */
+            class Headers
+            @JsonCreator
+            private constructor(
+                @com.fasterxml.jackson.annotation.JsonValue
+                private val additionalProperties: Map<String, JsonValue>
+            ) {
+
+                @JsonAnyGetter
+                @ExcludeMissing
+                fun _additionalProperties(): Map<String, JsonValue> = additionalProperties
+
+                fun toBuilder() = Builder().from(this)
+
+                companion object {
+
+                    /** Returns a mutable builder for constructing an instance of [Headers]. */
+                    fun builder() = Builder()
+                }
+
+                /** A builder for [Headers]. */
+                class Builder internal constructor() {
+
+                    private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                    internal fun from(headers: Headers) = apply {
+                        additionalProperties = headers.additionalProperties.toMutableMap()
+                    }
+
+                    fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                        this.additionalProperties.clear()
+                        putAllAdditionalProperties(additionalProperties)
+                    }
+
+                    fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                        additionalProperties.put(key, value)
+                    }
+
+                    fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                        apply {
+                            this.additionalProperties.putAll(additionalProperties)
+                        }
+
+                    fun removeAdditionalProperty(key: String) = apply {
+                        additionalProperties.remove(key)
+                    }
+
+                    fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                        keys.forEach(::removeAdditionalProperty)
+                    }
+
+                    /**
+                     * Returns an immutable instance of [Headers].
+                     *
+                     * Further updates to this [Builder] will not mutate the returned instance.
+                     */
+                    fun build(): Headers = Headers(additionalProperties.toImmutable())
+                }
+
+                private var validated: Boolean = false
+
+                fun validate(): Headers = apply {
+                    if (validated) {
+                        return@apply
+                    }
+
+                    validated = true
+                }
+
+                fun isValid(): Boolean =
+                    try {
+                        validate()
+                        true
+                    } catch (e: StagehandInvalidDataException) {
+                        false
+                    }
+
+                /**
+                 * Returns a score indicating how many valid values are contained in this object
+                 * recursively.
+                 *
+                 * Used for best match union deserialization.
+                 */
+                internal fun validity(): Int =
+                    additionalProperties.count { (_, value) ->
+                        !value.isNull() && !value.isMissing()
+                    }
+
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) {
+                        return true
+                    }
+
+                    return other is Headers && additionalProperties == other.additionalProperties
+                }
+
+                private val hashCode: Int by lazy { Objects.hash(additionalProperties) }
+
+                override fun hashCode(): Int = hashCode
+
+                override fun toString() = "Headers{additionalProperties=$additionalProperties}"
+            }
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is BedrockAwsCredentialsModelClientOptions &&
+                    providerOptions == other.providerOptions &&
+                    baseUrl == other.baseUrl &&
+                    headers == other.headers &&
+                    skipApiKeyFallback == other.skipApiKeyFallback &&
+                    additionalProperties == other.additionalProperties
+            }
+
+            private val hashCode: Int by lazy {
+                Objects.hash(
+                    providerOptions,
+                    baseUrl,
+                    headers,
+                    skipApiKeyFallback,
+                    additionalProperties,
+                )
+            }
+
+            override fun hashCode(): Int = hashCode
+
+            override fun toString() =
+                "BedrockAwsCredentialsModelClientOptions{providerOptions=$providerOptions, baseUrl=$baseUrl, headers=$headers, skipApiKeyFallback=$skipApiKeyFallback, additionalProperties=$additionalProperties}"
+        }
+
+        class GenericModelClientOptions
+        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+        private constructor(
+            private val apiKey: JsonField<String>,
+            private val baseUrl: JsonField<String>,
+            private val headers: JsonField<Headers>,
+            private val providerOptions: JsonField<ProviderOptions>,
+            private val skipApiKeyFallback: JsonField<Boolean>,
+            private val additionalProperties: MutableMap<String, JsonValue>,
+        ) {
+
+            @JsonCreator
+            private constructor(
+                @JsonProperty("apiKey")
+                @ExcludeMissing
+                apiKey: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("baseURL")
+                @ExcludeMissing
+                baseUrl: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("headers")
+                @ExcludeMissing
+                headers: JsonField<Headers> = JsonMissing.of(),
+                @JsonProperty("providerOptions")
+                @ExcludeMissing
+                providerOptions: JsonField<ProviderOptions> = JsonMissing.of(),
+                @JsonProperty("skipApiKeyFallback")
+                @ExcludeMissing
+                skipApiKeyFallback: JsonField<Boolean> = JsonMissing.of(),
+            ) : this(apiKey, baseUrl, headers, providerOptions, skipApiKeyFallback, mutableMapOf())
+
+            /**
+             * API key for the model provider
+             *
+             * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g.
+             *   if the server responded with an unexpected value).
+             */
+            fun apiKey(): String? = apiKey.getNullable("apiKey")
+
+            /**
+             * Base URL for the model provider
+             *
+             * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g.
+             *   if the server responded with an unexpected value).
+             */
+            fun baseUrl(): String? = baseUrl.getNullable("baseURL")
+
+            /**
+             * Custom headers for the model provider
+             *
+             * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g.
+             *   if the server responded with an unexpected value).
+             */
+            fun headers(): Headers? = headers.getNullable("headers")
+
+            /**
+             * Provider-specific options passed through to the AI SDK provider constructor. For
+             * Bedrock: { region, accessKeyId, secretAccessKey, sessionToken }. For Vertex: {
+             * project, location, googleAuthOptions }.
+             *
+             * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g.
+             *   if the server responded with an unexpected value).
+             */
+            fun providerOptions(): ProviderOptions? = providerOptions.getNullable("providerOptions")
+
+            /**
+             * When true, hosted sessions will not copy x-model-api-key into model.apiKey. Use this
+             * when auth is carried through providerOptions instead of an API key.
+             *
+             * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g.
+             *   if the server responded with an unexpected value).
+             */
+            fun skipApiKeyFallback(): Boolean? =
+                skipApiKeyFallback.getNullable("skipApiKeyFallback")
+
+            /**
+             * Returns the raw JSON value of [apiKey].
+             *
+             * Unlike [apiKey], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("apiKey") @ExcludeMissing fun _apiKey(): JsonField<String> = apiKey
+
+            /**
+             * Returns the raw JSON value of [baseUrl].
+             *
+             * Unlike [baseUrl], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("baseURL") @ExcludeMissing fun _baseUrl(): JsonField<String> = baseUrl
+
+            /**
+             * Returns the raw JSON value of [headers].
+             *
+             * Unlike [headers], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("headers") @ExcludeMissing fun _headers(): JsonField<Headers> = headers
+
+            /**
+             * Returns the raw JSON value of [providerOptions].
+             *
+             * Unlike [providerOptions], this method doesn't throw if the JSON field has an
+             * unexpected type.
+             */
+            @JsonProperty("providerOptions")
+            @ExcludeMissing
+            fun _providerOptions(): JsonField<ProviderOptions> = providerOptions
+
+            /**
+             * Returns the raw JSON value of [skipApiKeyFallback].
+             *
+             * Unlike [skipApiKeyFallback], this method doesn't throw if the JSON field has an
+             * unexpected type.
+             */
+            @JsonProperty("skipApiKeyFallback")
+            @ExcludeMissing
+            fun _skipApiKeyFallback(): JsonField<Boolean> = skipApiKeyFallback
+
+            @JsonAnySetter
+            private fun putAdditionalProperty(key: String, value: JsonValue) {
+                additionalProperties.put(key, value)
+            }
+
+            @JsonAnyGetter
+            @ExcludeMissing
+            fun _additionalProperties(): Map<String, JsonValue> =
+                Collections.unmodifiableMap(additionalProperties)
+
+            fun toBuilder() = Builder().from(this)
+
+            companion object {
+
+                /**
+                 * Returns a mutable builder for constructing an instance of
+                 * [GenericModelClientOptions].
+                 */
+                fun builder() = Builder()
+            }
+
+            /** A builder for [GenericModelClientOptions]. */
+            class Builder internal constructor() {
+
+                private var apiKey: JsonField<String> = JsonMissing.of()
+                private var baseUrl: JsonField<String> = JsonMissing.of()
+                private var headers: JsonField<Headers> = JsonMissing.of()
+                private var providerOptions: JsonField<ProviderOptions> = JsonMissing.of()
+                private var skipApiKeyFallback: JsonField<Boolean> = JsonMissing.of()
+                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                internal fun from(genericModelClientOptions: GenericModelClientOptions) = apply {
+                    apiKey = genericModelClientOptions.apiKey
+                    baseUrl = genericModelClientOptions.baseUrl
+                    headers = genericModelClientOptions.headers
+                    providerOptions = genericModelClientOptions.providerOptions
+                    skipApiKeyFallback = genericModelClientOptions.skipApiKeyFallback
+                    additionalProperties =
+                        genericModelClientOptions.additionalProperties.toMutableMap()
+                }
+
+                /** API key for the model provider */
+                fun apiKey(apiKey: String) = apiKey(JsonField.of(apiKey))
+
+                /**
+                 * Sets [Builder.apiKey] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.apiKey] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun apiKey(apiKey: JsonField<String>) = apply { this.apiKey = apiKey }
+
+                /** Base URL for the model provider */
+                fun baseUrl(baseUrl: String) = baseUrl(JsonField.of(baseUrl))
+
+                /**
+                 * Sets [Builder.baseUrl] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.baseUrl] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun baseUrl(baseUrl: JsonField<String>) = apply { this.baseUrl = baseUrl }
+
+                /** Custom headers for the model provider */
+                fun headers(headers: Headers) = headers(JsonField.of(headers))
+
+                /**
+                 * Sets [Builder.headers] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.headers] with a well-typed [Headers] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun headers(headers: JsonField<Headers>) = apply { this.headers = headers }
+
+                /**
+                 * Provider-specific options passed through to the AI SDK provider constructor. For
+                 * Bedrock: { region, accessKeyId, secretAccessKey, sessionToken }. For Vertex: {
+                 * project, location, googleAuthOptions }.
+                 */
+                fun providerOptions(providerOptions: ProviderOptions) =
+                    providerOptions(JsonField.of(providerOptions))
+
+                /**
+                 * Sets [Builder.providerOptions] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.providerOptions] with a well-typed
+                 * [ProviderOptions] value instead. This method is primarily for setting the field
+                 * to an undocumented or not yet supported value.
+                 */
+                fun providerOptions(providerOptions: JsonField<ProviderOptions>) = apply {
+                    this.providerOptions = providerOptions
+                }
+
+                /**
+                 * Alias for calling [providerOptions] with
+                 * `ProviderOptions.ofBedrockApiKey(bedrockApiKey)`.
+                 */
+                fun providerOptions(bedrockApiKey: ProviderOptions.BedrockApiKeyProviderOptions) =
+                    providerOptions(ProviderOptions.ofBedrockApiKey(bedrockApiKey))
+
+                /**
+                 * Alias for calling [providerOptions] with
+                 * `ProviderOptions.ofBedrockAwsCredentials(bedrockAwsCredentials)`.
+                 */
+                fun providerOptions(
+                    bedrockAwsCredentials: ProviderOptions.BedrockAwsCredentialsProviderOptions
+                ) = providerOptions(ProviderOptions.ofBedrockAwsCredentials(bedrockAwsCredentials))
+
+                /**
+                 * Alias for calling [providerOptions] with
+                 * `ProviderOptions.ofGoogleVertex(googleVertex)`.
+                 */
+                fun providerOptions(googleVertex: ProviderOptions.GoogleVertexProviderOptions) =
+                    providerOptions(ProviderOptions.ofGoogleVertex(googleVertex))
+
+                /**
+                 * When true, hosted sessions will not copy x-model-api-key into model.apiKey. Use
+                 * this when auth is carried through providerOptions instead of an API key.
+                 */
+                fun skipApiKeyFallback(skipApiKeyFallback: Boolean) =
+                    skipApiKeyFallback(JsonField.of(skipApiKeyFallback))
+
+                /**
+                 * Sets [Builder.skipApiKeyFallback] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.skipApiKeyFallback] with a well-typed [Boolean]
+                 * value instead. This method is primarily for setting the field to an undocumented
+                 * or not yet supported value.
+                 */
+                fun skipApiKeyFallback(skipApiKeyFallback: JsonField<Boolean>) = apply {
+                    this.skipApiKeyFallback = skipApiKeyFallback
+                }
+
+                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                    this.additionalProperties.clear()
+                    putAllAdditionalProperties(additionalProperties)
+                }
+
+                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                    additionalProperties.put(key, value)
+                }
+
+                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                    apply {
+                        this.additionalProperties.putAll(additionalProperties)
+                    }
+
+                fun removeAdditionalProperty(key: String) = apply {
+                    additionalProperties.remove(key)
+                }
+
+                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                    keys.forEach(::removeAdditionalProperty)
+                }
+
+                /**
+                 * Returns an immutable instance of [GenericModelClientOptions].
+                 *
+                 * Further updates to this [Builder] will not mutate the returned instance.
+                 */
+                fun build(): GenericModelClientOptions =
+                    GenericModelClientOptions(
+                        apiKey,
+                        baseUrl,
+                        headers,
+                        providerOptions,
+                        skipApiKeyFallback,
+                        additionalProperties.toMutableMap(),
+                    )
+            }
+
+            private var validated: Boolean = false
+
+            fun validate(): GenericModelClientOptions = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                apiKey()
+                baseUrl()
+                headers()?.validate()
+                providerOptions()?.validate()
+                skipApiKeyFallback()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: StagehandInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            internal fun validity(): Int =
+                (if (apiKey.asKnown() == null) 0 else 1) +
+                    (if (baseUrl.asKnown() == null) 0 else 1) +
+                    (headers.asKnown()?.validity() ?: 0) +
+                    (providerOptions.asKnown()?.validity() ?: 0) +
+                    (if (skipApiKeyFallback.asKnown() == null) 0 else 1)
+
+            /** Custom headers for the model provider */
+            class Headers
+            @JsonCreator
+            private constructor(
+                @com.fasterxml.jackson.annotation.JsonValue
+                private val additionalProperties: Map<String, JsonValue>
+            ) {
+
+                @JsonAnyGetter
+                @ExcludeMissing
+                fun _additionalProperties(): Map<String, JsonValue> = additionalProperties
+
+                fun toBuilder() = Builder().from(this)
+
+                companion object {
+
+                    /** Returns a mutable builder for constructing an instance of [Headers]. */
+                    fun builder() = Builder()
+                }
+
+                /** A builder for [Headers]. */
+                class Builder internal constructor() {
+
+                    private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                    internal fun from(headers: Headers) = apply {
+                        additionalProperties = headers.additionalProperties.toMutableMap()
+                    }
+
+                    fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                        this.additionalProperties.clear()
+                        putAllAdditionalProperties(additionalProperties)
+                    }
+
+                    fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                        additionalProperties.put(key, value)
+                    }
+
+                    fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                        apply {
+                            this.additionalProperties.putAll(additionalProperties)
+                        }
+
+                    fun removeAdditionalProperty(key: String) = apply {
+                        additionalProperties.remove(key)
+                    }
+
+                    fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                        keys.forEach(::removeAdditionalProperty)
+                    }
+
+                    /**
+                     * Returns an immutable instance of [Headers].
+                     *
+                     * Further updates to this [Builder] will not mutate the returned instance.
+                     */
+                    fun build(): Headers = Headers(additionalProperties.toImmutable())
+                }
+
+                private var validated: Boolean = false
+
+                fun validate(): Headers = apply {
+                    if (validated) {
+                        return@apply
+                    }
+
+                    validated = true
+                }
+
+                fun isValid(): Boolean =
+                    try {
+                        validate()
+                        true
+                    } catch (e: StagehandInvalidDataException) {
+                        false
+                    }
+
+                /**
+                 * Returns a score indicating how many valid values are contained in this object
+                 * recursively.
+                 *
+                 * Used for best match union deserialization.
+                 */
+                internal fun validity(): Int =
+                    additionalProperties.count { (_, value) ->
+                        !value.isNull() && !value.isMissing()
+                    }
+
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) {
+                        return true
+                    }
+
+                    return other is Headers && additionalProperties == other.additionalProperties
+                }
+
+                private val hashCode: Int by lazy { Objects.hash(additionalProperties) }
+
+                override fun hashCode(): Int = hashCode
+
+                override fun toString() = "Headers{additionalProperties=$additionalProperties}"
+            }
+
+            /**
+             * Provider-specific options passed through to the AI SDK provider constructor. For
+             * Bedrock: { region, accessKeyId, secretAccessKey, sessionToken }. For Vertex: {
+             * project, location, googleAuthOptions }.
+             */
+            @JsonDeserialize(using = ProviderOptions.Deserializer::class)
+            @JsonSerialize(using = ProviderOptions.Serializer::class)
+            class ProviderOptions
+            private constructor(
+                private val bedrockApiKey: BedrockApiKeyProviderOptions? = null,
+                private val bedrockAwsCredentials: BedrockAwsCredentialsProviderOptions? = null,
+                private val googleVertex: GoogleVertexProviderOptions? = null,
+                private val _json: JsonValue? = null,
+            ) {
+
+                fun bedrockApiKey(): BedrockApiKeyProviderOptions? = bedrockApiKey
+
+                fun bedrockAwsCredentials(): BedrockAwsCredentialsProviderOptions? =
+                    bedrockAwsCredentials
+
+                fun googleVertex(): GoogleVertexProviderOptions? = googleVertex
+
+                fun isBedrockApiKey(): Boolean = bedrockApiKey != null
+
+                fun isBedrockAwsCredentials(): Boolean = bedrockAwsCredentials != null
+
+                fun isGoogleVertex(): Boolean = googleVertex != null
+
+                fun asBedrockApiKey(): BedrockApiKeyProviderOptions =
+                    bedrockApiKey.getOrThrow("bedrockApiKey")
+
+                fun asBedrockAwsCredentials(): BedrockAwsCredentialsProviderOptions =
+                    bedrockAwsCredentials.getOrThrow("bedrockAwsCredentials")
+
+                fun asGoogleVertex(): GoogleVertexProviderOptions =
+                    googleVertex.getOrThrow("googleVertex")
+
+                fun _json(): JsonValue? = _json
+
+                fun <T> accept(visitor: Visitor<T>): T =
+                    when {
+                        bedrockApiKey != null -> visitor.visitBedrockApiKey(bedrockApiKey)
+                        bedrockAwsCredentials != null ->
+                            visitor.visitBedrockAwsCredentials(bedrockAwsCredentials)
+                        googleVertex != null -> visitor.visitGoogleVertex(googleVertex)
+                        else -> visitor.unknown(_json)
+                    }
+
+                private var validated: Boolean = false
+
+                fun validate(): ProviderOptions = apply {
+                    if (validated) {
+                        return@apply
+                    }
+
+                    accept(
+                        object : Visitor<Unit> {
+                            override fun visitBedrockApiKey(
+                                bedrockApiKey: BedrockApiKeyProviderOptions
+                            ) {
+                                bedrockApiKey.validate()
+                            }
+
+                            override fun visitBedrockAwsCredentials(
+                                bedrockAwsCredentials: BedrockAwsCredentialsProviderOptions
+                            ) {
+                                bedrockAwsCredentials.validate()
+                            }
+
+                            override fun visitGoogleVertex(
+                                googleVertex: GoogleVertexProviderOptions
+                            ) {
+                                googleVertex.validate()
+                            }
+                        }
+                    )
+                    validated = true
+                }
+
+                fun isValid(): Boolean =
+                    try {
+                        validate()
+                        true
+                    } catch (e: StagehandInvalidDataException) {
+                        false
+                    }
+
+                /**
+                 * Returns a score indicating how many valid values are contained in this object
+                 * recursively.
+                 *
+                 * Used for best match union deserialization.
+                 */
+                internal fun validity(): Int =
+                    accept(
+                        object : Visitor<Int> {
+                            override fun visitBedrockApiKey(
+                                bedrockApiKey: BedrockApiKeyProviderOptions
+                            ) = bedrockApiKey.validity()
+
+                            override fun visitBedrockAwsCredentials(
+                                bedrockAwsCredentials: BedrockAwsCredentialsProviderOptions
+                            ) = bedrockAwsCredentials.validity()
+
+                            override fun visitGoogleVertex(
+                                googleVertex: GoogleVertexProviderOptions
+                            ) = googleVertex.validity()
+
+                            override fun unknown(json: JsonValue?) = 0
+                        }
+                    )
+
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) {
+                        return true
+                    }
+
+                    return other is ProviderOptions &&
+                        bedrockApiKey == other.bedrockApiKey &&
+                        bedrockAwsCredentials == other.bedrockAwsCredentials &&
+                        googleVertex == other.googleVertex
+                }
+
+                override fun hashCode(): Int =
+                    Objects.hash(bedrockApiKey, bedrockAwsCredentials, googleVertex)
+
+                override fun toString(): String =
+                    when {
+                        bedrockApiKey != null -> "ProviderOptions{bedrockApiKey=$bedrockApiKey}"
+                        bedrockAwsCredentials != null ->
+                            "ProviderOptions{bedrockAwsCredentials=$bedrockAwsCredentials}"
+                        googleVertex != null -> "ProviderOptions{googleVertex=$googleVertex}"
+                        _json != null -> "ProviderOptions{_unknown=$_json}"
+                        else -> throw IllegalStateException("Invalid ProviderOptions")
+                    }
+
+                companion object {
+
+                    fun ofBedrockApiKey(bedrockApiKey: BedrockApiKeyProviderOptions) =
+                        ProviderOptions(bedrockApiKey = bedrockApiKey)
+
+                    fun ofBedrockAwsCredentials(
+                        bedrockAwsCredentials: BedrockAwsCredentialsProviderOptions
+                    ) = ProviderOptions(bedrockAwsCredentials = bedrockAwsCredentials)
+
+                    fun ofGoogleVertex(googleVertex: GoogleVertexProviderOptions) =
+                        ProviderOptions(googleVertex = googleVertex)
+                }
+
+                /**
+                 * An interface that defines how to map each variant of [ProviderOptions] to a value
+                 * of type [T].
+                 */
+                interface Visitor<out T> {
+
+                    fun visitBedrockApiKey(bedrockApiKey: BedrockApiKeyProviderOptions): T
+
+                    fun visitBedrockAwsCredentials(
+                        bedrockAwsCredentials: BedrockAwsCredentialsProviderOptions
+                    ): T
+
+                    fun visitGoogleVertex(googleVertex: GoogleVertexProviderOptions): T
+
+                    /**
+                     * Maps an unknown variant of [ProviderOptions] to a value of type [T].
+                     *
+                     * An instance of [ProviderOptions] can contain an unknown variant if it was
+                     * deserialized from data that doesn't match any known variant. For example, if
+                     * the SDK is on an older version than the API, then the API may respond with
+                     * new variants that the SDK is unaware of.
+                     *
+                     * @throws StagehandInvalidDataException in the default implementation.
+                     */
+                    fun unknown(json: JsonValue?): T {
+                        throw StagehandInvalidDataException("Unknown ProviderOptions: $json")
+                    }
+                }
+
+                internal class Deserializer :
+                    BaseDeserializer<ProviderOptions>(ProviderOptions::class) {
+
+                    override fun ObjectCodec.deserialize(node: JsonNode): ProviderOptions {
+                        val json = JsonValue.fromJsonNode(node)
+
+                        val bestMatches =
+                            sequenceOf(
+                                    tryDeserialize(
+                                            node,
+                                            jacksonTypeRef<BedrockApiKeyProviderOptions>(),
+                                        )
+                                        ?.let { ProviderOptions(bedrockApiKey = it, _json = json) },
+                                    tryDeserialize(
+                                            node,
+                                            jacksonTypeRef<BedrockAwsCredentialsProviderOptions>(),
+                                        )
+                                        ?.let {
+                                            ProviderOptions(
+                                                bedrockAwsCredentials = it,
+                                                _json = json,
+                                            )
+                                        },
+                                    tryDeserialize(
+                                            node,
+                                            jacksonTypeRef<GoogleVertexProviderOptions>(),
+                                        )
+                                        ?.let { ProviderOptions(googleVertex = it, _json = json) },
+                                )
+                                .filterNotNull()
+                                .allMaxBy { it.validity() }
+                                .toList()
+                        return when (bestMatches.size) {
+                            // This can happen if what we're deserializing is completely
+                            // incompatible with all the possible variants (e.g. deserializing from
+                            // boolean).
+                            0 -> ProviderOptions(_json = json)
+                            1 -> bestMatches.single()
+                            // If there's more than one match with the highest validity, then use
+                            // the first completely valid match, or simply the first match if none
+                            // are completely valid.
+                            else -> bestMatches.firstOrNull { it.isValid() } ?: bestMatches.first()
+                        }
+                    }
+                }
+
+                internal class Serializer :
+                    BaseSerializer<ProviderOptions>(ProviderOptions::class) {
+
+                    override fun serialize(
+                        value: ProviderOptions,
+                        generator: JsonGenerator,
+                        provider: SerializerProvider,
+                    ) {
+                        when {
+                            value.bedrockApiKey != null ->
+                                generator.writeObject(value.bedrockApiKey)
+                            value.bedrockAwsCredentials != null ->
+                                generator.writeObject(value.bedrockAwsCredentials)
+                            value.googleVertex != null -> generator.writeObject(value.googleVertex)
+                            value._json != null -> generator.writeObject(value._json)
+                            else -> throw IllegalStateException("Invalid ProviderOptions")
+                        }
+                    }
+                }
+
+                class BedrockApiKeyProviderOptions
+                @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+                private constructor(
+                    private val region: JsonField<String>,
+                    private val additionalProperties: MutableMap<String, JsonValue>,
+                ) {
+
+                    @JsonCreator
+                    private constructor(
+                        @JsonProperty("region")
+                        @ExcludeMissing
+                        region: JsonField<String> = JsonMissing.of()
+                    ) : this(region, mutableMapOf())
+
+                    /**
+                     * AWS region for Amazon Bedrock
+                     *
+                     * @throws StagehandInvalidDataException if the JSON field has an unexpected
+                     *   type or is unexpectedly missing or null (e.g. if the server responded with
+                     *   an unexpected value).
+                     */
+                    fun region(): String = region.getRequired("region")
+
+                    /**
+                     * Returns the raw JSON value of [region].
+                     *
+                     * Unlike [region], this method doesn't throw if the JSON field has an
+                     * unexpected type.
+                     */
+                    @JsonProperty("region")
+                    @ExcludeMissing
+                    fun _region(): JsonField<String> = region
+
+                    @JsonAnySetter
+                    private fun putAdditionalProperty(key: String, value: JsonValue) {
+                        additionalProperties.put(key, value)
+                    }
+
+                    @JsonAnyGetter
+                    @ExcludeMissing
+                    fun _additionalProperties(): Map<String, JsonValue> =
+                        Collections.unmodifiableMap(additionalProperties)
+
+                    fun toBuilder() = Builder().from(this)
+
+                    companion object {
+
+                        /**
+                         * Returns a mutable builder for constructing an instance of
+                         * [BedrockApiKeyProviderOptions].
+                         *
+                         * The following fields are required:
+                         * ```kotlin
+                         * .region()
+                         * ```
+                         */
+                        fun builder() = Builder()
+                    }
+
+                    /** A builder for [BedrockApiKeyProviderOptions]. */
+                    class Builder internal constructor() {
+
+                        private var region: JsonField<String>? = null
+                        private var additionalProperties: MutableMap<String, JsonValue> =
+                            mutableMapOf()
+
+                        internal fun from(
+                            bedrockApiKeyProviderOptions: BedrockApiKeyProviderOptions
+                        ) = apply {
+                            region = bedrockApiKeyProviderOptions.region
+                            additionalProperties =
+                                bedrockApiKeyProviderOptions.additionalProperties.toMutableMap()
+                        }
+
+                        /** AWS region for Amazon Bedrock */
+                        fun region(region: String) = region(JsonField.of(region))
+
+                        /**
+                         * Sets [Builder.region] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.region] with a well-typed [String] value
+                         * instead. This method is primarily for setting the field to an
+                         * undocumented or not yet supported value.
+                         */
+                        fun region(region: JsonField<String>) = apply { this.region = region }
+
+                        fun additionalProperties(additionalProperties: Map<String, JsonValue>) =
+                            apply {
+                                this.additionalProperties.clear()
+                                putAllAdditionalProperties(additionalProperties)
+                            }
+
+                        fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                            additionalProperties.put(key, value)
+                        }
+
+                        fun putAllAdditionalProperties(
+                            additionalProperties: Map<String, JsonValue>
+                        ) = apply { this.additionalProperties.putAll(additionalProperties) }
+
+                        fun removeAdditionalProperty(key: String) = apply {
+                            additionalProperties.remove(key)
+                        }
+
+                        fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                            keys.forEach(::removeAdditionalProperty)
+                        }
+
+                        /**
+                         * Returns an immutable instance of [BedrockApiKeyProviderOptions].
+                         *
+                         * Further updates to this [Builder] will not mutate the returned instance.
+                         *
+                         * The following fields are required:
+                         * ```kotlin
+                         * .region()
+                         * ```
+                         *
+                         * @throws IllegalStateException if any required field is unset.
+                         */
+                        fun build(): BedrockApiKeyProviderOptions =
+                            BedrockApiKeyProviderOptions(
+                                checkRequired("region", region),
+                                additionalProperties.toMutableMap(),
+                            )
+                    }
+
+                    private var validated: Boolean = false
+
+                    fun validate(): BedrockApiKeyProviderOptions = apply {
+                        if (validated) {
+                            return@apply
+                        }
+
+                        region()
+                        validated = true
+                    }
+
+                    fun isValid(): Boolean =
+                        try {
+                            validate()
+                            true
+                        } catch (e: StagehandInvalidDataException) {
+                            false
+                        }
+
+                    /**
+                     * Returns a score indicating how many valid values are contained in this object
+                     * recursively.
+                     *
+                     * Used for best match union deserialization.
+                     */
+                    internal fun validity(): Int = (if (region.asKnown() == null) 0 else 1)
+
+                    override fun equals(other: Any?): Boolean {
+                        if (this === other) {
+                            return true
+                        }
+
+                        return other is BedrockApiKeyProviderOptions &&
+                            region == other.region &&
+                            additionalProperties == other.additionalProperties
+                    }
+
+                    private val hashCode: Int by lazy { Objects.hash(region, additionalProperties) }
+
+                    override fun hashCode(): Int = hashCode
+
+                    override fun toString() =
+                        "BedrockApiKeyProviderOptions{region=$region, additionalProperties=$additionalProperties}"
+                }
+
+                class BedrockAwsCredentialsProviderOptions
+                @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+                private constructor(
+                    private val accessKeyId: JsonField<String>,
+                    private val region: JsonField<String>,
+                    private val secretAccessKey: JsonField<String>,
+                    private val sessionToken: JsonField<String>,
+                    private val additionalProperties: MutableMap<String, JsonValue>,
+                ) {
+
+                    @JsonCreator
+                    private constructor(
+                        @JsonProperty("accessKeyId")
+                        @ExcludeMissing
+                        accessKeyId: JsonField<String> = JsonMissing.of(),
+                        @JsonProperty("region")
+                        @ExcludeMissing
+                        region: JsonField<String> = JsonMissing.of(),
+                        @JsonProperty("secretAccessKey")
+                        @ExcludeMissing
+                        secretAccessKey: JsonField<String> = JsonMissing.of(),
+                        @JsonProperty("sessionToken")
+                        @ExcludeMissing
+                        sessionToken: JsonField<String> = JsonMissing.of(),
+                    ) : this(accessKeyId, region, secretAccessKey, sessionToken, mutableMapOf())
+
+                    /**
+                     * AWS access key ID for Bedrock
+                     *
+                     * @throws StagehandInvalidDataException if the JSON field has an unexpected
+                     *   type or is unexpectedly missing or null (e.g. if the server responded with
+                     *   an unexpected value).
+                     */
+                    fun accessKeyId(): String = accessKeyId.getRequired("accessKeyId")
+
+                    /**
+                     * AWS region for Amazon Bedrock
+                     *
+                     * @throws StagehandInvalidDataException if the JSON field has an unexpected
+                     *   type or is unexpectedly missing or null (e.g. if the server responded with
+                     *   an unexpected value).
+                     */
+                    fun region(): String = region.getRequired("region")
+
+                    /**
+                     * AWS secret access key for Bedrock
+                     *
+                     * @throws StagehandInvalidDataException if the JSON field has an unexpected
+                     *   type or is unexpectedly missing or null (e.g. if the server responded with
+                     *   an unexpected value).
+                     */
+                    fun secretAccessKey(): String = secretAccessKey.getRequired("secretAccessKey")
+
+                    /**
+                     * Optional AWS session token for temporary credentials
+                     *
+                     * @throws StagehandInvalidDataException if the JSON field has an unexpected
+                     *   type (e.g. if the server responded with an unexpected value).
+                     */
+                    fun sessionToken(): String? = sessionToken.getNullable("sessionToken")
+
+                    /**
+                     * Returns the raw JSON value of [accessKeyId].
+                     *
+                     * Unlike [accessKeyId], this method doesn't throw if the JSON field has an
+                     * unexpected type.
+                     */
+                    @JsonProperty("accessKeyId")
+                    @ExcludeMissing
+                    fun _accessKeyId(): JsonField<String> = accessKeyId
+
+                    /**
+                     * Returns the raw JSON value of [region].
+                     *
+                     * Unlike [region], this method doesn't throw if the JSON field has an
+                     * unexpected type.
+                     */
+                    @JsonProperty("region")
+                    @ExcludeMissing
+                    fun _region(): JsonField<String> = region
+
+                    /**
+                     * Returns the raw JSON value of [secretAccessKey].
+                     *
+                     * Unlike [secretAccessKey], this method doesn't throw if the JSON field has an
+                     * unexpected type.
+                     */
+                    @JsonProperty("secretAccessKey")
+                    @ExcludeMissing
+                    fun _secretAccessKey(): JsonField<String> = secretAccessKey
+
+                    /**
+                     * Returns the raw JSON value of [sessionToken].
+                     *
+                     * Unlike [sessionToken], this method doesn't throw if the JSON field has an
+                     * unexpected type.
+                     */
+                    @JsonProperty("sessionToken")
+                    @ExcludeMissing
+                    fun _sessionToken(): JsonField<String> = sessionToken
+
+                    @JsonAnySetter
+                    private fun putAdditionalProperty(key: String, value: JsonValue) {
+                        additionalProperties.put(key, value)
+                    }
+
+                    @JsonAnyGetter
+                    @ExcludeMissing
+                    fun _additionalProperties(): Map<String, JsonValue> =
+                        Collections.unmodifiableMap(additionalProperties)
+
+                    fun toBuilder() = Builder().from(this)
+
+                    companion object {
+
+                        /**
+                         * Returns a mutable builder for constructing an instance of
+                         * [BedrockAwsCredentialsProviderOptions].
+                         *
+                         * The following fields are required:
+                         * ```kotlin
+                         * .accessKeyId()
+                         * .region()
+                         * .secretAccessKey()
+                         * ```
+                         */
+                        fun builder() = Builder()
+                    }
+
+                    /** A builder for [BedrockAwsCredentialsProviderOptions]. */
+                    class Builder internal constructor() {
+
+                        private var accessKeyId: JsonField<String>? = null
+                        private var region: JsonField<String>? = null
+                        private var secretAccessKey: JsonField<String>? = null
+                        private var sessionToken: JsonField<String> = JsonMissing.of()
+                        private var additionalProperties: MutableMap<String, JsonValue> =
+                            mutableMapOf()
+
+                        internal fun from(
+                            bedrockAwsCredentialsProviderOptions:
+                                BedrockAwsCredentialsProviderOptions
+                        ) = apply {
+                            accessKeyId = bedrockAwsCredentialsProviderOptions.accessKeyId
+                            region = bedrockAwsCredentialsProviderOptions.region
+                            secretAccessKey = bedrockAwsCredentialsProviderOptions.secretAccessKey
+                            sessionToken = bedrockAwsCredentialsProviderOptions.sessionToken
+                            additionalProperties =
+                                bedrockAwsCredentialsProviderOptions.additionalProperties
+                                    .toMutableMap()
+                        }
+
+                        /** AWS access key ID for Bedrock */
+                        fun accessKeyId(accessKeyId: String) =
+                            accessKeyId(JsonField.of(accessKeyId))
+
+                        /**
+                         * Sets [Builder.accessKeyId] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.accessKeyId] with a well-typed [String]
+                         * value instead. This method is primarily for setting the field to an
+                         * undocumented or not yet supported value.
+                         */
+                        fun accessKeyId(accessKeyId: JsonField<String>) = apply {
+                            this.accessKeyId = accessKeyId
+                        }
+
+                        /** AWS region for Amazon Bedrock */
+                        fun region(region: String) = region(JsonField.of(region))
+
+                        /**
+                         * Sets [Builder.region] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.region] with a well-typed [String] value
+                         * instead. This method is primarily for setting the field to an
+                         * undocumented or not yet supported value.
+                         */
+                        fun region(region: JsonField<String>) = apply { this.region = region }
+
+                        /** AWS secret access key for Bedrock */
+                        fun secretAccessKey(secretAccessKey: String) =
+                            secretAccessKey(JsonField.of(secretAccessKey))
+
+                        /**
+                         * Sets [Builder.secretAccessKey] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.secretAccessKey] with a well-typed
+                         * [String] value instead. This method is primarily for setting the field to
+                         * an undocumented or not yet supported value.
+                         */
+                        fun secretAccessKey(secretAccessKey: JsonField<String>) = apply {
+                            this.secretAccessKey = secretAccessKey
+                        }
+
+                        /** Optional AWS session token for temporary credentials */
+                        fun sessionToken(sessionToken: String) =
+                            sessionToken(JsonField.of(sessionToken))
+
+                        /**
+                         * Sets [Builder.sessionToken] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.sessionToken] with a well-typed [String]
+                         * value instead. This method is primarily for setting the field to an
+                         * undocumented or not yet supported value.
+                         */
+                        fun sessionToken(sessionToken: JsonField<String>) = apply {
+                            this.sessionToken = sessionToken
+                        }
+
+                        fun additionalProperties(additionalProperties: Map<String, JsonValue>) =
+                            apply {
+                                this.additionalProperties.clear()
+                                putAllAdditionalProperties(additionalProperties)
+                            }
+
+                        fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                            additionalProperties.put(key, value)
+                        }
+
+                        fun putAllAdditionalProperties(
+                            additionalProperties: Map<String, JsonValue>
+                        ) = apply { this.additionalProperties.putAll(additionalProperties) }
+
+                        fun removeAdditionalProperty(key: String) = apply {
+                            additionalProperties.remove(key)
+                        }
+
+                        fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                            keys.forEach(::removeAdditionalProperty)
+                        }
+
+                        /**
+                         * Returns an immutable instance of [BedrockAwsCredentialsProviderOptions].
+                         *
+                         * Further updates to this [Builder] will not mutate the returned instance.
+                         *
+                         * The following fields are required:
+                         * ```kotlin
+                         * .accessKeyId()
+                         * .region()
+                         * .secretAccessKey()
+                         * ```
+                         *
+                         * @throws IllegalStateException if any required field is unset.
+                         */
+                        fun build(): BedrockAwsCredentialsProviderOptions =
+                            BedrockAwsCredentialsProviderOptions(
+                                checkRequired("accessKeyId", accessKeyId),
+                                checkRequired("region", region),
+                                checkRequired("secretAccessKey", secretAccessKey),
+                                sessionToken,
+                                additionalProperties.toMutableMap(),
+                            )
+                    }
+
+                    private var validated: Boolean = false
+
+                    fun validate(): BedrockAwsCredentialsProviderOptions = apply {
+                        if (validated) {
+                            return@apply
+                        }
+
+                        accessKeyId()
+                        region()
+                        secretAccessKey()
+                        sessionToken()
+                        validated = true
+                    }
+
+                    fun isValid(): Boolean =
+                        try {
+                            validate()
+                            true
+                        } catch (e: StagehandInvalidDataException) {
+                            false
+                        }
+
+                    /**
+                     * Returns a score indicating how many valid values are contained in this object
+                     * recursively.
+                     *
+                     * Used for best match union deserialization.
+                     */
+                    internal fun validity(): Int =
+                        (if (accessKeyId.asKnown() == null) 0 else 1) +
+                            (if (region.asKnown() == null) 0 else 1) +
+                            (if (secretAccessKey.asKnown() == null) 0 else 1) +
+                            (if (sessionToken.asKnown() == null) 0 else 1)
+
+                    override fun equals(other: Any?): Boolean {
+                        if (this === other) {
+                            return true
+                        }
+
+                        return other is BedrockAwsCredentialsProviderOptions &&
+                            accessKeyId == other.accessKeyId &&
+                            region == other.region &&
+                            secretAccessKey == other.secretAccessKey &&
+                            sessionToken == other.sessionToken &&
+                            additionalProperties == other.additionalProperties
+                    }
+
+                    private val hashCode: Int by lazy {
+                        Objects.hash(
+                            accessKeyId,
+                            region,
+                            secretAccessKey,
+                            sessionToken,
+                            additionalProperties,
+                        )
+                    }
+
+                    override fun hashCode(): Int = hashCode
+
+                    override fun toString() =
+                        "BedrockAwsCredentialsProviderOptions{accessKeyId=$accessKeyId, region=$region, secretAccessKey=$secretAccessKey, sessionToken=$sessionToken, additionalProperties=$additionalProperties}"
+                }
+
+                class GoogleVertexProviderOptions
+                @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+                private constructor(
+                    private val googleAuthOptions: JsonField<GoogleAuthOptions>,
+                    private val headers: JsonField<Headers>,
+                    private val location: JsonField<String>,
+                    private val project: JsonField<String>,
+                    private val additionalProperties: MutableMap<String, JsonValue>,
+                ) {
+
+                    @JsonCreator
+                    private constructor(
+                        @JsonProperty("googleAuthOptions")
+                        @ExcludeMissing
+                        googleAuthOptions: JsonField<GoogleAuthOptions> = JsonMissing.of(),
+                        @JsonProperty("headers")
+                        @ExcludeMissing
+                        headers: JsonField<Headers> = JsonMissing.of(),
+                        @JsonProperty("location")
+                        @ExcludeMissing
+                        location: JsonField<String> = JsonMissing.of(),
+                        @JsonProperty("project")
+                        @ExcludeMissing
+                        project: JsonField<String> = JsonMissing.of(),
+                    ) : this(googleAuthOptions, headers, location, project, mutableMapOf())
+
+                    /**
+                     * Optional Google auth options for Vertex AI
+                     *
+                     * @throws StagehandInvalidDataException if the JSON field has an unexpected
+                     *   type (e.g. if the server responded with an unexpected value).
+                     */
+                    fun googleAuthOptions(): GoogleAuthOptions? =
+                        googleAuthOptions.getNullable("googleAuthOptions")
+
+                    /**
+                     * Custom headers for Vertex AI requests
+                     *
+                     * @throws StagehandInvalidDataException if the JSON field has an unexpected
+                     *   type (e.g. if the server responded with an unexpected value).
+                     */
+                    fun headers(): Headers? = headers.getNullable("headers")
+
+                    /**
+                     * Google Cloud location for Vertex AI
+                     *
+                     * @throws StagehandInvalidDataException if the JSON field has an unexpected
+                     *   type (e.g. if the server responded with an unexpected value).
+                     */
+                    fun location(): String? = location.getNullable("location")
+
+                    /**
+                     * Google Cloud project ID for Vertex AI
+                     *
+                     * @throws StagehandInvalidDataException if the JSON field has an unexpected
+                     *   type (e.g. if the server responded with an unexpected value).
+                     */
+                    fun project(): String? = project.getNullable("project")
+
+                    /**
+                     * Returns the raw JSON value of [googleAuthOptions].
+                     *
+                     * Unlike [googleAuthOptions], this method doesn't throw if the JSON field has
+                     * an unexpected type.
+                     */
+                    @JsonProperty("googleAuthOptions")
+                    @ExcludeMissing
+                    fun _googleAuthOptions(): JsonField<GoogleAuthOptions> = googleAuthOptions
+
+                    /**
+                     * Returns the raw JSON value of [headers].
+                     *
+                     * Unlike [headers], this method doesn't throw if the JSON field has an
+                     * unexpected type.
+                     */
+                    @JsonProperty("headers")
+                    @ExcludeMissing
+                    fun _headers(): JsonField<Headers> = headers
+
+                    /**
+                     * Returns the raw JSON value of [location].
+                     *
+                     * Unlike [location], this method doesn't throw if the JSON field has an
+                     * unexpected type.
+                     */
+                    @JsonProperty("location")
+                    @ExcludeMissing
+                    fun _location(): JsonField<String> = location
+
+                    /**
+                     * Returns the raw JSON value of [project].
+                     *
+                     * Unlike [project], this method doesn't throw if the JSON field has an
+                     * unexpected type.
+                     */
+                    @JsonProperty("project")
+                    @ExcludeMissing
+                    fun _project(): JsonField<String> = project
+
+                    @JsonAnySetter
+                    private fun putAdditionalProperty(key: String, value: JsonValue) {
+                        additionalProperties.put(key, value)
+                    }
+
+                    @JsonAnyGetter
+                    @ExcludeMissing
+                    fun _additionalProperties(): Map<String, JsonValue> =
+                        Collections.unmodifiableMap(additionalProperties)
+
+                    fun toBuilder() = Builder().from(this)
+
+                    companion object {
+
+                        /**
+                         * Returns a mutable builder for constructing an instance of
+                         * [GoogleVertexProviderOptions].
+                         */
+                        fun builder() = Builder()
+                    }
+
+                    /** A builder for [GoogleVertexProviderOptions]. */
+                    class Builder internal constructor() {
+
+                        private var googleAuthOptions: JsonField<GoogleAuthOptions> =
+                            JsonMissing.of()
+                        private var headers: JsonField<Headers> = JsonMissing.of()
+                        private var location: JsonField<String> = JsonMissing.of()
+                        private var project: JsonField<String> = JsonMissing.of()
+                        private var additionalProperties: MutableMap<String, JsonValue> =
+                            mutableMapOf()
+
+                        internal fun from(
+                            googleVertexProviderOptions: GoogleVertexProviderOptions
+                        ) = apply {
+                            googleAuthOptions = googleVertexProviderOptions.googleAuthOptions
+                            headers = googleVertexProviderOptions.headers
+                            location = googleVertexProviderOptions.location
+                            project = googleVertexProviderOptions.project
+                            additionalProperties =
+                                googleVertexProviderOptions.additionalProperties.toMutableMap()
+                        }
+
+                        /** Optional Google auth options for Vertex AI */
+                        fun googleAuthOptions(googleAuthOptions: GoogleAuthOptions) =
+                            googleAuthOptions(JsonField.of(googleAuthOptions))
+
+                        /**
+                         * Sets [Builder.googleAuthOptions] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.googleAuthOptions] with a well-typed
+                         * [GoogleAuthOptions] value instead. This method is primarily for setting
+                         * the field to an undocumented or not yet supported value.
+                         */
+                        fun googleAuthOptions(googleAuthOptions: JsonField<GoogleAuthOptions>) =
+                            apply {
+                                this.googleAuthOptions = googleAuthOptions
+                            }
+
+                        /** Custom headers for Vertex AI requests */
+                        fun headers(headers: Headers) = headers(JsonField.of(headers))
+
+                        /**
+                         * Sets [Builder.headers] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.headers] with a well-typed [Headers]
+                         * value instead. This method is primarily for setting the field to an
+                         * undocumented or not yet supported value.
+                         */
+                        fun headers(headers: JsonField<Headers>) = apply { this.headers = headers }
+
+                        /** Google Cloud location for Vertex AI */
+                        fun location(location: String) = location(JsonField.of(location))
+
+                        /**
+                         * Sets [Builder.location] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.location] with a well-typed [String]
+                         * value instead. This method is primarily for setting the field to an
+                         * undocumented or not yet supported value.
+                         */
+                        fun location(location: JsonField<String>) = apply {
+                            this.location = location
+                        }
+
+                        /** Google Cloud project ID for Vertex AI */
+                        fun project(project: String) = project(JsonField.of(project))
+
+                        /**
+                         * Sets [Builder.project] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.project] with a well-typed [String]
+                         * value instead. This method is primarily for setting the field to an
+                         * undocumented or not yet supported value.
+                         */
+                        fun project(project: JsonField<String>) = apply { this.project = project }
+
+                        fun additionalProperties(additionalProperties: Map<String, JsonValue>) =
+                            apply {
+                                this.additionalProperties.clear()
+                                putAllAdditionalProperties(additionalProperties)
+                            }
+
+                        fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                            additionalProperties.put(key, value)
+                        }
+
+                        fun putAllAdditionalProperties(
+                            additionalProperties: Map<String, JsonValue>
+                        ) = apply { this.additionalProperties.putAll(additionalProperties) }
+
+                        fun removeAdditionalProperty(key: String) = apply {
+                            additionalProperties.remove(key)
+                        }
+
+                        fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                            keys.forEach(::removeAdditionalProperty)
+                        }
+
+                        /**
+                         * Returns an immutable instance of [GoogleVertexProviderOptions].
+                         *
+                         * Further updates to this [Builder] will not mutate the returned instance.
+                         */
+                        fun build(): GoogleVertexProviderOptions =
+                            GoogleVertexProviderOptions(
+                                googleAuthOptions,
+                                headers,
+                                location,
+                                project,
+                                additionalProperties.toMutableMap(),
+                            )
+                    }
+
+                    private var validated: Boolean = false
+
+                    fun validate(): GoogleVertexProviderOptions = apply {
+                        if (validated) {
+                            return@apply
+                        }
+
+                        googleAuthOptions()?.validate()
+                        headers()?.validate()
+                        location()
+                        project()
+                        validated = true
+                    }
+
+                    fun isValid(): Boolean =
+                        try {
+                            validate()
+                            true
+                        } catch (e: StagehandInvalidDataException) {
+                            false
+                        }
+
+                    /**
+                     * Returns a score indicating how many valid values are contained in this object
+                     * recursively.
+                     *
+                     * Used for best match union deserialization.
+                     */
+                    internal fun validity(): Int =
+                        (googleAuthOptions.asKnown()?.validity() ?: 0) +
+                            (headers.asKnown()?.validity() ?: 0) +
+                            (if (location.asKnown() == null) 0 else 1) +
+                            (if (project.asKnown() == null) 0 else 1)
+
+                    /** Optional Google auth options for Vertex AI */
+                    class GoogleAuthOptions
+                    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+                    private constructor(
+                        private val credentials: JsonField<Credentials>,
+                        private val additionalProperties: MutableMap<String, JsonValue>,
+                    ) {
+
+                        @JsonCreator
+                        private constructor(
+                            @JsonProperty("credentials")
+                            @ExcludeMissing
+                            credentials: JsonField<Credentials> = JsonMissing.of()
+                        ) : this(credentials, mutableMapOf())
+
+                        /**
+                         * @throws StagehandInvalidDataException if the JSON field has an unexpected
+                         *   type (e.g. if the server responded with an unexpected value).
+                         */
+                        fun credentials(): Credentials? = credentials.getNullable("credentials")
+
+                        /**
+                         * Returns the raw JSON value of [credentials].
+                         *
+                         * Unlike [credentials], this method doesn't throw if the JSON field has an
+                         * unexpected type.
+                         */
+                        @JsonProperty("credentials")
+                        @ExcludeMissing
+                        fun _credentials(): JsonField<Credentials> = credentials
+
+                        @JsonAnySetter
+                        private fun putAdditionalProperty(key: String, value: JsonValue) {
+                            additionalProperties.put(key, value)
+                        }
+
+                        @JsonAnyGetter
+                        @ExcludeMissing
+                        fun _additionalProperties(): Map<String, JsonValue> =
+                            Collections.unmodifiableMap(additionalProperties)
+
+                        fun toBuilder() = Builder().from(this)
+
+                        companion object {
+
+                            /**
+                             * Returns a mutable builder for constructing an instance of
+                             * [GoogleAuthOptions].
+                             */
+                            fun builder() = Builder()
+                        }
+
+                        /** A builder for [GoogleAuthOptions]. */
+                        class Builder internal constructor() {
+
+                            private var credentials: JsonField<Credentials> = JsonMissing.of()
+                            private var additionalProperties: MutableMap<String, JsonValue> =
+                                mutableMapOf()
+
+                            internal fun from(googleAuthOptions: GoogleAuthOptions) = apply {
+                                credentials = googleAuthOptions.credentials
+                                additionalProperties =
+                                    googleAuthOptions.additionalProperties.toMutableMap()
+                            }
+
+                            fun credentials(credentials: Credentials) =
+                                credentials(JsonField.of(credentials))
+
+                            /**
+                             * Sets [Builder.credentials] to an arbitrary JSON value.
+                             *
+                             * You should usually call [Builder.credentials] with a well-typed
+                             * [Credentials] value instead. This method is primarily for setting the
+                             * field to an undocumented or not yet supported value.
+                             */
+                            fun credentials(credentials: JsonField<Credentials>) = apply {
+                                this.credentials = credentials
+                            }
+
+                            fun additionalProperties(additionalProperties: Map<String, JsonValue>) =
+                                apply {
+                                    this.additionalProperties.clear()
+                                    putAllAdditionalProperties(additionalProperties)
+                                }
+
+                            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                                additionalProperties.put(key, value)
+                            }
+
+                            fun putAllAdditionalProperties(
+                                additionalProperties: Map<String, JsonValue>
+                            ) = apply { this.additionalProperties.putAll(additionalProperties) }
+
+                            fun removeAdditionalProperty(key: String) = apply {
+                                additionalProperties.remove(key)
+                            }
+
+                            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                                keys.forEach(::removeAdditionalProperty)
+                            }
+
+                            /**
+                             * Returns an immutable instance of [GoogleAuthOptions].
+                             *
+                             * Further updates to this [Builder] will not mutate the returned
+                             * instance.
+                             */
+                            fun build(): GoogleAuthOptions =
+                                GoogleAuthOptions(credentials, additionalProperties.toMutableMap())
+                        }
+
+                        private var validated: Boolean = false
+
+                        fun validate(): GoogleAuthOptions = apply {
+                            if (validated) {
+                                return@apply
+                            }
+
+                            credentials()?.validate()
+                            validated = true
+                        }
+
+                        fun isValid(): Boolean =
+                            try {
+                                validate()
+                                true
+                            } catch (e: StagehandInvalidDataException) {
+                                false
+                            }
+
+                        /**
+                         * Returns a score indicating how many valid values are contained in this
+                         * object recursively.
+                         *
+                         * Used for best match union deserialization.
+                         */
+                        internal fun validity(): Int = (credentials.asKnown()?.validity() ?: 0)
+
+                        class Credentials
+                        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+                        private constructor(
+                            private val authProviderX509CertUrl: JsonField<String>,
+                            private val authUri: JsonField<String>,
+                            private val clientEmail: JsonField<String>,
+                            private val clientId: JsonField<String>,
+                            private val clientX509CertUrl: JsonField<String>,
+                            private val privateKey: JsonField<String>,
+                            private val privateKeyId: JsonField<String>,
+                            private val projectId: JsonField<String>,
+                            private val tokenUri: JsonField<String>,
+                            private val type: JsonField<String>,
+                            private val universeDomain: JsonField<String>,
+                            private val additionalProperties: MutableMap<String, JsonValue>,
+                        ) {
+
+                            @JsonCreator
+                            private constructor(
+                                @JsonProperty("auth_provider_x509_cert_url")
+                                @ExcludeMissing
+                                authProviderX509CertUrl: JsonField<String> = JsonMissing.of(),
+                                @JsonProperty("auth_uri")
+                                @ExcludeMissing
+                                authUri: JsonField<String> = JsonMissing.of(),
+                                @JsonProperty("client_email")
+                                @ExcludeMissing
+                                clientEmail: JsonField<String> = JsonMissing.of(),
+                                @JsonProperty("client_id")
+                                @ExcludeMissing
+                                clientId: JsonField<String> = JsonMissing.of(),
+                                @JsonProperty("client_x509_cert_url")
+                                @ExcludeMissing
+                                clientX509CertUrl: JsonField<String> = JsonMissing.of(),
+                                @JsonProperty("private_key")
+                                @ExcludeMissing
+                                privateKey: JsonField<String> = JsonMissing.of(),
+                                @JsonProperty("private_key_id")
+                                @ExcludeMissing
+                                privateKeyId: JsonField<String> = JsonMissing.of(),
+                                @JsonProperty("project_id")
+                                @ExcludeMissing
+                                projectId: JsonField<String> = JsonMissing.of(),
+                                @JsonProperty("token_uri")
+                                @ExcludeMissing
+                                tokenUri: JsonField<String> = JsonMissing.of(),
+                                @JsonProperty("type")
+                                @ExcludeMissing
+                                type: JsonField<String> = JsonMissing.of(),
+                                @JsonProperty("universe_domain")
+                                @ExcludeMissing
+                                universeDomain: JsonField<String> = JsonMissing.of(),
+                            ) : this(
+                                authProviderX509CertUrl,
+                                authUri,
+                                clientEmail,
+                                clientId,
+                                clientX509CertUrl,
+                                privateKey,
+                                privateKeyId,
+                                projectId,
+                                tokenUri,
+                                type,
+                                universeDomain,
+                                mutableMapOf(),
+                            )
+
+                            /**
+                             * @throws StagehandInvalidDataException if the JSON field has an
+                             *   unexpected type (e.g. if the server responded with an unexpected
+                             *   value).
+                             */
+                            fun authProviderX509CertUrl(): String? =
+                                authProviderX509CertUrl.getNullable("auth_provider_x509_cert_url")
+
+                            /**
+                             * @throws StagehandInvalidDataException if the JSON field has an
+                             *   unexpected type (e.g. if the server responded with an unexpected
+                             *   value).
+                             */
+                            fun authUri(): String? = authUri.getNullable("auth_uri")
+
+                            /**
+                             * @throws StagehandInvalidDataException if the JSON field has an
+                             *   unexpected type (e.g. if the server responded with an unexpected
+                             *   value).
+                             */
+                            fun clientEmail(): String? = clientEmail.getNullable("client_email")
+
+                            /**
+                             * @throws StagehandInvalidDataException if the JSON field has an
+                             *   unexpected type (e.g. if the server responded with an unexpected
+                             *   value).
+                             */
+                            fun clientId(): String? = clientId.getNullable("client_id")
+
+                            /**
+                             * @throws StagehandInvalidDataException if the JSON field has an
+                             *   unexpected type (e.g. if the server responded with an unexpected
+                             *   value).
+                             */
+                            fun clientX509CertUrl(): String? =
+                                clientX509CertUrl.getNullable("client_x509_cert_url")
+
+                            /**
+                             * @throws StagehandInvalidDataException if the JSON field has an
+                             *   unexpected type (e.g. if the server responded with an unexpected
+                             *   value).
+                             */
+                            fun privateKey(): String? = privateKey.getNullable("private_key")
+
+                            /**
+                             * @throws StagehandInvalidDataException if the JSON field has an
+                             *   unexpected type (e.g. if the server responded with an unexpected
+                             *   value).
+                             */
+                            fun privateKeyId(): String? = privateKeyId.getNullable("private_key_id")
+
+                            /**
+                             * @throws StagehandInvalidDataException if the JSON field has an
+                             *   unexpected type (e.g. if the server responded with an unexpected
+                             *   value).
+                             */
+                            fun projectId(): String? = projectId.getNullable("project_id")
+
+                            /**
+                             * @throws StagehandInvalidDataException if the JSON field has an
+                             *   unexpected type (e.g. if the server responded with an unexpected
+                             *   value).
+                             */
+                            fun tokenUri(): String? = tokenUri.getNullable("token_uri")
+
+                            /**
+                             * @throws StagehandInvalidDataException if the JSON field has an
+                             *   unexpected type (e.g. if the server responded with an unexpected
+                             *   value).
+                             */
+                            fun type(): String? = type.getNullable("type")
+
+                            /**
+                             * @throws StagehandInvalidDataException if the JSON field has an
+                             *   unexpected type (e.g. if the server responded with an unexpected
+                             *   value).
+                             */
+                            fun universeDomain(): String? =
+                                universeDomain.getNullable("universe_domain")
+
+                            /**
+                             * Returns the raw JSON value of [authProviderX509CertUrl].
+                             *
+                             * Unlike [authProviderX509CertUrl], this method doesn't throw if the
+                             * JSON field has an unexpected type.
+                             */
+                            @JsonProperty("auth_provider_x509_cert_url")
+                            @ExcludeMissing
+                            fun _authProviderX509CertUrl(): JsonField<String> =
+                                authProviderX509CertUrl
+
+                            /**
+                             * Returns the raw JSON value of [authUri].
+                             *
+                             * Unlike [authUri], this method doesn't throw if the JSON field has an
+                             * unexpected type.
+                             */
+                            @JsonProperty("auth_uri")
+                            @ExcludeMissing
+                            fun _authUri(): JsonField<String> = authUri
+
+                            /**
+                             * Returns the raw JSON value of [clientEmail].
+                             *
+                             * Unlike [clientEmail], this method doesn't throw if the JSON field has
+                             * an unexpected type.
+                             */
+                            @JsonProperty("client_email")
+                            @ExcludeMissing
+                            fun _clientEmail(): JsonField<String> = clientEmail
+
+                            /**
+                             * Returns the raw JSON value of [clientId].
+                             *
+                             * Unlike [clientId], this method doesn't throw if the JSON field has an
+                             * unexpected type.
+                             */
+                            @JsonProperty("client_id")
+                            @ExcludeMissing
+                            fun _clientId(): JsonField<String> = clientId
+
+                            /**
+                             * Returns the raw JSON value of [clientX509CertUrl].
+                             *
+                             * Unlike [clientX509CertUrl], this method doesn't throw if the JSON
+                             * field has an unexpected type.
+                             */
+                            @JsonProperty("client_x509_cert_url")
+                            @ExcludeMissing
+                            fun _clientX509CertUrl(): JsonField<String> = clientX509CertUrl
+
+                            /**
+                             * Returns the raw JSON value of [privateKey].
+                             *
+                             * Unlike [privateKey], this method doesn't throw if the JSON field has
+                             * an unexpected type.
+                             */
+                            @JsonProperty("private_key")
+                            @ExcludeMissing
+                            fun _privateKey(): JsonField<String> = privateKey
+
+                            /**
+                             * Returns the raw JSON value of [privateKeyId].
+                             *
+                             * Unlike [privateKeyId], this method doesn't throw if the JSON field
+                             * has an unexpected type.
+                             */
+                            @JsonProperty("private_key_id")
+                            @ExcludeMissing
+                            fun _privateKeyId(): JsonField<String> = privateKeyId
+
+                            /**
+                             * Returns the raw JSON value of [projectId].
+                             *
+                             * Unlike [projectId], this method doesn't throw if the JSON field has
+                             * an unexpected type.
+                             */
+                            @JsonProperty("project_id")
+                            @ExcludeMissing
+                            fun _projectId(): JsonField<String> = projectId
+
+                            /**
+                             * Returns the raw JSON value of [tokenUri].
+                             *
+                             * Unlike [tokenUri], this method doesn't throw if the JSON field has an
+                             * unexpected type.
+                             */
+                            @JsonProperty("token_uri")
+                            @ExcludeMissing
+                            fun _tokenUri(): JsonField<String> = tokenUri
+
+                            /**
+                             * Returns the raw JSON value of [type].
+                             *
+                             * Unlike [type], this method doesn't throw if the JSON field has an
+                             * unexpected type.
+                             */
+                            @JsonProperty("type")
+                            @ExcludeMissing
+                            fun _type(): JsonField<String> = type
+
+                            /**
+                             * Returns the raw JSON value of [universeDomain].
+                             *
+                             * Unlike [universeDomain], this method doesn't throw if the JSON field
+                             * has an unexpected type.
+                             */
+                            @JsonProperty("universe_domain")
+                            @ExcludeMissing
+                            fun _universeDomain(): JsonField<String> = universeDomain
+
+                            @JsonAnySetter
+                            private fun putAdditionalProperty(key: String, value: JsonValue) {
+                                additionalProperties.put(key, value)
+                            }
+
+                            @JsonAnyGetter
+                            @ExcludeMissing
+                            fun _additionalProperties(): Map<String, JsonValue> =
+                                Collections.unmodifiableMap(additionalProperties)
+
+                            fun toBuilder() = Builder().from(this)
+
+                            companion object {
+
+                                /**
+                                 * Returns a mutable builder for constructing an instance of
+                                 * [Credentials].
+                                 */
+                                fun builder() = Builder()
+                            }
+
+                            /** A builder for [Credentials]. */
+                            class Builder internal constructor() {
+
+                                private var authProviderX509CertUrl: JsonField<String> =
+                                    JsonMissing.of()
+                                private var authUri: JsonField<String> = JsonMissing.of()
+                                private var clientEmail: JsonField<String> = JsonMissing.of()
+                                private var clientId: JsonField<String> = JsonMissing.of()
+                                private var clientX509CertUrl: JsonField<String> = JsonMissing.of()
+                                private var privateKey: JsonField<String> = JsonMissing.of()
+                                private var privateKeyId: JsonField<String> = JsonMissing.of()
+                                private var projectId: JsonField<String> = JsonMissing.of()
+                                private var tokenUri: JsonField<String> = JsonMissing.of()
+                                private var type: JsonField<String> = JsonMissing.of()
+                                private var universeDomain: JsonField<String> = JsonMissing.of()
+                                private var additionalProperties: MutableMap<String, JsonValue> =
+                                    mutableMapOf()
+
+                                internal fun from(credentials: Credentials) = apply {
+                                    authProviderX509CertUrl = credentials.authProviderX509CertUrl
+                                    authUri = credentials.authUri
+                                    clientEmail = credentials.clientEmail
+                                    clientId = credentials.clientId
+                                    clientX509CertUrl = credentials.clientX509CertUrl
+                                    privateKey = credentials.privateKey
+                                    privateKeyId = credentials.privateKeyId
+                                    projectId = credentials.projectId
+                                    tokenUri = credentials.tokenUri
+                                    type = credentials.type
+                                    universeDomain = credentials.universeDomain
+                                    additionalProperties =
+                                        credentials.additionalProperties.toMutableMap()
+                                }
+
+                                fun authProviderX509CertUrl(authProviderX509CertUrl: String) =
+                                    authProviderX509CertUrl(JsonField.of(authProviderX509CertUrl))
+
+                                /**
+                                 * Sets [Builder.authProviderX509CertUrl] to an arbitrary JSON
+                                 * value.
+                                 *
+                                 * You should usually call [Builder.authProviderX509CertUrl] with a
+                                 * well-typed [String] value instead. This method is primarily for
+                                 * setting the field to an undocumented or not yet supported value.
+                                 */
+                                fun authProviderX509CertUrl(
+                                    authProviderX509CertUrl: JsonField<String>
+                                ) = apply { this.authProviderX509CertUrl = authProviderX509CertUrl }
+
+                                fun authUri(authUri: String) = authUri(JsonField.of(authUri))
+
+                                /**
+                                 * Sets [Builder.authUri] to an arbitrary JSON value.
+                                 *
+                                 * You should usually call [Builder.authUri] with a well-typed
+                                 * [String] value instead. This method is primarily for setting the
+                                 * field to an undocumented or not yet supported value.
+                                 */
+                                fun authUri(authUri: JsonField<String>) = apply {
+                                    this.authUri = authUri
+                                }
+
+                                fun clientEmail(clientEmail: String) =
+                                    clientEmail(JsonField.of(clientEmail))
+
+                                /**
+                                 * Sets [Builder.clientEmail] to an arbitrary JSON value.
+                                 *
+                                 * You should usually call [Builder.clientEmail] with a well-typed
+                                 * [String] value instead. This method is primarily for setting the
+                                 * field to an undocumented or not yet supported value.
+                                 */
+                                fun clientEmail(clientEmail: JsonField<String>) = apply {
+                                    this.clientEmail = clientEmail
+                                }
+
+                                fun clientId(clientId: String) = clientId(JsonField.of(clientId))
+
+                                /**
+                                 * Sets [Builder.clientId] to an arbitrary JSON value.
+                                 *
+                                 * You should usually call [Builder.clientId] with a well-typed
+                                 * [String] value instead. This method is primarily for setting the
+                                 * field to an undocumented or not yet supported value.
+                                 */
+                                fun clientId(clientId: JsonField<String>) = apply {
+                                    this.clientId = clientId
+                                }
+
+                                fun clientX509CertUrl(clientX509CertUrl: String) =
+                                    clientX509CertUrl(JsonField.of(clientX509CertUrl))
+
+                                /**
+                                 * Sets [Builder.clientX509CertUrl] to an arbitrary JSON value.
+                                 *
+                                 * You should usually call [Builder.clientX509CertUrl] with a
+                                 * well-typed [String] value instead. This method is primarily for
+                                 * setting the field to an undocumented or not yet supported value.
+                                 */
+                                fun clientX509CertUrl(clientX509CertUrl: JsonField<String>) =
+                                    apply {
+                                        this.clientX509CertUrl = clientX509CertUrl
+                                    }
+
+                                fun privateKey(privateKey: String) =
+                                    privateKey(JsonField.of(privateKey))
+
+                                /**
+                                 * Sets [Builder.privateKey] to an arbitrary JSON value.
+                                 *
+                                 * You should usually call [Builder.privateKey] with a well-typed
+                                 * [String] value instead. This method is primarily for setting the
+                                 * field to an undocumented or not yet supported value.
+                                 */
+                                fun privateKey(privateKey: JsonField<String>) = apply {
+                                    this.privateKey = privateKey
+                                }
+
+                                fun privateKeyId(privateKeyId: String) =
+                                    privateKeyId(JsonField.of(privateKeyId))
+
+                                /**
+                                 * Sets [Builder.privateKeyId] to an arbitrary JSON value.
+                                 *
+                                 * You should usually call [Builder.privateKeyId] with a well-typed
+                                 * [String] value instead. This method is primarily for setting the
+                                 * field to an undocumented or not yet supported value.
+                                 */
+                                fun privateKeyId(privateKeyId: JsonField<String>) = apply {
+                                    this.privateKeyId = privateKeyId
+                                }
+
+                                fun projectId(projectId: String) =
+                                    projectId(JsonField.of(projectId))
+
+                                /**
+                                 * Sets [Builder.projectId] to an arbitrary JSON value.
+                                 *
+                                 * You should usually call [Builder.projectId] with a well-typed
+                                 * [String] value instead. This method is primarily for setting the
+                                 * field to an undocumented or not yet supported value.
+                                 */
+                                fun projectId(projectId: JsonField<String>) = apply {
+                                    this.projectId = projectId
+                                }
+
+                                fun tokenUri(tokenUri: String) = tokenUri(JsonField.of(tokenUri))
+
+                                /**
+                                 * Sets [Builder.tokenUri] to an arbitrary JSON value.
+                                 *
+                                 * You should usually call [Builder.tokenUri] with a well-typed
+                                 * [String] value instead. This method is primarily for setting the
+                                 * field to an undocumented or not yet supported value.
+                                 */
+                                fun tokenUri(tokenUri: JsonField<String>) = apply {
+                                    this.tokenUri = tokenUri
+                                }
+
+                                fun type(type: String) = type(JsonField.of(type))
+
+                                /**
+                                 * Sets [Builder.type] to an arbitrary JSON value.
+                                 *
+                                 * You should usually call [Builder.type] with a well-typed [String]
+                                 * value instead. This method is primarily for setting the field to
+                                 * an undocumented or not yet supported value.
+                                 */
+                                fun type(type: JsonField<String>) = apply { this.type = type }
+
+                                fun universeDomain(universeDomain: String) =
+                                    universeDomain(JsonField.of(universeDomain))
+
+                                /**
+                                 * Sets [Builder.universeDomain] to an arbitrary JSON value.
+                                 *
+                                 * You should usually call [Builder.universeDomain] with a
+                                 * well-typed [String] value instead. This method is primarily for
+                                 * setting the field to an undocumented or not yet supported value.
+                                 */
+                                fun universeDomain(universeDomain: JsonField<String>) = apply {
+                                    this.universeDomain = universeDomain
+                                }
+
+                                fun additionalProperties(
+                                    additionalProperties: Map<String, JsonValue>
+                                ) = apply {
+                                    this.additionalProperties.clear()
+                                    putAllAdditionalProperties(additionalProperties)
+                                }
+
+                                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                                    additionalProperties.put(key, value)
+                                }
+
+                                fun putAllAdditionalProperties(
+                                    additionalProperties: Map<String, JsonValue>
+                                ) = apply { this.additionalProperties.putAll(additionalProperties) }
+
+                                fun removeAdditionalProperty(key: String) = apply {
+                                    additionalProperties.remove(key)
+                                }
+
+                                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                                    keys.forEach(::removeAdditionalProperty)
+                                }
+
+                                /**
+                                 * Returns an immutable instance of [Credentials].
+                                 *
+                                 * Further updates to this [Builder] will not mutate the returned
+                                 * instance.
+                                 */
+                                fun build(): Credentials =
+                                    Credentials(
+                                        authProviderX509CertUrl,
+                                        authUri,
+                                        clientEmail,
+                                        clientId,
+                                        clientX509CertUrl,
+                                        privateKey,
+                                        privateKeyId,
+                                        projectId,
+                                        tokenUri,
+                                        type,
+                                        universeDomain,
+                                        additionalProperties.toMutableMap(),
+                                    )
+                            }
+
+                            private var validated: Boolean = false
+
+                            fun validate(): Credentials = apply {
+                                if (validated) {
+                                    return@apply
+                                }
+
+                                authProviderX509CertUrl()
+                                authUri()
+                                clientEmail()
+                                clientId()
+                                clientX509CertUrl()
+                                privateKey()
+                                privateKeyId()
+                                projectId()
+                                tokenUri()
+                                type()
+                                universeDomain()
+                                validated = true
+                            }
+
+                            fun isValid(): Boolean =
+                                try {
+                                    validate()
+                                    true
+                                } catch (e: StagehandInvalidDataException) {
+                                    false
+                                }
+
+                            /**
+                             * Returns a score indicating how many valid values are contained in
+                             * this object recursively.
+                             *
+                             * Used for best match union deserialization.
+                             */
+                            internal fun validity(): Int =
+                                (if (authProviderX509CertUrl.asKnown() == null) 0 else 1) +
+                                    (if (authUri.asKnown() == null) 0 else 1) +
+                                    (if (clientEmail.asKnown() == null) 0 else 1) +
+                                    (if (clientId.asKnown() == null) 0 else 1) +
+                                    (if (clientX509CertUrl.asKnown() == null) 0 else 1) +
+                                    (if (privateKey.asKnown() == null) 0 else 1) +
+                                    (if (privateKeyId.asKnown() == null) 0 else 1) +
+                                    (if (projectId.asKnown() == null) 0 else 1) +
+                                    (if (tokenUri.asKnown() == null) 0 else 1) +
+                                    (if (type.asKnown() == null) 0 else 1) +
+                                    (if (universeDomain.asKnown() == null) 0 else 1)
+
+                            override fun equals(other: Any?): Boolean {
+                                if (this === other) {
+                                    return true
+                                }
+
+                                return other is Credentials &&
+                                    authProviderX509CertUrl == other.authProviderX509CertUrl &&
+                                    authUri == other.authUri &&
+                                    clientEmail == other.clientEmail &&
+                                    clientId == other.clientId &&
+                                    clientX509CertUrl == other.clientX509CertUrl &&
+                                    privateKey == other.privateKey &&
+                                    privateKeyId == other.privateKeyId &&
+                                    projectId == other.projectId &&
+                                    tokenUri == other.tokenUri &&
+                                    type == other.type &&
+                                    universeDomain == other.universeDomain &&
+                                    additionalProperties == other.additionalProperties
+                            }
+
+                            private val hashCode: Int by lazy {
+                                Objects.hash(
+                                    authProviderX509CertUrl,
+                                    authUri,
+                                    clientEmail,
+                                    clientId,
+                                    clientX509CertUrl,
+                                    privateKey,
+                                    privateKeyId,
+                                    projectId,
+                                    tokenUri,
+                                    type,
+                                    universeDomain,
+                                    additionalProperties,
+                                )
+                            }
+
+                            override fun hashCode(): Int = hashCode
+
+                            override fun toString() =
+                                "Credentials{authProviderX509CertUrl=$authProviderX509CertUrl, authUri=$authUri, clientEmail=$clientEmail, clientId=$clientId, clientX509CertUrl=$clientX509CertUrl, privateKey=$privateKey, privateKeyId=$privateKeyId, projectId=$projectId, tokenUri=$tokenUri, type=$type, universeDomain=$universeDomain, additionalProperties=$additionalProperties}"
+                        }
+
+                        override fun equals(other: Any?): Boolean {
+                            if (this === other) {
+                                return true
+                            }
+
+                            return other is GoogleAuthOptions &&
+                                credentials == other.credentials &&
+                                additionalProperties == other.additionalProperties
+                        }
+
+                        private val hashCode: Int by lazy {
+                            Objects.hash(credentials, additionalProperties)
+                        }
+
+                        override fun hashCode(): Int = hashCode
+
+                        override fun toString() =
+                            "GoogleAuthOptions{credentials=$credentials, additionalProperties=$additionalProperties}"
+                    }
+
+                    /** Custom headers for Vertex AI requests */
+                    class Headers
+                    @JsonCreator
+                    private constructor(
+                        @com.fasterxml.jackson.annotation.JsonValue
+                        private val additionalProperties: Map<String, JsonValue>
+                    ) {
+
+                        @JsonAnyGetter
+                        @ExcludeMissing
+                        fun _additionalProperties(): Map<String, JsonValue> = additionalProperties
+
+                        fun toBuilder() = Builder().from(this)
+
+                        companion object {
+
+                            /**
+                             * Returns a mutable builder for constructing an instance of [Headers].
+                             */
+                            fun builder() = Builder()
+                        }
+
+                        /** A builder for [Headers]. */
+                        class Builder internal constructor() {
+
+                            private var additionalProperties: MutableMap<String, JsonValue> =
+                                mutableMapOf()
+
+                            internal fun from(headers: Headers) = apply {
+                                additionalProperties = headers.additionalProperties.toMutableMap()
+                            }
+
+                            fun additionalProperties(additionalProperties: Map<String, JsonValue>) =
+                                apply {
+                                    this.additionalProperties.clear()
+                                    putAllAdditionalProperties(additionalProperties)
+                                }
+
+                            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                                additionalProperties.put(key, value)
+                            }
+
+                            fun putAllAdditionalProperties(
+                                additionalProperties: Map<String, JsonValue>
+                            ) = apply { this.additionalProperties.putAll(additionalProperties) }
+
+                            fun removeAdditionalProperty(key: String) = apply {
+                                additionalProperties.remove(key)
+                            }
+
+                            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                                keys.forEach(::removeAdditionalProperty)
+                            }
+
+                            /**
+                             * Returns an immutable instance of [Headers].
+                             *
+                             * Further updates to this [Builder] will not mutate the returned
+                             * instance.
+                             */
+                            fun build(): Headers = Headers(additionalProperties.toImmutable())
+                        }
+
+                        private var validated: Boolean = false
+
+                        fun validate(): Headers = apply {
+                            if (validated) {
+                                return@apply
+                            }
+
+                            validated = true
+                        }
+
+                        fun isValid(): Boolean =
+                            try {
+                                validate()
+                                true
+                            } catch (e: StagehandInvalidDataException) {
+                                false
+                            }
+
+                        /**
+                         * Returns a score indicating how many valid values are contained in this
+                         * object recursively.
+                         *
+                         * Used for best match union deserialization.
+                         */
+                        internal fun validity(): Int =
+                            additionalProperties.count { (_, value) ->
+                                !value.isNull() && !value.isMissing()
+                            }
+
+                        override fun equals(other: Any?): Boolean {
+                            if (this === other) {
+                                return true
+                            }
+
+                            return other is Headers &&
+                                additionalProperties == other.additionalProperties
+                        }
+
+                        private val hashCode: Int by lazy { Objects.hash(additionalProperties) }
+
+                        override fun hashCode(): Int = hashCode
+
+                        override fun toString() =
+                            "Headers{additionalProperties=$additionalProperties}"
+                    }
+
+                    override fun equals(other: Any?): Boolean {
+                        if (this === other) {
+                            return true
+                        }
+
+                        return other is GoogleVertexProviderOptions &&
+                            googleAuthOptions == other.googleAuthOptions &&
+                            headers == other.headers &&
+                            location == other.location &&
+                            project == other.project &&
+                            additionalProperties == other.additionalProperties
+                    }
+
+                    private val hashCode: Int by lazy {
+                        Objects.hash(
+                            googleAuthOptions,
+                            headers,
+                            location,
+                            project,
+                            additionalProperties,
+                        )
+                    }
+
+                    override fun hashCode(): Int = hashCode
+
+                    override fun toString() =
+                        "GoogleVertexProviderOptions{googleAuthOptions=$googleAuthOptions, headers=$headers, location=$location, project=$project, additionalProperties=$additionalProperties}"
+                }
+            }
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is GenericModelClientOptions &&
+                    apiKey == other.apiKey &&
+                    baseUrl == other.baseUrl &&
+                    headers == other.headers &&
+                    providerOptions == other.providerOptions &&
+                    skipApiKeyFallback == other.skipApiKeyFallback &&
+                    additionalProperties == other.additionalProperties
+            }
+
+            private val hashCode: Int by lazy {
+                Objects.hash(
+                    apiKey,
+                    baseUrl,
+                    headers,
+                    providerOptions,
+                    skipApiKeyFallback,
+                    additionalProperties,
+                )
+            }
+
+            override fun hashCode(): Int = hashCode
+
+            override fun toString() =
+                "GenericModelClientOptions{apiKey=$apiKey, baseUrl=$baseUrl, headers=$headers, providerOptions=$providerOptions, skipApiKeyFallback=$skipApiKeyFallback, additionalProperties=$additionalProperties}"
+        }
     }
 
     /** Logging verbosity level (0=quiet, 1=normal, 2=debug) */
