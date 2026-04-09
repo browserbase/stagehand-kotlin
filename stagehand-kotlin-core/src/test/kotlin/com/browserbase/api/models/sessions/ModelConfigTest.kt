@@ -14,42 +14,27 @@ internal class ModelConfigTest {
     fun create() {
         val modelConfig =
             ModelConfig.builder()
-                .modelName("openai/gpt-5-nano")
+                .modelName("openai/gpt-5.4-mini")
                 .apiKey("sk-some-openai-api-key")
                 .baseUrl("https://api.openai.com/v1")
                 .headers(
                     ModelConfig.Headers.builder()
-                        .putAdditionalProperty("X-Custom-Header", JsonValue.from("value"))
+                        .putAdditionalProperty("foo", JsonValue.from("string"))
                         .build()
                 )
                 .provider(ModelConfig.Provider.OPENAI)
-                .providerOptions(
-                    ModelConfig.ProviderOptions.BedrockApiKeyProviderOptions.builder()
-                        .region("us-east-1")
-                        .build()
-                )
-                .skipApiKeyFallback(true)
                 .build()
 
-        assertThat(modelConfig.modelName()).isEqualTo("openai/gpt-5-nano")
+        assertThat(modelConfig.modelName()).isEqualTo("openai/gpt-5.4-mini")
         assertThat(modelConfig.apiKey()).isEqualTo("sk-some-openai-api-key")
         assertThat(modelConfig.baseUrl()).isEqualTo("https://api.openai.com/v1")
         assertThat(modelConfig.headers())
             .isEqualTo(
                 ModelConfig.Headers.builder()
-                    .putAdditionalProperty("X-Custom-Header", JsonValue.from("value"))
+                    .putAdditionalProperty("foo", JsonValue.from("string"))
                     .build()
             )
         assertThat(modelConfig.provider()).isEqualTo(ModelConfig.Provider.OPENAI)
-        assertThat(modelConfig.providerOptions())
-            .isEqualTo(
-                ModelConfig.ProviderOptions.ofBedrockApiKey(
-                    ModelConfig.ProviderOptions.BedrockApiKeyProviderOptions.builder()
-                        .region("us-east-1")
-                        .build()
-                )
-            )
-        assertThat(modelConfig.skipApiKeyFallback()).isEqualTo(true)
     }
 
     @Test
@@ -57,21 +42,15 @@ internal class ModelConfigTest {
         val jsonMapper = jsonMapper()
         val modelConfig =
             ModelConfig.builder()
-                .modelName("openai/gpt-5-nano")
+                .modelName("openai/gpt-5.4-mini")
                 .apiKey("sk-some-openai-api-key")
                 .baseUrl("https://api.openai.com/v1")
                 .headers(
                     ModelConfig.Headers.builder()
-                        .putAdditionalProperty("X-Custom-Header", JsonValue.from("value"))
+                        .putAdditionalProperty("foo", JsonValue.from("string"))
                         .build()
                 )
                 .provider(ModelConfig.Provider.OPENAI)
-                .providerOptions(
-                    ModelConfig.ProviderOptions.BedrockApiKeyProviderOptions.builder()
-                        .region("us-east-1")
-                        .build()
-                )
-                .skipApiKeyFallback(true)
                 .build()
 
         val roundtrippedModelConfig =
