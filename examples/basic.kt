@@ -221,7 +221,7 @@ private fun Env.load() {
                 "BROWSERBASE_API_KEY" -> System.setProperty("stagehand.browserbaseApiKey", value)
                 "BROWSERBASE_PROJECT_ID" -> System.setProperty("stagehand.browserbaseProjectId", value)
                 "MODEL_API_KEY" -> System.setProperty("stagehand.modelApiKey", value)
-                "STAGEHAND_BASE_URL" -> System.setProperty("stagehand.baseUrl", value)
+                "STAGEHAND_API_URL" -> System.setProperty("stagehand.baseUrl", value)
             }
         }
     } catch (_: Exception) {
