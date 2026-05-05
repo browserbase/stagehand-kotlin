@@ -5,10 +5,14 @@ package com.browserbase.api.errors
 import com.browserbase.api.core.JsonValue
 import com.browserbase.api.core.checkRequired
 import com.browserbase.api.core.http.Headers
+import com.browserbase.api.core.jsonMapper
 
 class UnprocessableEntityException
 private constructor(private val headers: Headers, private val body: JsonValue, cause: Throwable?) :
-    StagehandServiceException("422: $body", cause) {
+    StagehandServiceException(
+        "422: ${if (body.isMissing()) "Unknown" else jsonMapper().writeValueAsString(body)}",
+        cause,
+    ) {
 
     override fun statusCode(): Int = 422
 
