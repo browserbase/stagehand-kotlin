@@ -1071,6 +1071,15 @@ private constructor(
 
         private var validated: Boolean = false
 
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws StagehandInvalidDataException if any value type in this object doesn't match its
+         *   expected type.
+         */
         fun validate(): Body = apply {
             if (validated) {
                 return@apply
@@ -1325,6 +1334,15 @@ private constructor(
 
         private var validated: Boolean = false
 
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws StagehandInvalidDataException if any value type in this object doesn't match its
+         *   expected type.
+         */
         fun validate(): Browser = apply {
             if (validated) {
                 return@apply
@@ -2165,6 +2183,16 @@ private constructor(
 
             private var validated: Boolean = false
 
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws StagehandInvalidDataException if any value type in this object doesn't match
+             *   its expected type.
+             */
             fun validate(): LaunchOptions = apply {
                 if (validated) {
                     return@apply
@@ -2289,6 +2317,16 @@ private constructor(
 
                 private var validated: Boolean = false
 
+                /**
+                 * Validates that the types of all values in this object match their expected types
+                 * recursively.
+                 *
+                 * This method is _not_ forwards compatible with new types from the API for existing
+                 * fields.
+                 *
+                 * @throws StagehandInvalidDataException if any value type in this object doesn't
+                 *   match its expected type.
+                 */
                 fun validate(): CdpHeaders = apply {
                     if (validated) {
                         return@apply
@@ -2354,6 +2392,31 @@ private constructor(
 
                 fun _json(): JsonValue? = _json
 
+                /**
+                 * Maps this instance's current variant to a value of type [T] using the given
+                 * [visitor].
+                 *
+                 * Note that this method is _not_ forwards compatible with new variants from the
+                 * API, unless [visitor] overrides [Visitor.unknown]. To handle variants not known
+                 * to this version of the SDK gracefully, consider overriding [Visitor.unknown]:
+                 * ```kotlin
+                 * import com.browserbase.api.core.JsonValue
+                 *
+                 * val result: String? = ignoreDefaultArgs.accept(object : IgnoreDefaultArgs.Visitor<String?> {
+                 *     override fun visitBoolean(boolean: Boolean): String? = boolean.toString()
+                 *
+                 *     // ...
+                 *
+                 *     override fun unknown(json: JsonValue?): String? {
+                 *         // Or inspect the `json`.
+                 *         return null
+                 *     }
+                 * })
+                 * ```
+                 *
+                 * @throws StagehandInvalidDataException if [Visitor.unknown] is not overridden in
+                 *   [visitor] and the current variant is unknown.
+                 */
                 fun <T> accept(visitor: Visitor<T>): T =
                     when {
                         boolean != null -> visitor.visitBoolean(boolean)
@@ -2363,6 +2426,16 @@ private constructor(
 
                 private var validated: Boolean = false
 
+                /**
+                 * Validates that the types of all values in this object match their expected types
+                 * recursively.
+                 *
+                 * This method is _not_ forwards compatible with new types from the API for existing
+                 * fields.
+                 *
+                 * @throws StagehandInvalidDataException if any value type in this object doesn't
+                 *   match its expected type.
+                 */
                 fun validate(): IgnoreDefaultArgs = apply {
                     if (validated) {
                         return@apply
@@ -2725,6 +2798,16 @@ private constructor(
 
                 private var validated: Boolean = false
 
+                /**
+                 * Validates that the types of all values in this object match their expected types
+                 * recursively.
+                 *
+                 * This method is _not_ forwards compatible with new types from the API for existing
+                 * fields.
+                 *
+                 * @throws StagehandInvalidDataException if any value type in this object doesn't
+                 *   match its expected type.
+                 */
                 fun validate(): Proxy = apply {
                     if (validated) {
                         return@apply
@@ -2934,6 +3017,16 @@ private constructor(
 
                 private var validated: Boolean = false
 
+                /**
+                 * Validates that the types of all values in this object match their expected types
+                 * recursively.
+                 *
+                 * This method is _not_ forwards compatible with new types from the API for existing
+                 * fields.
+                 *
+                 * @throws StagehandInvalidDataException if any value type in this object doesn't
+                 *   match its expected type.
+                 */
                 fun validate(): Viewport = apply {
                     if (validated) {
                         return@apply
@@ -3132,6 +3225,16 @@ private constructor(
 
             private var validated: Boolean = false
 
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws StagehandInvalidDataException if any value type in this object doesn't match
+             *   its expected type.
+             */
             fun validate(): Type = apply {
                 if (validated) {
                     return@apply
@@ -3540,6 +3643,15 @@ private constructor(
 
         private var validated: Boolean = false
 
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws StagehandInvalidDataException if any value type in this object doesn't match its
+         *   expected type.
+         */
         fun validate(): BrowserbaseSessionCreateParams = apply {
             if (validated) {
                 return@apply
@@ -4120,6 +4232,16 @@ private constructor(
 
             private var validated: Boolean = false
 
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws StagehandInvalidDataException if any value type in this object doesn't match
+             *   its expected type.
+             */
             fun validate(): BrowserSettings = apply {
                 if (validated) {
                     return@apply
@@ -4320,6 +4442,16 @@ private constructor(
 
                 private var validated: Boolean = false
 
+                /**
+                 * Validates that the types of all values in this object match their expected types
+                 * recursively.
+                 *
+                 * This method is _not_ forwards compatible with new types from the API for existing
+                 * fields.
+                 *
+                 * @throws StagehandInvalidDataException if any value type in this object doesn't
+                 *   match its expected type.
+                 */
                 fun validate(): Context = apply {
                     if (validated) {
                         return@apply
@@ -4712,6 +4844,16 @@ private constructor(
 
                 private var validated: Boolean = false
 
+                /**
+                 * Validates that the types of all values in this object match their expected types
+                 * recursively.
+                 *
+                 * This method is _not_ forwards compatible with new types from the API for existing
+                 * fields.
+                 *
+                 * @throws StagehandInvalidDataException if any value type in this object doesn't
+                 *   match its expected type.
+                 */
                 fun validate(): Fingerprint = apply {
                     if (validated) {
                         return@apply
@@ -4854,6 +4996,16 @@ private constructor(
 
                     private var validated: Boolean = false
 
+                    /**
+                     * Validates that the types of all values in this object match their expected
+                     * types recursively.
+                     *
+                     * This method is _not_ forwards compatible with new types from the API for
+                     * existing fields.
+                     *
+                     * @throws StagehandInvalidDataException if any value type in this object
+                     *   doesn't match its expected type.
+                     */
                     fun validate(): Browser = apply {
                         if (validated) {
                             return@apply
@@ -4986,6 +5138,16 @@ private constructor(
 
                     private var validated: Boolean = false
 
+                    /**
+                     * Validates that the types of all values in this object match their expected
+                     * types recursively.
+                     *
+                     * This method is _not_ forwards compatible with new types from the API for
+                     * existing fields.
+                     *
+                     * @throws StagehandInvalidDataException if any value type in this object
+                     *   doesn't match its expected type.
+                     */
                     fun validate(): Device = apply {
                         if (validated) {
                             return@apply
@@ -5121,6 +5283,16 @@ private constructor(
 
                     private var validated: Boolean = false
 
+                    /**
+                     * Validates that the types of all values in this object match their expected
+                     * types recursively.
+                     *
+                     * This method is _not_ forwards compatible with new types from the API for
+                     * existing fields.
+                     *
+                     * @throws StagehandInvalidDataException if any value type in this object
+                     *   doesn't match its expected type.
+                     */
                     fun validate(): HttpVersion = apply {
                         if (validated) {
                             return@apply
@@ -5276,6 +5448,16 @@ private constructor(
 
                     private var validated: Boolean = false
 
+                    /**
+                     * Validates that the types of all values in this object match their expected
+                     * types recursively.
+                     *
+                     * This method is _not_ forwards compatible with new types from the API for
+                     * existing fields.
+                     *
+                     * @throws StagehandInvalidDataException if any value type in this object
+                     *   doesn't match its expected type.
+                     */
                     fun validate(): OperatingSystem = apply {
                         if (validated) {
                             return@apply
@@ -5531,6 +5713,16 @@ private constructor(
 
                     private var validated: Boolean = false
 
+                    /**
+                     * Validates that the types of all values in this object match their expected
+                     * types recursively.
+                     *
+                     * This method is _not_ forwards compatible with new types from the API for
+                     * existing fields.
+                     *
+                     * @throws StagehandInvalidDataException if any value type in this object
+                     *   doesn't match its expected type.
+                     */
                     fun validate(): Screen = apply {
                         if (validated) {
                             return@apply
@@ -5727,6 +5919,16 @@ private constructor(
 
                 private var validated: Boolean = false
 
+                /**
+                 * Validates that the types of all values in this object match their expected types
+                 * recursively.
+                 *
+                 * This method is _not_ forwards compatible with new types from the API for existing
+                 * fields.
+                 *
+                 * @throws StagehandInvalidDataException if any value type in this object doesn't
+                 *   match its expected type.
+                 */
                 fun validate(): Os = apply {
                     if (validated) {
                         return@apply
@@ -5897,6 +6099,16 @@ private constructor(
 
                 private var validated: Boolean = false
 
+                /**
+                 * Validates that the types of all values in this object match their expected types
+                 * recursively.
+                 *
+                 * This method is _not_ forwards compatible with new types from the API for existing
+                 * fields.
+                 *
+                 * @throws StagehandInvalidDataException if any value type in this object doesn't
+                 *   match its expected type.
+                 */
                 fun validate(): Viewport = apply {
                     if (validated) {
                         return@apply
@@ -6017,6 +6229,31 @@ private constructor(
 
             fun _json(): JsonValue? = _json
 
+            /**
+             * Maps this instance's current variant to a value of type [T] using the given
+             * [visitor].
+             *
+             * Note that this method is _not_ forwards compatible with new variants from the API,
+             * unless [visitor] overrides [Visitor.unknown]. To handle variants not known to this
+             * version of the SDK gracefully, consider overriding [Visitor.unknown]:
+             * ```kotlin
+             * import com.browserbase.api.core.JsonValue
+             *
+             * val result: String? = proxies.accept(object : Proxies.Visitor<String?> {
+             *     override fun visitBoolean(boolean: Boolean): String? = boolean.toString()
+             *
+             *     // ...
+             *
+             *     override fun unknown(json: JsonValue?): String? {
+             *         // Or inspect the `json`.
+             *         return null
+             *     }
+             * })
+             * ```
+             *
+             * @throws StagehandInvalidDataException if [Visitor.unknown] is not overridden in
+             *   [visitor] and the current variant is unknown.
+             */
             fun <T> accept(visitor: Visitor<T>): T =
                 when {
                     boolean != null -> visitor.visitBoolean(boolean)
@@ -6026,6 +6263,16 @@ private constructor(
 
             private var validated: Boolean = false
 
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws StagehandInvalidDataException if any value type in this object doesn't match
+             *   its expected type.
+             */
             fun validate(): Proxies = apply {
                 if (validated) {
                     return@apply
@@ -6192,6 +6439,31 @@ private constructor(
 
                 fun _json(): JsonValue? = _json
 
+                /**
+                 * Maps this instance's current variant to a value of type [T] using the given
+                 * [visitor].
+                 *
+                 * Note that this method is _not_ forwards compatible with new variants from the
+                 * API, unless [visitor] overrides [Visitor.unknown]. To handle variants not known
+                 * to this version of the SDK gracefully, consider overriding [Visitor.unknown]:
+                 * ```kotlin
+                 * import com.browserbase.api.core.JsonValue
+                 *
+                 * val result: String? = proxyConfig.accept(object : ProxyConfig.Visitor<String?> {
+                 *     override fun visitBrowserbase(browserbase: Browserbase): String? = browserbase.toString()
+                 *
+                 *     // ...
+                 *
+                 *     override fun unknown(json: JsonValue?): String? {
+                 *         // Or inspect the `json`.
+                 *         return null
+                 *     }
+                 * })
+                 * ```
+                 *
+                 * @throws StagehandInvalidDataException if [Visitor.unknown] is not overridden in
+                 *   [visitor] and the current variant is unknown.
+                 */
                 fun <T> accept(visitor: Visitor<T>): T =
                     when {
                         browserbase != null -> visitor.visitBrowserbase(browserbase)
@@ -6201,6 +6473,16 @@ private constructor(
 
                 private var validated: Boolean = false
 
+                /**
+                 * Validates that the types of all values in this object match their expected types
+                 * recursively.
+                 *
+                 * This method is _not_ forwards compatible with new types from the API for existing
+                 * fields.
+                 *
+                 * @throws StagehandInvalidDataException if any value type in this object doesn't
+                 *   match its expected type.
+                 */
                 fun validate(): ProxyConfig = apply {
                     if (validated) {
                         return@apply
@@ -6517,6 +6799,16 @@ private constructor(
 
                     private var validated: Boolean = false
 
+                    /**
+                     * Validates that the types of all values in this object match their expected
+                     * types recursively.
+                     *
+                     * This method is _not_ forwards compatible with new types from the API for
+                     * existing fields.
+                     *
+                     * @throws StagehandInvalidDataException if any value type in this object
+                     *   doesn't match its expected type.
+                     */
                     fun validate(): Browserbase = apply {
                         if (validated) {
                             return@apply
@@ -6746,6 +7038,16 @@ private constructor(
 
                         private var validated: Boolean = false
 
+                        /**
+                         * Validates that the types of all values in this object match their
+                         * expected types recursively.
+                         *
+                         * This method is _not_ forwards compatible with new types from the API for
+                         * existing fields.
+                         *
+                         * @throws StagehandInvalidDataException if any value type in this object
+                         *   doesn't match its expected type.
+                         */
                         fun validate(): Geolocation = apply {
                             if (validated) {
                                 return@apply
@@ -7081,6 +7383,16 @@ private constructor(
 
                     private var validated: Boolean = false
 
+                    /**
+                     * Validates that the types of all values in this object match their expected
+                     * types recursively.
+                     *
+                     * This method is _not_ forwards compatible with new types from the API for
+                     * existing fields.
+                     *
+                     * @throws StagehandInvalidDataException if any value type in this object
+                     *   doesn't match its expected type.
+                     */
                     fun validate(): External = apply {
                         if (validated) {
                             return@apply
@@ -7255,6 +7567,16 @@ private constructor(
 
             private var validated: Boolean = false
 
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws StagehandInvalidDataException if any value type in this object doesn't match
+             *   its expected type.
+             */
             fun validate(): Region = apply {
                 if (validated) {
                     return@apply
@@ -7353,6 +7675,16 @@ private constructor(
 
             private var validated: Boolean = false
 
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws StagehandInvalidDataException if any value type in this object doesn't match
+             *   its expected type.
+             */
             fun validate(): UserMetadata = apply {
                 if (validated) {
                     return@apply
@@ -7522,6 +7854,15 @@ private constructor(
 
         private var validated: Boolean = false
 
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws StagehandInvalidDataException if any value type in this object doesn't match its
+         *   expected type.
+         */
         fun validate(): Verbose = apply {
             if (validated) {
                 return@apply
@@ -7652,6 +7993,15 @@ private constructor(
 
         private var validated: Boolean = false
 
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws StagehandInvalidDataException if any value type in this object doesn't match its
+         *   expected type.
+         */
         fun validate(): XStreamResponse = apply {
             if (validated) {
                 return@apply
