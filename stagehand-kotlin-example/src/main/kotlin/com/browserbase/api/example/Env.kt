@@ -4,13 +4,7 @@ import java.nio.file.Files
 import java.nio.file.Paths
 
 object Env {
-    private val requiredKeys =
-        listOf(
-            "STAGEHAND_API_URL",
-            "MODEL_API_KEY",
-            "BROWSERBASE_API_KEY",
-            "BROWSERBASE_PROJECT_ID",
-        )
+    private val requiredKeys = listOf("MODEL_API_KEY", "BROWSERBASE_API_KEY")
 
     fun load() {
         val envPath =
@@ -29,10 +23,12 @@ object Env {
                 when (key) {
                     "BROWSERBASE_API_KEY" ->
                         System.setProperty("stagehand.browserbaseApiKey", value)
-                    "BROWSERBASE_PROJECT_ID" ->
-                        System.setProperty("stagehand.browserbaseProjectId", value)
                     "MODEL_API_KEY" -> System.setProperty("stagehand.modelApiKey", value)
                     "STAGEHAND_API_URL" -> System.setProperty("stagehand.baseUrl", value)
+                    "STAGEHAND_BASE_URL" ->
+                        if (System.getProperty("stagehand.baseUrl").isNullOrBlank()) {
+                            System.setProperty("stagehand.baseUrl", value)
+                        }
                 }
             }
         } catch (e: Exception) {
@@ -56,7 +52,6 @@ object Env {
     private fun mapKey(key: String): String =
         when (key) {
             "BROWSERBASE_API_KEY" -> "stagehand.browserbaseApiKey"
-            "BROWSERBASE_PROJECT_ID" -> "stagehand.browserbaseProjectId"
             "MODEL_API_KEY" -> "stagehand.modelApiKey"
             "STAGEHAND_API_URL" -> "stagehand.baseUrl"
             else -> key

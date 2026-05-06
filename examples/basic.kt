@@ -30,13 +30,12 @@ import com.browserbase.api.models.sessions.ActionParam
  *
  * Set these environment variables before running:
  *   BROWSERBASE_API_KEY     - Your Browserbase API key
- *   BROWSERBASE_PROJECT_ID  - Your Browserbase project ID
  *   MODEL_API_KEY           - Your AI model API key (e.g., OpenAI)
  */
 fun main() {
     Env.load()
     // Create a new Stagehand client using environment variables
-    // Configures using BROWSERBASE_API_KEY, BROWSERBASE_PROJECT_ID, and MODEL_API_KEY
+    // Configures using BROWSERBASE_API_KEY and MODEL_API_KEY
     val client: StagehandClient = StagehandOkHttpClient.fromEnv()
 
     // Start a new browser session
@@ -219,9 +218,12 @@ private fun Env.load() {
             val value = parts[1]
             when (key) {
                 "BROWSERBASE_API_KEY" -> System.setProperty("stagehand.browserbaseApiKey", value)
-                "BROWSERBASE_PROJECT_ID" -> System.setProperty("stagehand.browserbaseProjectId", value)
                 "MODEL_API_KEY" -> System.setProperty("stagehand.modelApiKey", value)
                 "STAGEHAND_API_URL" -> System.setProperty("stagehand.baseUrl", value)
+                "STAGEHAND_BASE_URL" ->
+                    if (System.getProperty("stagehand.baseUrl").isNullOrBlank()) {
+                        System.setProperty("stagehand.baseUrl", value)
+                    }
             }
         }
     } catch (_: Exception) {
