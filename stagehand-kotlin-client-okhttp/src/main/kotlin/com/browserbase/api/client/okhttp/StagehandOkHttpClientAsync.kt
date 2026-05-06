@@ -239,8 +239,11 @@ class StagehandOkHttpClientAsync private constructor() {
             clientOptions.browserbaseApiKey(browserbaseApiKey)
         }
 
-        /** Your [Browserbase Project ID](https://www.browserbase.com/settings) */
-        fun browserbaseProjectId(browserbaseProjectId: String) = apply {
+        /**
+         * Deprecated. Browserbase API keys are now project-scoped, so this value is no longer
+         * required.
+         */
+        fun browserbaseProjectId(browserbaseProjectId: String?) = apply {
             clientOptions.browserbaseProjectId(browserbaseProjectId)
         }
 
