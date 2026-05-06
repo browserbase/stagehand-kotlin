@@ -96,8 +96,10 @@ private constructor(
     val maxRetries: Int,
     /** Your [Browserbase API Key](https://www.browserbase.com/settings) */
     val browserbaseApiKey: String,
-    /** Your [Browserbase Project ID](https://www.browserbase.com/settings) */
-    val browserbaseProjectId: String,
+    /**
+     * Deprecated. Browserbase API keys are now project-scoped, so this value is no longer required.
+     */
+    val browserbaseProjectId: String?,
     /** Your LLM provider API key (e.g. OPENAI_API_KEY, ANTHROPIC_API_KEY, etc.) */
     val modelApiKey: String,
 ) {
@@ -128,7 +130,6 @@ private constructor(
          * ```kotlin
          * .httpClient()
          * .browserbaseApiKey()
-         * .browserbaseProjectId()
          * .modelApiKey()
          * ```
          */
@@ -286,8 +287,11 @@ private constructor(
             this.browserbaseApiKey = browserbaseApiKey
         }
 
-        /** Your [Browserbase Project ID](https://www.browserbase.com/settings) */
-        fun browserbaseProjectId(browserbaseProjectId: String) = apply {
+        /**
+         * Deprecated. Browserbase API keys are now project-scoped, so this value is no longer
+         * required.
+         */
+        fun browserbaseProjectId(browserbaseProjectId: String?) = apply {
             this.browserbaseProjectId = browserbaseProjectId
         }
 
@@ -384,7 +388,7 @@ private constructor(
          * |Setter                |System property                 |Environment variable    |Required|Default value                            |
          * |----------------------|--------------------------------|------------------------|--------|-----------------------------------------|
          * |`browserbaseApiKey`   |`stagehand.browserbaseApiKey`   |`BROWSERBASE_API_KEY`   |true    |-                                        |
-         * |`browserbaseProjectId`|`stagehand.browserbaseProjectId`|`BROWSERBASE_PROJECT_ID`|true    |-                                        |
+         * |`browserbaseProjectId`|`stagehand.browserbaseProjectId`|`BROWSERBASE_PROJECT_ID`|false   |-                                        |
          * |`modelApiKey`         |`stagehand.modelApiKey`         |`MODEL_API_KEY`         |true    |-                                        |
          * |`baseUrl`             |`stagehand.baseUrl`             |`STAGEHAND_API_URL`     |true    |`"https://api.stagehand.browserbase.com"`|
          *
@@ -424,7 +428,6 @@ private constructor(
          * ```kotlin
          * .httpClient()
          * .browserbaseApiKey()
-         * .browserbaseProjectId()
          * .modelApiKey()
          * ```
          *
@@ -434,7 +437,6 @@ private constructor(
             val httpClient = checkRequired("httpClient", httpClient)
             val sleeper = sleeper ?: PhantomReachableSleeper(DefaultSleeper())
             val browserbaseApiKey = checkRequired("browserbaseApiKey", browserbaseApiKey)
-            val browserbaseProjectId = checkRequired("browserbaseProjectId", browserbaseProjectId)
             val modelApiKey = checkRequired("modelApiKey", modelApiKey)
 
             val headers = Headers.builder()
@@ -455,7 +457,7 @@ private constructor(
                     headers.replace("x-bb-api-key", it)
                 }
             }
-            browserbaseProjectId.let {
+            browserbaseProjectId?.let {
                 if (!it.isEmpty()) {
                     headers.replace("x-bb-project-id", it)
                 }

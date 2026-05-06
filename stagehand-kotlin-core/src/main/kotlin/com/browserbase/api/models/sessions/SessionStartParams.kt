@@ -3360,10 +3360,13 @@ private constructor(
         fun keepAlive(): Boolean? = keepAlive.getNullable("keepAlive")
 
         /**
+         * Deprecated. Browserbase API keys are now project-scoped, so this field is no longer
+         * required.
+         *
          * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
-        fun projectId(): String? = projectId.getNullable("projectId")
+        @Deprecated("deprecated") fun projectId(): String? = projectId.getNullable("projectId")
 
         /**
          * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
@@ -3420,7 +3423,10 @@ private constructor(
          *
          * Unlike [projectId], this method doesn't throw if the JSON field has an unexpected type.
          */
-        @JsonProperty("projectId") @ExcludeMissing fun _projectId(): JsonField<String> = projectId
+        @Deprecated("deprecated")
+        @JsonProperty("projectId")
+        @ExcludeMissing
+        fun _projectId(): JsonField<String> = projectId
 
         /**
          * Returns the raw JSON value of [proxies].
@@ -3539,6 +3545,11 @@ private constructor(
              */
             fun keepAlive(keepAlive: JsonField<Boolean>) = apply { this.keepAlive = keepAlive }
 
+            /**
+             * Deprecated. Browserbase API keys are now project-scoped, so this field is no longer
+             * required.
+             */
+            @Deprecated("deprecated")
             fun projectId(projectId: String) = projectId(JsonField.of(projectId))
 
             /**
@@ -3548,6 +3559,7 @@ private constructor(
              * This method is primarily for setting the field to an undocumented or not yet
              * supported value.
              */
+            @Deprecated("deprecated")
             fun projectId(projectId: JsonField<String>) = apply { this.projectId = projectId }
 
             fun proxies(proxies: Proxies) = proxies(JsonField.of(proxies))
