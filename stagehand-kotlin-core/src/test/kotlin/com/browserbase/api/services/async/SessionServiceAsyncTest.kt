@@ -155,6 +155,11 @@ internal class SessionServiceAsyncTest {
                             .maxSteps(20.0)
                             .toolTimeout(30000.0)
                             .useSearch(true)
+                            .variables(
+                                SessionExecuteParams.ExecuteOptions.Variables.builder()
+                                    .putAdditionalProperty("foo", JsonValue.from("string"))
+                                    .build()
+                            )
                             .build()
                     )
                     .frameId("frameId")
