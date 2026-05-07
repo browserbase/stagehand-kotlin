@@ -15,6 +15,7 @@ import com.browserbase.api.core.checkRequired
 import com.browserbase.api.core.getOrThrow
 import com.browserbase.api.core.http.Headers
 import com.browserbase.api.core.http.QueryParams
+import com.browserbase.api.core.toImmutable
 import com.browserbase.api.errors.StagehandInvalidDataException
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
@@ -599,6 +600,15 @@ private constructor(
 
         private var validated: Boolean = false
 
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws StagehandInvalidDataException if any value type in this object doesn't match its
+         *   expected type.
+         */
         fun validate(): Body = apply {
             if (validated) {
                 return@apply
@@ -953,6 +963,15 @@ private constructor(
 
         private var validated: Boolean = false
 
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws StagehandInvalidDataException if any value type in this object doesn't match its
+         *   expected type.
+         */
         fun validate(): AgentConfig = apply {
             if (validated) {
                 return@apply
@@ -1017,6 +1036,31 @@ private constructor(
 
             fun _json(): JsonValue? = _json
 
+            /**
+             * Maps this instance's current variant to a value of type [T] using the given
+             * [visitor].
+             *
+             * Note that this method is _not_ forwards compatible with new variants from the API,
+             * unless [visitor] overrides [Visitor.unknown]. To handle variants not known to this
+             * version of the SDK gracefully, consider overriding [Visitor.unknown]:
+             * ```kotlin
+             * import com.browserbase.api.core.JsonValue
+             *
+             * val result: String? = executionModel.accept(object : ExecutionModel.Visitor<String?> {
+             *     override fun visitModelConfig(modelConfig: ModelConfig): String? = modelConfig.toString()
+             *
+             *     // ...
+             *
+             *     override fun unknown(json: JsonValue?): String? {
+             *         // Or inspect the `json`.
+             *         return null
+             *     }
+             * })
+             * ```
+             *
+             * @throws StagehandInvalidDataException if [Visitor.unknown] is not overridden in
+             *   [visitor] and the current variant is unknown.
+             */
             fun <T> accept(visitor: Visitor<T>): T =
                 when {
                     modelConfig != null -> visitor.visitModelConfig(modelConfig)
@@ -1026,6 +1070,16 @@ private constructor(
 
             private var validated: Boolean = false
 
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws StagehandInvalidDataException if any value type in this object doesn't match
+             *   its expected type.
+             */
             fun validate(): ExecutionModel = apply {
                 if (validated) {
                     return@apply
@@ -1263,6 +1317,16 @@ private constructor(
 
             private var validated: Boolean = false
 
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws StagehandInvalidDataException if any value type in this object doesn't match
+             *   its expected type.
+             */
             fun validate(): Mode = apply {
                 if (validated) {
                     return@apply
@@ -1325,6 +1389,31 @@ private constructor(
 
             fun _json(): JsonValue? = _json
 
+            /**
+             * Maps this instance's current variant to a value of type [T] using the given
+             * [visitor].
+             *
+             * Note that this method is _not_ forwards compatible with new variants from the API,
+             * unless [visitor] overrides [Visitor.unknown]. To handle variants not known to this
+             * version of the SDK gracefully, consider overriding [Visitor.unknown]:
+             * ```kotlin
+             * import com.browserbase.api.core.JsonValue
+             *
+             * val result: String? = model.accept(object : Model.Visitor<String?> {
+             *     override fun visitConfig(config: ModelConfig): String? = config.toString()
+             *
+             *     // ...
+             *
+             *     override fun unknown(json: JsonValue?): String? {
+             *         // Or inspect the `json`.
+             *         return null
+             *     }
+             * })
+             * ```
+             *
+             * @throws StagehandInvalidDataException if [Visitor.unknown] is not overridden in
+             *   [visitor] and the current variant is unknown.
+             */
             fun <T> accept(visitor: Visitor<T>): T =
                 when {
                     config != null -> visitor.visitConfig(config)
@@ -1334,6 +1423,16 @@ private constructor(
 
             private var validated: Boolean = false
 
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws StagehandInvalidDataException if any value type in this object doesn't match
+             *   its expected type.
+             */
             fun validate(): Model = apply {
                 if (validated) {
                     return@apply
@@ -1581,6 +1680,16 @@ private constructor(
 
             private var validated: Boolean = false
 
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws StagehandInvalidDataException if any value type in this object doesn't match
+             *   its expected type.
+             */
             fun validate(): Provider = apply {
                 if (validated) {
                     return@apply
@@ -1660,6 +1769,7 @@ private constructor(
         private val maxSteps: JsonField<Double>,
         private val toolTimeout: JsonField<Double>,
         private val useSearch: JsonField<Boolean>,
+        private val variables: JsonField<Variables>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
@@ -1680,7 +1790,18 @@ private constructor(
             @JsonProperty("useSearch")
             @ExcludeMissing
             useSearch: JsonField<Boolean> = JsonMissing.of(),
-        ) : this(instruction, highlightCursor, maxSteps, toolTimeout, useSearch, mutableMapOf())
+            @JsonProperty("variables")
+            @ExcludeMissing
+            variables: JsonField<Variables> = JsonMissing.of(),
+        ) : this(
+            instruction,
+            highlightCursor,
+            maxSteps,
+            toolTimeout,
+            useSearch,
+            variables,
+            mutableMapOf(),
+        )
 
         /**
          * Natural language instruction for the agent
@@ -1721,6 +1842,14 @@ private constructor(
          *   the server responded with an unexpected value).
          */
         fun useSearch(): Boolean? = useSearch.getNullable("useSearch")
+
+        /**
+         * Variables available to the agent via %variableName% syntax in supported tools
+         *
+         * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun variables(): Variables? = variables.getNullable("variables")
 
         /**
          * Returns the raw JSON value of [instruction].
@@ -1764,6 +1893,15 @@ private constructor(
          */
         @JsonProperty("useSearch") @ExcludeMissing fun _useSearch(): JsonField<Boolean> = useSearch
 
+        /**
+         * Returns the raw JSON value of [variables].
+         *
+         * Unlike [variables], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("variables")
+        @ExcludeMissing
+        fun _variables(): JsonField<Variables> = variables
+
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
             additionalProperties.put(key, value)
@@ -1797,6 +1935,7 @@ private constructor(
             private var maxSteps: JsonField<Double> = JsonMissing.of()
             private var toolTimeout: JsonField<Double> = JsonMissing.of()
             private var useSearch: JsonField<Boolean> = JsonMissing.of()
+            private var variables: JsonField<Variables> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             internal fun from(executeOptions: ExecuteOptions) = apply {
@@ -1805,6 +1944,7 @@ private constructor(
                 maxSteps = executeOptions.maxSteps
                 toolTimeout = executeOptions.toolTimeout
                 useSearch = executeOptions.useSearch
+                variables = executeOptions.variables
                 additionalProperties = executeOptions.additionalProperties.toMutableMap()
             }
 
@@ -1875,6 +2015,18 @@ private constructor(
              */
             fun useSearch(useSearch: JsonField<Boolean>) = apply { this.useSearch = useSearch }
 
+            /** Variables available to the agent via %variableName% syntax in supported tools */
+            fun variables(variables: Variables) = variables(JsonField.of(variables))
+
+            /**
+             * Sets [Builder.variables] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.variables] with a well-typed [Variables] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun variables(variables: JsonField<Variables>) = apply { this.variables = variables }
+
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
                 putAllAdditionalProperties(additionalProperties)
@@ -1913,12 +2065,22 @@ private constructor(
                     maxSteps,
                     toolTimeout,
                     useSearch,
+                    variables,
                     additionalProperties.toMutableMap(),
                 )
         }
 
         private var validated: Boolean = false
 
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws StagehandInvalidDataException if any value type in this object doesn't match its
+         *   expected type.
+         */
         fun validate(): ExecuteOptions = apply {
             if (validated) {
                 return@apply
@@ -1929,6 +2091,7 @@ private constructor(
             maxSteps()
             toolTimeout()
             useSearch()
+            variables()?.validate()
             validated = true
         }
 
@@ -1951,7 +2114,119 @@ private constructor(
                 (if (highlightCursor.asKnown() == null) 0 else 1) +
                 (if (maxSteps.asKnown() == null) 0 else 1) +
                 (if (toolTimeout.asKnown() == null) 0 else 1) +
-                (if (useSearch.asKnown() == null) 0 else 1)
+                (if (useSearch.asKnown() == null) 0 else 1) +
+                (variables.asKnown()?.validity() ?: 0)
+
+        /** Variables available to the agent via %variableName% syntax in supported tools */
+        class Variables
+        @JsonCreator
+        private constructor(
+            @com.fasterxml.jackson.annotation.JsonValue
+            private val additionalProperties: Map<String, JsonValue>
+        ) {
+
+            @JsonAnyGetter
+            @ExcludeMissing
+            fun _additionalProperties(): Map<String, JsonValue> = additionalProperties
+
+            fun toBuilder() = Builder().from(this)
+
+            companion object {
+
+                /** Returns a mutable builder for constructing an instance of [Variables]. */
+                fun builder() = Builder()
+            }
+
+            /** A builder for [Variables]. */
+            class Builder internal constructor() {
+
+                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                internal fun from(variables: Variables) = apply {
+                    additionalProperties = variables.additionalProperties.toMutableMap()
+                }
+
+                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                    this.additionalProperties.clear()
+                    putAllAdditionalProperties(additionalProperties)
+                }
+
+                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                    additionalProperties.put(key, value)
+                }
+
+                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                    apply {
+                        this.additionalProperties.putAll(additionalProperties)
+                    }
+
+                fun removeAdditionalProperty(key: String) = apply {
+                    additionalProperties.remove(key)
+                }
+
+                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                    keys.forEach(::removeAdditionalProperty)
+                }
+
+                /**
+                 * Returns an immutable instance of [Variables].
+                 *
+                 * Further updates to this [Builder] will not mutate the returned instance.
+                 */
+                fun build(): Variables = Variables(additionalProperties.toImmutable())
+            }
+
+            private var validated: Boolean = false
+
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws StagehandInvalidDataException if any value type in this object doesn't match
+             *   its expected type.
+             */
+            fun validate(): Variables = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: StagehandInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            internal fun validity(): Int =
+                additionalProperties.count { (_, value) -> !value.isNull() && !value.isMissing() }
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is Variables && additionalProperties == other.additionalProperties
+            }
+
+            private val hashCode: Int by lazy { Objects.hash(additionalProperties) }
+
+            override fun hashCode(): Int = hashCode
+
+            override fun toString() = "Variables{additionalProperties=$additionalProperties}"
+        }
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
@@ -1964,6 +2239,7 @@ private constructor(
                 maxSteps == other.maxSteps &&
                 toolTimeout == other.toolTimeout &&
                 useSearch == other.useSearch &&
+                variables == other.variables &&
                 additionalProperties == other.additionalProperties
         }
 
@@ -1974,6 +2250,7 @@ private constructor(
                 maxSteps,
                 toolTimeout,
                 useSearch,
+                variables,
                 additionalProperties,
             )
         }
@@ -1981,7 +2258,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "ExecuteOptions{instruction=$instruction, highlightCursor=$highlightCursor, maxSteps=$maxSteps, toolTimeout=$toolTimeout, useSearch=$useSearch, additionalProperties=$additionalProperties}"
+            "ExecuteOptions{instruction=$instruction, highlightCursor=$highlightCursor, maxSteps=$maxSteps, toolTimeout=$toolTimeout, useSearch=$useSearch, variables=$variables, additionalProperties=$additionalProperties}"
     }
 
     /** Whether to stream the response via SSE */
@@ -2076,6 +2353,15 @@ private constructor(
 
         private var validated: Boolean = false
 
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws StagehandInvalidDataException if any value type in this object doesn't match its
+         *   expected type.
+         */
         fun validate(): XStreamResponse = apply {
             if (validated) {
                 return@apply

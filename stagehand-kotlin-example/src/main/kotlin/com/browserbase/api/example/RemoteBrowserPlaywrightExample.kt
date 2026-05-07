@@ -23,14 +23,12 @@ import com.microsoft.playwright.options.LoadState
  *
  * Set these environment variables before running:
  * - BROWSERBASE_API_KEY
- * - BROWSERBASE_PROJECT_ID
  * - MODEL_API_KEY
  */
 fun main() {
     Env.load()
     val modelApiKey = Env.require("MODEL_API_KEY")
-    val browserbaseApiKey = Env.require("BROWSERBASE_API_KEY")
-    val browserbaseProjectId = Env.require("BROWSERBASE_PROJECT_ID")
+    Env.require("BROWSERBASE_API_KEY")
 
     val client: StagehandClient = StagehandOkHttpClient.fromEnv()
     var sessionId: String? = null

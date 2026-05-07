@@ -1071,6 +1071,15 @@ private constructor(
 
         private var validated: Boolean = false
 
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws StagehandInvalidDataException if any value type in this object doesn't match its
+         *   expected type.
+         */
         fun validate(): Body = apply {
             if (validated) {
                 return@apply
@@ -1325,6 +1334,15 @@ private constructor(
 
         private var validated: Boolean = false
 
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws StagehandInvalidDataException if any value type in this object doesn't match its
+         *   expected type.
+         */
         fun validate(): Browser = apply {
             if (validated) {
                 return@apply
@@ -2165,6 +2183,16 @@ private constructor(
 
             private var validated: Boolean = false
 
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws StagehandInvalidDataException if any value type in this object doesn't match
+             *   its expected type.
+             */
             fun validate(): LaunchOptions = apply {
                 if (validated) {
                     return@apply
@@ -2289,6 +2317,16 @@ private constructor(
 
                 private var validated: Boolean = false
 
+                /**
+                 * Validates that the types of all values in this object match their expected types
+                 * recursively.
+                 *
+                 * This method is _not_ forwards compatible with new types from the API for existing
+                 * fields.
+                 *
+                 * @throws StagehandInvalidDataException if any value type in this object doesn't
+                 *   match its expected type.
+                 */
                 fun validate(): CdpHeaders = apply {
                     if (validated) {
                         return@apply
@@ -2354,6 +2392,31 @@ private constructor(
 
                 fun _json(): JsonValue? = _json
 
+                /**
+                 * Maps this instance's current variant to a value of type [T] using the given
+                 * [visitor].
+                 *
+                 * Note that this method is _not_ forwards compatible with new variants from the
+                 * API, unless [visitor] overrides [Visitor.unknown]. To handle variants not known
+                 * to this version of the SDK gracefully, consider overriding [Visitor.unknown]:
+                 * ```kotlin
+                 * import com.browserbase.api.core.JsonValue
+                 *
+                 * val result: String? = ignoreDefaultArgs.accept(object : IgnoreDefaultArgs.Visitor<String?> {
+                 *     override fun visitBoolean(boolean: Boolean): String? = boolean.toString()
+                 *
+                 *     // ...
+                 *
+                 *     override fun unknown(json: JsonValue?): String? {
+                 *         // Or inspect the `json`.
+                 *         return null
+                 *     }
+                 * })
+                 * ```
+                 *
+                 * @throws StagehandInvalidDataException if [Visitor.unknown] is not overridden in
+                 *   [visitor] and the current variant is unknown.
+                 */
                 fun <T> accept(visitor: Visitor<T>): T =
                     when {
                         boolean != null -> visitor.visitBoolean(boolean)
@@ -2363,6 +2426,16 @@ private constructor(
 
                 private var validated: Boolean = false
 
+                /**
+                 * Validates that the types of all values in this object match their expected types
+                 * recursively.
+                 *
+                 * This method is _not_ forwards compatible with new types from the API for existing
+                 * fields.
+                 *
+                 * @throws StagehandInvalidDataException if any value type in this object doesn't
+                 *   match its expected type.
+                 */
                 fun validate(): IgnoreDefaultArgs = apply {
                     if (validated) {
                         return@apply
@@ -2725,6 +2798,16 @@ private constructor(
 
                 private var validated: Boolean = false
 
+                /**
+                 * Validates that the types of all values in this object match their expected types
+                 * recursively.
+                 *
+                 * This method is _not_ forwards compatible with new types from the API for existing
+                 * fields.
+                 *
+                 * @throws StagehandInvalidDataException if any value type in this object doesn't
+                 *   match its expected type.
+                 */
                 fun validate(): Proxy = apply {
                     if (validated) {
                         return@apply
@@ -2934,6 +3017,16 @@ private constructor(
 
                 private var validated: Boolean = false
 
+                /**
+                 * Validates that the types of all values in this object match their expected types
+                 * recursively.
+                 *
+                 * This method is _not_ forwards compatible with new types from the API for existing
+                 * fields.
+                 *
+                 * @throws StagehandInvalidDataException if any value type in this object doesn't
+                 *   match its expected type.
+                 */
                 fun validate(): Viewport = apply {
                     if (validated) {
                         return@apply
@@ -3132,6 +3225,16 @@ private constructor(
 
             private var validated: Boolean = false
 
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws StagehandInvalidDataException if any value type in this object doesn't match
+             *   its expected type.
+             */
             fun validate(): Type = apply {
                 if (validated) {
                     return@apply
@@ -3257,10 +3360,13 @@ private constructor(
         fun keepAlive(): Boolean? = keepAlive.getNullable("keepAlive")
 
         /**
+         * Deprecated. Browserbase API keys are now project-scoped, so this field is no longer
+         * required.
+         *
          * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
-        fun projectId(): String? = projectId.getNullable("projectId")
+        @Deprecated("deprecated") fun projectId(): String? = projectId.getNullable("projectId")
 
         /**
          * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
@@ -3317,7 +3423,10 @@ private constructor(
          *
          * Unlike [projectId], this method doesn't throw if the JSON field has an unexpected type.
          */
-        @JsonProperty("projectId") @ExcludeMissing fun _projectId(): JsonField<String> = projectId
+        @Deprecated("deprecated")
+        @JsonProperty("projectId")
+        @ExcludeMissing
+        fun _projectId(): JsonField<String> = projectId
 
         /**
          * Returns the raw JSON value of [proxies].
@@ -3436,6 +3545,11 @@ private constructor(
              */
             fun keepAlive(keepAlive: JsonField<Boolean>) = apply { this.keepAlive = keepAlive }
 
+            /**
+             * Deprecated. Browserbase API keys are now project-scoped, so this field is no longer
+             * required.
+             */
+            @Deprecated("deprecated")
             fun projectId(projectId: String) = projectId(JsonField.of(projectId))
 
             /**
@@ -3445,6 +3559,7 @@ private constructor(
              * This method is primarily for setting the field to an undocumented or not yet
              * supported value.
              */
+            @Deprecated("deprecated")
             fun projectId(projectId: JsonField<String>) = apply { this.projectId = projectId }
 
             fun proxies(proxies: Proxies) = proxies(JsonField.of(proxies))
@@ -3540,6 +3655,15 @@ private constructor(
 
         private var validated: Boolean = false
 
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws StagehandInvalidDataException if any value type in this object doesn't match its
+         *   expected type.
+         */
         fun validate(): BrowserbaseSessionCreateParams = apply {
             if (validated) {
                 return@apply
@@ -3585,12 +3709,16 @@ private constructor(
         private constructor(
             private val advancedStealth: JsonField<Boolean>,
             private val blockAds: JsonField<Boolean>,
+            private val captchaImageSelector: JsonField<String>,
+            private val captchaInputSelector: JsonField<String>,
             private val context: JsonField<Context>,
             private val extensionId: JsonField<String>,
             private val fingerprint: JsonField<Fingerprint>,
             private val logSession: JsonField<Boolean>,
+            private val os: JsonField<Os>,
             private val recordSession: JsonField<Boolean>,
             private val solveCaptchas: JsonField<Boolean>,
+            private val verified: JsonField<Boolean>,
             private val viewport: JsonField<Viewport>,
             private val additionalProperties: MutableMap<String, JsonValue>,
         ) {
@@ -3603,6 +3731,12 @@ private constructor(
                 @JsonProperty("blockAds")
                 @ExcludeMissing
                 blockAds: JsonField<Boolean> = JsonMissing.of(),
+                @JsonProperty("captchaImageSelector")
+                @ExcludeMissing
+                captchaImageSelector: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("captchaInputSelector")
+                @ExcludeMissing
+                captchaInputSelector: JsonField<String> = JsonMissing.of(),
                 @JsonProperty("context")
                 @ExcludeMissing
                 context: JsonField<Context> = JsonMissing.of(),
@@ -3615,24 +3749,32 @@ private constructor(
                 @JsonProperty("logSession")
                 @ExcludeMissing
                 logSession: JsonField<Boolean> = JsonMissing.of(),
+                @JsonProperty("os") @ExcludeMissing os: JsonField<Os> = JsonMissing.of(),
                 @JsonProperty("recordSession")
                 @ExcludeMissing
                 recordSession: JsonField<Boolean> = JsonMissing.of(),
                 @JsonProperty("solveCaptchas")
                 @ExcludeMissing
                 solveCaptchas: JsonField<Boolean> = JsonMissing.of(),
+                @JsonProperty("verified")
+                @ExcludeMissing
+                verified: JsonField<Boolean> = JsonMissing.of(),
                 @JsonProperty("viewport")
                 @ExcludeMissing
                 viewport: JsonField<Viewport> = JsonMissing.of(),
             ) : this(
                 advancedStealth,
                 blockAds,
+                captchaImageSelector,
+                captchaInputSelector,
                 context,
                 extensionId,
                 fingerprint,
                 logSession,
+                os,
                 recordSession,
                 solveCaptchas,
+                verified,
                 viewport,
                 mutableMapOf(),
             )
@@ -3648,6 +3790,20 @@ private constructor(
              *   if the server responded with an unexpected value).
              */
             fun blockAds(): Boolean? = blockAds.getNullable("blockAds")
+
+            /**
+             * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g.
+             *   if the server responded with an unexpected value).
+             */
+            fun captchaImageSelector(): String? =
+                captchaImageSelector.getNullable("captchaImageSelector")
+
+            /**
+             * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g.
+             *   if the server responded with an unexpected value).
+             */
+            fun captchaInputSelector(): String? =
+                captchaInputSelector.getNullable("captchaInputSelector")
 
             /**
              * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g.
@@ -3677,6 +3833,12 @@ private constructor(
              * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g.
              *   if the server responded with an unexpected value).
              */
+            fun os(): Os? = os.getNullable("os")
+
+            /**
+             * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g.
+             *   if the server responded with an unexpected value).
+             */
             fun recordSession(): Boolean? = recordSession.getNullable("recordSession")
 
             /**
@@ -3684,6 +3846,12 @@ private constructor(
              *   if the server responded with an unexpected value).
              */
             fun solveCaptchas(): Boolean? = solveCaptchas.getNullable("solveCaptchas")
+
+            /**
+             * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g.
+             *   if the server responded with an unexpected value).
+             */
+            fun verified(): Boolean? = verified.getNullable("verified")
 
             /**
              * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g.
@@ -3708,6 +3876,26 @@ private constructor(
              * type.
              */
             @JsonProperty("blockAds") @ExcludeMissing fun _blockAds(): JsonField<Boolean> = blockAds
+
+            /**
+             * Returns the raw JSON value of [captchaImageSelector].
+             *
+             * Unlike [captchaImageSelector], this method doesn't throw if the JSON field has an
+             * unexpected type.
+             */
+            @JsonProperty("captchaImageSelector")
+            @ExcludeMissing
+            fun _captchaImageSelector(): JsonField<String> = captchaImageSelector
+
+            /**
+             * Returns the raw JSON value of [captchaInputSelector].
+             *
+             * Unlike [captchaInputSelector], this method doesn't throw if the JSON field has an
+             * unexpected type.
+             */
+            @JsonProperty("captchaInputSelector")
+            @ExcludeMissing
+            fun _captchaInputSelector(): JsonField<String> = captchaInputSelector
 
             /**
              * Returns the raw JSON value of [context].
@@ -3747,6 +3935,13 @@ private constructor(
             fun _logSession(): JsonField<Boolean> = logSession
 
             /**
+             * Returns the raw JSON value of [os].
+             *
+             * Unlike [os], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("os") @ExcludeMissing fun _os(): JsonField<Os> = os
+
+            /**
              * Returns the raw JSON value of [recordSession].
              *
              * Unlike [recordSession], this method doesn't throw if the JSON field has an unexpected
@@ -3765,6 +3960,14 @@ private constructor(
             @JsonProperty("solveCaptchas")
             @ExcludeMissing
             fun _solveCaptchas(): JsonField<Boolean> = solveCaptchas
+
+            /**
+             * Returns the raw JSON value of [verified].
+             *
+             * Unlike [verified], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("verified") @ExcludeMissing fun _verified(): JsonField<Boolean> = verified
 
             /**
              * Returns the raw JSON value of [viewport].
@@ -3799,24 +4002,32 @@ private constructor(
 
                 private var advancedStealth: JsonField<Boolean> = JsonMissing.of()
                 private var blockAds: JsonField<Boolean> = JsonMissing.of()
+                private var captchaImageSelector: JsonField<String> = JsonMissing.of()
+                private var captchaInputSelector: JsonField<String> = JsonMissing.of()
                 private var context: JsonField<Context> = JsonMissing.of()
                 private var extensionId: JsonField<String> = JsonMissing.of()
                 private var fingerprint: JsonField<Fingerprint> = JsonMissing.of()
                 private var logSession: JsonField<Boolean> = JsonMissing.of()
+                private var os: JsonField<Os> = JsonMissing.of()
                 private var recordSession: JsonField<Boolean> = JsonMissing.of()
                 private var solveCaptchas: JsonField<Boolean> = JsonMissing.of()
+                private var verified: JsonField<Boolean> = JsonMissing.of()
                 private var viewport: JsonField<Viewport> = JsonMissing.of()
                 private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
                 internal fun from(browserSettings: BrowserSettings) = apply {
                     advancedStealth = browserSettings.advancedStealth
                     blockAds = browserSettings.blockAds
+                    captchaImageSelector = browserSettings.captchaImageSelector
+                    captchaInputSelector = browserSettings.captchaInputSelector
                     context = browserSettings.context
                     extensionId = browserSettings.extensionId
                     fingerprint = browserSettings.fingerprint
                     logSession = browserSettings.logSession
+                    os = browserSettings.os
                     recordSession = browserSettings.recordSession
                     solveCaptchas = browserSettings.solveCaptchas
+                    verified = browserSettings.verified
                     viewport = browserSettings.viewport
                     additionalProperties = browserSettings.additionalProperties.toMutableMap()
                 }
@@ -3845,6 +4056,34 @@ private constructor(
                  * yet supported value.
                  */
                 fun blockAds(blockAds: JsonField<Boolean>) = apply { this.blockAds = blockAds }
+
+                fun captchaImageSelector(captchaImageSelector: String) =
+                    captchaImageSelector(JsonField.of(captchaImageSelector))
+
+                /**
+                 * Sets [Builder.captchaImageSelector] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.captchaImageSelector] with a well-typed [String]
+                 * value instead. This method is primarily for setting the field to an undocumented
+                 * or not yet supported value.
+                 */
+                fun captchaImageSelector(captchaImageSelector: JsonField<String>) = apply {
+                    this.captchaImageSelector = captchaImageSelector
+                }
+
+                fun captchaInputSelector(captchaInputSelector: String) =
+                    captchaInputSelector(JsonField.of(captchaInputSelector))
+
+                /**
+                 * Sets [Builder.captchaInputSelector] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.captchaInputSelector] with a well-typed [String]
+                 * value instead. This method is primarily for setting the field to an undocumented
+                 * or not yet supported value.
+                 */
+                fun captchaInputSelector(captchaInputSelector: JsonField<String>) = apply {
+                    this.captchaInputSelector = captchaInputSelector
+                }
 
                 fun context(context: Context) = context(JsonField.of(context))
 
@@ -3896,6 +4135,17 @@ private constructor(
                     this.logSession = logSession
                 }
 
+                fun os(os: Os) = os(JsonField.of(os))
+
+                /**
+                 * Sets [Builder.os] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.os] with a well-typed [Os] value instead. This
+                 * method is primarily for setting the field to an undocumented or not yet supported
+                 * value.
+                 */
+                fun os(os: JsonField<Os>) = apply { this.os = os }
+
                 fun recordSession(recordSession: Boolean) =
                     recordSession(JsonField.of(recordSession))
 
@@ -3923,6 +4173,17 @@ private constructor(
                 fun solveCaptchas(solveCaptchas: JsonField<Boolean>) = apply {
                     this.solveCaptchas = solveCaptchas
                 }
+
+                fun verified(verified: Boolean) = verified(JsonField.of(verified))
+
+                /**
+                 * Sets [Builder.verified] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.verified] with a well-typed [Boolean] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun verified(verified: JsonField<Boolean>) = apply { this.verified = verified }
 
                 fun viewport(viewport: Viewport) = viewport(JsonField.of(viewport))
 
@@ -3966,12 +4227,16 @@ private constructor(
                     BrowserSettings(
                         advancedStealth,
                         blockAds,
+                        captchaImageSelector,
+                        captchaInputSelector,
                         context,
                         extensionId,
                         fingerprint,
                         logSession,
+                        os,
                         recordSession,
                         solveCaptchas,
+                        verified,
                         viewport,
                         additionalProperties.toMutableMap(),
                     )
@@ -3979,6 +4244,16 @@ private constructor(
 
             private var validated: Boolean = false
 
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws StagehandInvalidDataException if any value type in this object doesn't match
+             *   its expected type.
+             */
             fun validate(): BrowserSettings = apply {
                 if (validated) {
                     return@apply
@@ -3986,12 +4261,16 @@ private constructor(
 
                 advancedStealth()
                 blockAds()
+                captchaImageSelector()
+                captchaInputSelector()
                 context()?.validate()
                 extensionId()
                 fingerprint()?.validate()
                 logSession()
+                os()?.validate()
                 recordSession()
                 solveCaptchas()
+                verified()
                 viewport()?.validate()
                 validated = true
             }
@@ -4013,12 +4292,16 @@ private constructor(
             internal fun validity(): Int =
                 (if (advancedStealth.asKnown() == null) 0 else 1) +
                     (if (blockAds.asKnown() == null) 0 else 1) +
+                    (if (captchaImageSelector.asKnown() == null) 0 else 1) +
+                    (if (captchaInputSelector.asKnown() == null) 0 else 1) +
                     (context.asKnown()?.validity() ?: 0) +
                     (if (extensionId.asKnown() == null) 0 else 1) +
                     (fingerprint.asKnown()?.validity() ?: 0) +
                     (if (logSession.asKnown() == null) 0 else 1) +
+                    (os.asKnown()?.validity() ?: 0) +
                     (if (recordSession.asKnown() == null) 0 else 1) +
                     (if (solveCaptchas.asKnown() == null) 0 else 1) +
+                    (if (verified.asKnown() == null) 0 else 1) +
                     (viewport.asKnown()?.validity() ?: 0)
 
             class Context
@@ -4171,6 +4454,16 @@ private constructor(
 
                 private var validated: Boolean = false
 
+                /**
+                 * Validates that the types of all values in this object match their expected types
+                 * recursively.
+                 *
+                 * This method is _not_ forwards compatible with new types from the API for existing
+                 * fields.
+                 *
+                 * @throws StagehandInvalidDataException if any value type in this object doesn't
+                 *   match its expected type.
+                 */
                 fun validate(): Context = apply {
                     if (validated) {
                         return@apply
@@ -4563,6 +4856,16 @@ private constructor(
 
                 private var validated: Boolean = false
 
+                /**
+                 * Validates that the types of all values in this object match their expected types
+                 * recursively.
+                 *
+                 * This method is _not_ forwards compatible with new types from the API for existing
+                 * fields.
+                 *
+                 * @throws StagehandInvalidDataException if any value type in this object doesn't
+                 *   match its expected type.
+                 */
                 fun validate(): Fingerprint = apply {
                     if (validated) {
                         return@apply
@@ -4705,6 +5008,16 @@ private constructor(
 
                     private var validated: Boolean = false
 
+                    /**
+                     * Validates that the types of all values in this object match their expected
+                     * types recursively.
+                     *
+                     * This method is _not_ forwards compatible with new types from the API for
+                     * existing fields.
+                     *
+                     * @throws StagehandInvalidDataException if any value type in this object
+                     *   doesn't match its expected type.
+                     */
                     fun validate(): Browser = apply {
                         if (validated) {
                             return@apply
@@ -4837,6 +5150,16 @@ private constructor(
 
                     private var validated: Boolean = false
 
+                    /**
+                     * Validates that the types of all values in this object match their expected
+                     * types recursively.
+                     *
+                     * This method is _not_ forwards compatible with new types from the API for
+                     * existing fields.
+                     *
+                     * @throws StagehandInvalidDataException if any value type in this object
+                     *   doesn't match its expected type.
+                     */
                     fun validate(): Device = apply {
                         if (validated) {
                             return@apply
@@ -4972,6 +5295,16 @@ private constructor(
 
                     private var validated: Boolean = false
 
+                    /**
+                     * Validates that the types of all values in this object match their expected
+                     * types recursively.
+                     *
+                     * This method is _not_ forwards compatible with new types from the API for
+                     * existing fields.
+                     *
+                     * @throws StagehandInvalidDataException if any value type in this object
+                     *   doesn't match its expected type.
+                     */
                     fun validate(): HttpVersion = apply {
                         if (validated) {
                             return@apply
@@ -5127,6 +5460,16 @@ private constructor(
 
                     private var validated: Boolean = false
 
+                    /**
+                     * Validates that the types of all values in this object match their expected
+                     * types recursively.
+                     *
+                     * This method is _not_ forwards compatible with new types from the API for
+                     * existing fields.
+                     *
+                     * @throws StagehandInvalidDataException if any value type in this object
+                     *   doesn't match its expected type.
+                     */
                     fun validate(): OperatingSystem = apply {
                         if (validated) {
                             return@apply
@@ -5382,6 +5725,16 @@ private constructor(
 
                     private var validated: Boolean = false
 
+                    /**
+                     * Validates that the types of all values in this object match their expected
+                     * types recursively.
+                     *
+                     * This method is _not_ forwards compatible with new types from the API for
+                     * existing fields.
+                     *
+                     * @throws StagehandInvalidDataException if any value type in this object
+                     *   doesn't match its expected type.
+                     */
                     fun validate(): Screen = apply {
                         if (validated) {
                             return@apply
@@ -5468,6 +5821,162 @@ private constructor(
 
                 override fun toString() =
                     "Fingerprint{browsers=$browsers, devices=$devices, httpVersion=$httpVersion, locales=$locales, operatingSystems=$operatingSystems, screen=$screen, additionalProperties=$additionalProperties}"
+            }
+
+            class Os @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+
+                /**
+                 * Returns this class instance's raw value.
+                 *
+                 * This is usually only useful if this instance was deserialized from data that
+                 * doesn't match any known member, and you want to know that value. For example, if
+                 * the SDK is on an older version than the API, then the API may respond with new
+                 * members that the SDK is unaware of.
+                 */
+                @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+                companion object {
+
+                    val WINDOWS = of("windows")
+
+                    val MAC = of("mac")
+
+                    val LINUX = of("linux")
+
+                    val MOBILE = of("mobile")
+
+                    val TABLET = of("tablet")
+
+                    fun of(value: String) = Os(JsonField.of(value))
+                }
+
+                /** An enum containing [Os]'s known values. */
+                enum class Known {
+                    WINDOWS,
+                    MAC,
+                    LINUX,
+                    MOBILE,
+                    TABLET,
+                }
+
+                /**
+                 * An enum containing [Os]'s known values, as well as an [_UNKNOWN] member.
+                 *
+                 * An instance of [Os] can contain an unknown value in a couple of cases:
+                 * - It was deserialized from data that doesn't match any known member. For example,
+                 *   if the SDK is on an older version than the API, then the API may respond with
+                 *   new members that the SDK is unaware of.
+                 * - It was constructed with an arbitrary value using the [of] method.
+                 */
+                enum class Value {
+                    WINDOWS,
+                    MAC,
+                    LINUX,
+                    MOBILE,
+                    TABLET,
+                    /**
+                     * An enum member indicating that [Os] was instantiated with an unknown value.
+                     */
+                    _UNKNOWN,
+                }
+
+                /**
+                 * Returns an enum member corresponding to this class instance's value, or
+                 * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+                 *
+                 * Use the [known] method instead if you're certain the value is always known or if
+                 * you want to throw for the unknown case.
+                 */
+                fun value(): Value =
+                    when (this) {
+                        WINDOWS -> Value.WINDOWS
+                        MAC -> Value.MAC
+                        LINUX -> Value.LINUX
+                        MOBILE -> Value.MOBILE
+                        TABLET -> Value.TABLET
+                        else -> Value._UNKNOWN
+                    }
+
+                /**
+                 * Returns an enum member corresponding to this class instance's value.
+                 *
+                 * Use the [value] method instead if you're uncertain the value is always known and
+                 * don't want to throw for the unknown case.
+                 *
+                 * @throws StagehandInvalidDataException if this class instance's value is a not a
+                 *   known member.
+                 */
+                fun known(): Known =
+                    when (this) {
+                        WINDOWS -> Known.WINDOWS
+                        MAC -> Known.MAC
+                        LINUX -> Known.LINUX
+                        MOBILE -> Known.MOBILE
+                        TABLET -> Known.TABLET
+                        else -> throw StagehandInvalidDataException("Unknown Os: $value")
+                    }
+
+                /**
+                 * Returns this class instance's primitive wire representation.
+                 *
+                 * This differs from the [toString] method because that method is primarily for
+                 * debugging and generally doesn't throw.
+                 *
+                 * @throws StagehandInvalidDataException if this class instance's value does not
+                 *   have the expected primitive type.
+                 */
+                fun asString(): String =
+                    _value().asString()
+                        ?: throw StagehandInvalidDataException("Value is not a String")
+
+                private var validated: Boolean = false
+
+                /**
+                 * Validates that the types of all values in this object match their expected types
+                 * recursively.
+                 *
+                 * This method is _not_ forwards compatible with new types from the API for existing
+                 * fields.
+                 *
+                 * @throws StagehandInvalidDataException if any value type in this object doesn't
+                 *   match its expected type.
+                 */
+                fun validate(): Os = apply {
+                    if (validated) {
+                        return@apply
+                    }
+
+                    known()
+                    validated = true
+                }
+
+                fun isValid(): Boolean =
+                    try {
+                        validate()
+                        true
+                    } catch (e: StagehandInvalidDataException) {
+                        false
+                    }
+
+                /**
+                 * Returns a score indicating how many valid values are contained in this object
+                 * recursively.
+                 *
+                 * Used for best match union deserialization.
+                 */
+                internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) {
+                        return true
+                    }
+
+                    return other is Os && value == other.value
+                }
+
+                override fun hashCode() = value.hashCode()
+
+                override fun toString() = value.toString()
             }
 
             class Viewport
@@ -5602,6 +6111,16 @@ private constructor(
 
                 private var validated: Boolean = false
 
+                /**
+                 * Validates that the types of all values in this object match their expected types
+                 * recursively.
+                 *
+                 * This method is _not_ forwards compatible with new types from the API for existing
+                 * fields.
+                 *
+                 * @throws StagehandInvalidDataException if any value type in this object doesn't
+                 *   match its expected type.
+                 */
                 fun validate(): Viewport = apply {
                     if (validated) {
                         return@apply
@@ -5659,12 +6178,16 @@ private constructor(
                 return other is BrowserSettings &&
                     advancedStealth == other.advancedStealth &&
                     blockAds == other.blockAds &&
+                    captchaImageSelector == other.captchaImageSelector &&
+                    captchaInputSelector == other.captchaInputSelector &&
                     context == other.context &&
                     extensionId == other.extensionId &&
                     fingerprint == other.fingerprint &&
                     logSession == other.logSession &&
+                    os == other.os &&
                     recordSession == other.recordSession &&
                     solveCaptchas == other.solveCaptchas &&
+                    verified == other.verified &&
                     viewport == other.viewport &&
                     additionalProperties == other.additionalProperties
             }
@@ -5673,12 +6196,16 @@ private constructor(
                 Objects.hash(
                     advancedStealth,
                     blockAds,
+                    captchaImageSelector,
+                    captchaInputSelector,
                     context,
                     extensionId,
                     fingerprint,
                     logSession,
+                    os,
                     recordSession,
                     solveCaptchas,
+                    verified,
                     viewport,
                     additionalProperties,
                 )
@@ -5687,7 +6214,7 @@ private constructor(
             override fun hashCode(): Int = hashCode
 
             override fun toString() =
-                "BrowserSettings{advancedStealth=$advancedStealth, blockAds=$blockAds, context=$context, extensionId=$extensionId, fingerprint=$fingerprint, logSession=$logSession, recordSession=$recordSession, solveCaptchas=$solveCaptchas, viewport=$viewport, additionalProperties=$additionalProperties}"
+                "BrowserSettings{advancedStealth=$advancedStealth, blockAds=$blockAds, captchaImageSelector=$captchaImageSelector, captchaInputSelector=$captchaInputSelector, context=$context, extensionId=$extensionId, fingerprint=$fingerprint, logSession=$logSession, os=$os, recordSession=$recordSession, solveCaptchas=$solveCaptchas, verified=$verified, viewport=$viewport, additionalProperties=$additionalProperties}"
         }
 
         @JsonDeserialize(using = Proxies.Deserializer::class)
@@ -5714,6 +6241,31 @@ private constructor(
 
             fun _json(): JsonValue? = _json
 
+            /**
+             * Maps this instance's current variant to a value of type [T] using the given
+             * [visitor].
+             *
+             * Note that this method is _not_ forwards compatible with new variants from the API,
+             * unless [visitor] overrides [Visitor.unknown]. To handle variants not known to this
+             * version of the SDK gracefully, consider overriding [Visitor.unknown]:
+             * ```kotlin
+             * import com.browserbase.api.core.JsonValue
+             *
+             * val result: String? = proxies.accept(object : Proxies.Visitor<String?> {
+             *     override fun visitBoolean(boolean: Boolean): String? = boolean.toString()
+             *
+             *     // ...
+             *
+             *     override fun unknown(json: JsonValue?): String? {
+             *         // Or inspect the `json`.
+             *         return null
+             *     }
+             * })
+             * ```
+             *
+             * @throws StagehandInvalidDataException if [Visitor.unknown] is not overridden in
+             *   [visitor] and the current variant is unknown.
+             */
             fun <T> accept(visitor: Visitor<T>): T =
                 when {
                     boolean != null -> visitor.visitBoolean(boolean)
@@ -5723,6 +6275,16 @@ private constructor(
 
             private var validated: Boolean = false
 
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws StagehandInvalidDataException if any value type in this object doesn't match
+             *   its expected type.
+             */
             fun validate(): Proxies = apply {
                 if (validated) {
                     return@apply
@@ -5889,6 +6451,31 @@ private constructor(
 
                 fun _json(): JsonValue? = _json
 
+                /**
+                 * Maps this instance's current variant to a value of type [T] using the given
+                 * [visitor].
+                 *
+                 * Note that this method is _not_ forwards compatible with new variants from the
+                 * API, unless [visitor] overrides [Visitor.unknown]. To handle variants not known
+                 * to this version of the SDK gracefully, consider overriding [Visitor.unknown]:
+                 * ```kotlin
+                 * import com.browserbase.api.core.JsonValue
+                 *
+                 * val result: String? = proxyConfig.accept(object : ProxyConfig.Visitor<String?> {
+                 *     override fun visitBrowserbase(browserbase: Browserbase): String? = browserbase.toString()
+                 *
+                 *     // ...
+                 *
+                 *     override fun unknown(json: JsonValue?): String? {
+                 *         // Or inspect the `json`.
+                 *         return null
+                 *     }
+                 * })
+                 * ```
+                 *
+                 * @throws StagehandInvalidDataException if [Visitor.unknown] is not overridden in
+                 *   [visitor] and the current variant is unknown.
+                 */
                 fun <T> accept(visitor: Visitor<T>): T =
                     when {
                         browserbase != null -> visitor.visitBrowserbase(browserbase)
@@ -5898,6 +6485,16 @@ private constructor(
 
                 private var validated: Boolean = false
 
+                /**
+                 * Validates that the types of all values in this object match their expected types
+                 * recursively.
+                 *
+                 * This method is _not_ forwards compatible with new types from the API for existing
+                 * fields.
+                 *
+                 * @throws StagehandInvalidDataException if any value type in this object doesn't
+                 *   match its expected type.
+                 */
                 fun validate(): ProxyConfig = apply {
                     if (validated) {
                         return@apply
@@ -6214,6 +6811,16 @@ private constructor(
 
                     private var validated: Boolean = false
 
+                    /**
+                     * Validates that the types of all values in this object match their expected
+                     * types recursively.
+                     *
+                     * This method is _not_ forwards compatible with new types from the API for
+                     * existing fields.
+                     *
+                     * @throws StagehandInvalidDataException if any value type in this object
+                     *   doesn't match its expected type.
+                     */
                     fun validate(): Browserbase = apply {
                         if (validated) {
                             return@apply
@@ -6443,6 +7050,16 @@ private constructor(
 
                         private var validated: Boolean = false
 
+                        /**
+                         * Validates that the types of all values in this object match their
+                         * expected types recursively.
+                         *
+                         * This method is _not_ forwards compatible with new types from the API for
+                         * existing fields.
+                         *
+                         * @throws StagehandInvalidDataException if any value type in this object
+                         *   doesn't match its expected type.
+                         */
                         fun validate(): Geolocation = apply {
                             if (validated) {
                                 return@apply
@@ -6778,6 +7395,16 @@ private constructor(
 
                     private var validated: Boolean = false
 
+                    /**
+                     * Validates that the types of all values in this object match their expected
+                     * types recursively.
+                     *
+                     * This method is _not_ forwards compatible with new types from the API for
+                     * existing fields.
+                     *
+                     * @throws StagehandInvalidDataException if any value type in this object
+                     *   doesn't match its expected type.
+                     */
                     fun validate(): External = apply {
                         if (validated) {
                             return@apply
@@ -6952,6 +7579,16 @@ private constructor(
 
             private var validated: Boolean = false
 
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws StagehandInvalidDataException if any value type in this object doesn't match
+             *   its expected type.
+             */
             fun validate(): Region = apply {
                 if (validated) {
                     return@apply
@@ -7050,6 +7687,16 @@ private constructor(
 
             private var validated: Boolean = false
 
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws StagehandInvalidDataException if any value type in this object doesn't match
+             *   its expected type.
+             */
             fun validate(): UserMetadata = apply {
                 if (validated) {
                     return@apply
@@ -7219,6 +7866,15 @@ private constructor(
 
         private var validated: Boolean = false
 
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws StagehandInvalidDataException if any value type in this object doesn't match its
+         *   expected type.
+         */
         fun validate(): Verbose = apply {
             if (validated) {
                 return@apply
@@ -7349,6 +8005,15 @@ private constructor(
 
         private var validated: Boolean = false
 
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws StagehandInvalidDataException if any value type in this object doesn't match its
+         *   expected type.
+         */
         fun validate(): XStreamResponse = apply {
             if (validated) {
                 return@apply

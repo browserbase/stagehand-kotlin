@@ -1,5 +1,36 @@
 # Changelog
 
+## 3.20.0 (2026-05-06)
+
+Full Changelog: [v3.19.3...v3.20.0](https://github.com/browserbase/stagehand-kotlin/compare/v3.19.3...v3.20.0)
+
+### Features
+
+* [feat]: add `ignoreSelectors` to `extract()` ([200b89e](https://github.com/browserbase/stagehand-kotlin/commit/200b89ecf0fb2fd02e67ec05997ce83d112eda3f))
+* [STG-1798] feat: support Browserbase verified sessions ([778944e](https://github.com/browserbase/stagehand-kotlin/commit/778944e3b7f6d983ecc89bc6f071c8bd25992b89))
+* [STG-1808] Deprecate Browserbase project ID ([24d0279](https://github.com/browserbase/stagehand-kotlin/commit/24d0279dbc50c466af81707497a6b39c5d1aafb8))
+* Bedrock auth passthrough ([12db436](https://github.com/browserbase/stagehand-kotlin/commit/12db43608159773ad62df197677e06613f5ddfd8))
+* **client:** more robust error parsing ([0515e61](https://github.com/browserbase/stagehand-kotlin/commit/0515e617e777b21a94a27a19c2db66147a96a67e))
+* **client:** support proxy authentication ([b6f57d7](https://github.com/browserbase/stagehand-kotlin/commit/b6f57d77c30c05c54c09a66b5e2f983bc19bbabb))
+* remove experimental requirement on agent variables ([#2079](https://github.com/browserbase/stagehand-kotlin/issues/2079)) ([87f9dbd](https://github.com/browserbase/stagehand-kotlin/commit/87f9dbd8a46b7056c0c165637fe5c5d9c24dc849))
+* Revert "[STG-1573] Add providerOptions for extensible model auth ([#1822](https://github.com/browserbase/stagehand-kotlin/issues/1822))" ([ec2696c](https://github.com/browserbase/stagehand-kotlin/commit/ec2696cf0f4e1d50c93a81f948fa3f2be17ed8d0))
+* support setting headers via env ([ee4bc23](https://github.com/browserbase/stagehand-kotlin/commit/ee4bc23d3f3906c6470e59e5a51f27b60ec87e94))
+
+
+### Performance Improvements
+
+* **client:** create one json mapper ([d00b7e9](https://github.com/browserbase/stagehand-kotlin/commit/d00b7e92333551df713160c61e0358ade040978f))
+
+
+### Chores
+
+* remove duplicated dokka setup ([1a2b7e7](https://github.com/browserbase/stagehand-kotlin/commit/1a2b7e7bf15953956b6718c6fd18b183f5adcb10))
+
+
+### Documentation
+
+* clarify forwards compat behavior ([73fb854](https://github.com/browserbase/stagehand-kotlin/commit/73fb8543da12237f705dff921f999b79c319b80f))
+
 ## 3.19.3 (2026-04-03)
 
 Full Changelog: [v3.18.0...v3.19.3](https://github.com/browserbase/stagehand-kotlin/compare/v3.18.0...v3.19.3)

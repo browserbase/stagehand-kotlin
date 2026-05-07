@@ -64,6 +64,9 @@ private constructor(
     /**
      * Whether to call `validate` on every response before returning it.
      *
+     * Setting this to `true` is _not_ forwards compatible with new types from the API for existing
+     * fields.
+     *
      * Defaults to false, which means the shape of the response will not be validated upfront.
      * Instead, validation will only occur for the parts of the response that are accessed.
      */
@@ -93,8 +96,10 @@ private constructor(
     val maxRetries: Int,
     /** Your [Browserbase API Key](https://www.browserbase.com/settings) */
     val browserbaseApiKey: String,
-    /** Your [Browserbase Project ID](https://www.browserbase.com/settings) */
-    val browserbaseProjectId: String,
+    /**
+     * Deprecated. Browserbase API keys are now project-scoped, so this value is no longer required.
+     */
+    val browserbaseProjectId: String?,
     /** Your LLM provider API key (e.g. OPENAI_API_KEY, ANTHROPIC_API_KEY, etc.) */
     val modelApiKey: String,
 ) {
@@ -125,7 +130,6 @@ private constructor(
          * ```kotlin
          * .httpClient()
          * .browserbaseApiKey()
-         * .browserbaseProjectId()
          * .modelApiKey()
          * ```
          */
@@ -234,6 +238,9 @@ private constructor(
         /**
          * Whether to call `validate` on every response before returning it.
          *
+         * Setting this to `true` is _not_ forwards compatible with new types from the API for
+         * existing fields.
+         *
          * Defaults to false, which means the shape of the response will not be validated upfront.
          * Instead, validation will only occur for the parts of the response that are accessed.
          */
@@ -280,8 +287,11 @@ private constructor(
             this.browserbaseApiKey = browserbaseApiKey
         }
 
-        /** Your [Browserbase Project ID](https://www.browserbase.com/settings) */
-        fun browserbaseProjectId(browserbaseProjectId: String) = apply {
+        /**
+         * Deprecated. Browserbase API keys are now project-scoped, so this value is no longer
+         * required. Accepted for backwards compatibility; it is ignored.
+         */
+        fun browserbaseProjectId(browserbaseProjectId: String?) = apply {
             this.browserbaseProjectId = browserbaseProjectId
         }
 
@@ -375,27 +385,33 @@ private constructor(
          *
          * See this table for the available options:
          *
-         * |Setter                |System property                 |Environment variable    |Required|Default value                            |
-         * |----------------------|--------------------------------|------------------------|--------|-----------------------------------------|
-         * |`browserbaseApiKey`   |`stagehand.browserbaseApiKey`   |`BROWSERBASE_API_KEY`   |true    |-                                        |
-         * |`browserbaseProjectId`|`stagehand.browserbaseProjectId`|`BROWSERBASE_PROJECT_ID`|true    |-                                        |
-         * |`modelApiKey`         |`stagehand.modelApiKey`         |`MODEL_API_KEY`         |true    |-                                        |
-         * |`baseUrl`             |`stagehand.baseUrl`             |`STAGEHAND_BASE_URL`    |true    |`"https://api.stagehand.browserbase.com"`|
+         * |Setter             |System property              |Environment variable |Required|Default value                            |
+         * |-------------------|-----------------------------|---------------------|--------|-----------------------------------------|
+         * |`browserbaseApiKey`|`stagehand.browserbaseApiKey`|`BROWSERBASE_API_KEY`|true    |-                                        |
+         * |`modelApiKey`      |`stagehand.modelApiKey`      |`MODEL_API_KEY`      |true    |-                                        |
+         * |`baseUrl`          |`stagehand.baseUrl`          |`STAGEHAND_API_URL`  |false   |`"https://api.stagehand.browserbase.com"`|
          *
          * System properties take precedence over environment variables.
          */
-        fun fromEnv() = apply {
-            (System.getProperty("stagehand.baseUrl") ?: System.getenv("STAGEHAND_BASE_URL"))?.let {
-                baseUrl(it)
-            }
-            (System.getProperty("stagehand.browserbaseApiKey")
-                    ?: System.getenv("BROWSERBASE_API_KEY"))
+        fun fromEnv() = fromEnv(System::getenv)
+
+        internal fun fromEnv(getEnv: (String) -> String?) = apply {
+            (System.getProperty("stagehand.baseUrl")
+                    ?: getEnv("STAGEHAND_API_URL")
+                    ?: getEnv("STAGEHAND_BASE_URL"))
+                ?.let { baseUrl(it) }
+            (System.getProperty("stagehand.browserbaseApiKey") ?: getEnv("BROWSERBASE_API_KEY"))
                 ?.let { browserbaseApiKey(it) }
-            (System.getProperty("stagehand.browserbaseProjectId")
-                    ?: System.getenv("BROWSERBASE_PROJECT_ID"))
-                ?.let { browserbaseProjectId(it) }
-            (System.getProperty("stagehand.modelApiKey") ?: System.getenv("MODEL_API_KEY"))?.let {
+            (System.getProperty("stagehand.modelApiKey") ?: getEnv("MODEL_API_KEY"))?.let {
                 modelApiKey(it)
+            }
+            getEnv("STAGEHAND_CUSTOM_HEADERS")?.let { customHeadersEnv ->
+                for (line in customHeadersEnv.split("\n")) {
+                    val colon = line.indexOf(':')
+                    if (colon >= 0) {
+                        putHeader(line.substring(0, colon).trim(), line.substring(colon + 1).trim())
+                    }
+                }
             }
         }
 
@@ -408,7 +424,6 @@ private constructor(
          * ```kotlin
          * .httpClient()
          * .browserbaseApiKey()
-         * .browserbaseProjectId()
          * .modelApiKey()
          * ```
          *
@@ -418,7 +433,6 @@ private constructor(
             val httpClient = checkRequired("httpClient", httpClient)
             val sleeper = sleeper ?: PhantomReachableSleeper(DefaultSleeper())
             val browserbaseApiKey = checkRequired("browserbaseApiKey", browserbaseApiKey)
-            val browserbaseProjectId = checkRequired("browserbaseProjectId", browserbaseProjectId)
             val modelApiKey = checkRequired("modelApiKey", modelApiKey)
 
             val headers = Headers.builder()
@@ -437,11 +451,6 @@ private constructor(
             browserbaseApiKey.let {
                 if (!it.isEmpty()) {
                     headers.replace("x-bb-api-key", it)
-                }
-            }
-            browserbaseProjectId.let {
-                if (!it.isEmpty()) {
-                    headers.replace("x-bb-project-id", it)
                 }
             }
             modelApiKey.let {

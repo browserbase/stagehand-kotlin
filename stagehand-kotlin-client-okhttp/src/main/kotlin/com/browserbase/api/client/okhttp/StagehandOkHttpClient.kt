@@ -9,6 +9,7 @@ import com.browserbase.api.core.Sleeper
 import com.browserbase.api.core.Timeout
 import com.browserbase.api.core.http.Headers
 import com.browserbase.api.core.http.HttpClient
+import com.browserbase.api.core.http.ProxyAuthenticator
 import com.browserbase.api.core.http.QueryParams
 import com.browserbase.api.core.jsonMapper
 import com.fasterxml.jackson.databind.json.JsonMapper
@@ -45,6 +46,7 @@ class StagehandOkHttpClient private constructor() {
         private var clientOptions: ClientOptions.Builder = ClientOptions.builder()
         private var dispatcherExecutorService: ExecutorService? = null
         private var proxy: Proxy? = null
+        private var proxyAuthenticator: ProxyAuthenticator? = null
         private var maxIdleConnections: Int? = null
         private var keepAliveDuration: Duration? = null
         private var sslSocketFactory: SSLSocketFactory? = null
@@ -64,6 +66,14 @@ class StagehandOkHttpClient private constructor() {
         }
 
         fun proxy(proxy: Proxy?) = apply { this.proxy = proxy }
+
+        /**
+         * Provides credentials when an HTTP proxy responds with `407 Proxy Authentication
+         * Required`.
+         */
+        fun proxyAuthenticator(proxyAuthenticator: ProxyAuthenticator?) = apply {
+            this.proxyAuthenticator = proxyAuthenticator
+        }
 
         /**
          * The maximum number of idle connections kept by the underlying OkHttp connection pool.
@@ -180,6 +190,9 @@ class StagehandOkHttpClient private constructor() {
         /**
          * Whether to call `validate` on every response before returning it.
          *
+         * Setting this to `true` is _not_ forwards compatible with new types from the API for
+         * existing fields.
+         *
          * Defaults to false, which means the shape of the response will not be validated upfront.
          * Instead, validation will only occur for the parts of the response that are accessed.
          */
@@ -226,8 +239,11 @@ class StagehandOkHttpClient private constructor() {
             clientOptions.browserbaseApiKey(browserbaseApiKey)
         }
 
-        /** Your [Browserbase Project ID](https://www.browserbase.com/settings) */
-        fun browserbaseProjectId(browserbaseProjectId: String) = apply {
+        /**
+         * Deprecated. Browserbase API keys are now project-scoped, so this value is no longer
+         * required.
+         */
+        fun browserbaseProjectId(browserbaseProjectId: String?) = apply {
             clientOptions.browserbaseProjectId(browserbaseProjectId)
         }
 
@@ -333,6 +349,7 @@ class StagehandOkHttpClient private constructor() {
                         OkHttpClient.builder()
                             .timeout(clientOptions.timeout())
                             .proxy(proxy)
+                            .proxyAuthenticator(proxyAuthenticator)
                             .maxIdleConnections(maxIdleConnections)
                             .keepAliveDuration(keepAliveDuration)
                             .dispatcherExecutorService(dispatcherExecutorService)
