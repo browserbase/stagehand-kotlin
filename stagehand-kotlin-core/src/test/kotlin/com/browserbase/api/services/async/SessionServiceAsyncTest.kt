@@ -271,6 +271,7 @@ internal class SessionServiceAsyncTest {
                     .instruction("Find all clickable navigation links")
                     .options(
                         SessionObserveParams.Options.builder()
+                            .ignoreSelectors(listOf("nav", ".cookie-banner", "#sidebar-ads"))
                             .model(
                                 ModelConfig.builder()
                                     .modelName("openai/gpt-5.4-mini")
