@@ -29,7 +29,8 @@ private constructor(
     /**
      * Sensitive headers to redact from logs.
      *
-     * Defaults to `Set.of("x-bb-api-key", "x-bb-project-id", "x-model-api-key")`.
+     * Defaults to `Set.of("authorization", "api-key", "x-api-key", "cookie", "set-cookie",
+     * "x-bb-api-key", "x-bb-project-id", "x-model-api-key")`.
      */
     val redactedHeaders: SortedSet<String>,
     /**
@@ -183,7 +184,16 @@ private constructor(
 
         private var httpClient: HttpClient? = null
         private var redactedHeaders: Set<String> =
-            setOf("x-bb-api-key", "x-bb-project-id", "x-model-api-key")
+            setOf(
+                "authorization",
+                "api-key",
+                "x-api-key",
+                "cookie",
+                "set-cookie",
+                "x-bb-api-key",
+                "x-bb-project-id",
+                "x-model-api-key",
+            )
         private var clock: Clock = Clock.systemUTC()
         private var level: LogLevel? = null
 
@@ -200,7 +210,8 @@ private constructor(
         /**
          * Sensitive headers to redact from logs.
          *
-         * Defaults to `Set.of("x-bb-api-key", "x-bb-project-id", "x-model-api-key")`.
+         * Defaults to `Set.of("authorization", "api-key", "x-api-key", "cookie", "set-cookie",
+         * "x-bb-api-key", "x-bb-project-id", "x-model-api-key")`.
          */
         fun redactedHeaders(redactedHeaders: Set<String>) = apply {
             this.redactedHeaders = redactedHeaders
