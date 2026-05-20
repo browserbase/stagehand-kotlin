@@ -316,6 +316,7 @@ internal class SessionServiceAsyncTest {
                                     .provider(ModelConfig.Provider.OPENAI)
                                     .build()
                             )
+                            .screenshot(false)
                             .selector("#main-content")
                             .timeout(30000.0)
                             .build()
