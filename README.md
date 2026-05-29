@@ -69,8 +69,8 @@ Most existing browser automation tools either require you to write low-level cod
 
 <!-- x-release-please-start-version -->
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.browserbase.api/stagehand-kotlin)](https://central.sonatype.com/artifact/com.browserbase.api/stagehand-kotlin/3.20.0)
-[![javadoc](https://javadoc.io/badge2/com.browserbase.api/stagehand-kotlin/3.20.0/javadoc.svg)](https://javadoc.io/doc/com.browserbase.api/stagehand-kotlin/3.20.0)
+[![Maven Central](https://img.shields.io/maven-central/v/com.browserbase.api/stagehand-kotlin)](https://central.sonatype.com/artifact/com.browserbase.api/stagehand-kotlin/3.21.0)
+[![javadoc](https://javadoc.io/badge2/com.browserbase.api/stagehand-kotlin/3.21.0/javadoc.svg)](https://javadoc.io/doc/com.browserbase.api/stagehand-kotlin/3.21.0)
 
 <!-- x-release-please-end -->
 
@@ -82,7 +82,7 @@ It is generated with [Stainless](https://www.stainless.com/).
 
 <!-- x-release-please-start-version -->
 
-The REST API documentation can be found on [docs.stagehand.dev](https://docs.stagehand.dev). KDocs are available on [javadoc.io](https://javadoc.io/doc/com.browserbase.api/stagehand-kotlin/3.20.0).
+The REST API documentation can be found on [docs.stagehand.dev](https://docs.stagehand.dev). KDocs are available on [javadoc.io](https://javadoc.io/doc/com.browserbase.api/stagehand-kotlin/3.21.0).
 
 <!-- x-release-please-end -->
 
@@ -93,7 +93,7 @@ The REST API documentation can be found on [docs.stagehand.dev](https://docs.sta
 ### Gradle
 
 ```kotlin
-implementation("com.browserbase.api:stagehand-kotlin:3.20.0")
+implementation("com.browserbase.api:stagehand-kotlin:3.21.0")
 ```
 
 ### Maven
@@ -102,7 +102,7 @@ implementation("com.browserbase.api:stagehand-kotlin:3.20.0")
 <dependency>
   <groupId>com.browserbase.api</groupId>
   <artifactId>stagehand-kotlin</artifactId>
-  <version>3.20.0</version>
+  <version>3.21.0</version>
 </dependency>
 ```
 
@@ -476,8 +476,6 @@ The SDK throws custom unchecked exception types:
 
 ## Logging
 
-The SDK uses the standard [OkHttp logging interceptor](https://github.com/square/okhttp/tree/master/okhttp-logging-interceptor).
-
 Enable logging by setting the `STAGEHAND_LOG` environment variable to `info`:
 
 ```sh
@@ -488,6 +486,19 @@ Or to `debug` for more verbose logging:
 
 ```sh
 export STAGEHAND_LOG=debug
+```
+
+Or configure the client manually using the `logLevel` method:
+
+```kotlin
+import com.browserbase.api.client.StagehandClient
+import com.browserbase.api.client.okhttp.StagehandOkHttpClient
+import com.browserbase.api.core.LogLevel
+
+val client: StagehandClient = StagehandOkHttpClient.builder()
+    .fromEnv()
+    .logLevel(LogLevel.INFO)
+    .build()
 ```
 
 ## ProGuard and R8

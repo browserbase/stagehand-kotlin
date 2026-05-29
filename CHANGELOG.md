@@ -1,5 +1,27 @@
 # Changelog
 
+## 3.21.0 (2026-05-29)
+
+Full Changelog: [v3.20.0...v3.21.0](https://github.com/browserbase/stagehand-kotlin/compare/v3.20.0...v3.21.0)
+
+### Features
+
+* [feat]: add `ignoreSelectors` to `observe()` ([426c4e7](https://github.com/browserbase/stagehand-kotlin/commit/426c4e7f486ae9a40fc74f3f2291335537a03214))
+* [STG-1756] forward Vertex model config ([f3e1d9c](https://github.com/browserbase/stagehand-kotlin/commit/f3e1d9ce83b87ec8fc5efebc5716f428ac89b5dc))
+* Add `screenshot` option to Extract ([ffa8cfd](https://github.com/browserbase/stagehand-kotlin/commit/ffa8cfd28971bb92e17c0162375c6808852a1d65))
+* **client:** improve logging ([82f9adc](https://github.com/browserbase/stagehand-kotlin/commit/82f9adc92b0f9e920be374cc68c1ffbf310baa5d))
+* STG-1756 add Vertex auth params to Stagehand spec ([3d53519](https://github.com/browserbase/stagehand-kotlin/commit/3d535191eb27d3611186f370dd375058792dfaf4))
+
+
+### Bug Fixes
+
+* **kotlin:** update model config examples ([6a1c6f3](https://github.com/browserbase/stagehand-kotlin/commit/6a1c6f394492035b1c34cc87561705ddc01fc688))
+
+
+### Chores
+
+* redact api-key headers in debug logs ([b12a12a](https://github.com/browserbase/stagehand-kotlin/commit/b12a12a91e83bf4b7da81615617f313ad850876a))
+
 ## 3.20.0 (2026-05-06)
 
 Full Changelog: [v3.19.3...v3.20.0](https://github.com/browserbase/stagehand-kotlin/compare/v3.19.3...v3.20.0)
