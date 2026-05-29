@@ -4,7 +4,6 @@ import com.browserbase.api.client.StagehandClient
 import com.browserbase.api.client.okhttp.StagehandOkHttpClient
 import com.browserbase.api.core.JsonValue
 import com.browserbase.api.core.http.StreamResponse
-import com.browserbase.api.models.sessions.ModelConfig
 import com.browserbase.api.models.sessions.SessionActParams
 import com.browserbase.api.models.sessions.SessionEndParams
 import com.browserbase.api.models.sessions.SessionExecuteParams
@@ -133,7 +132,8 @@ fun main() {
                         .agentConfig(
                             SessionExecuteParams.AgentConfig.builder()
                                 .model(
-                                    ModelConfig.builder()
+                                    SessionExecuteParams.AgentConfig.Model.GenericModelConfigObject
+                                        .builder()
                                         .modelName("anthropic/claude-opus-4-6")
                                         .apiKey(modelApiKey)
                                         .build()
