@@ -1,5 +1,20 @@
 # Changelog
 
+## 3.22.0 (2026-08-14)
+
+Full Changelog: [v3.21.0...v3.22.0](https://github.com/browserbase/stagehand-kotlin/compare/v3.21.0...v3.22.0)
+
+### Features
+
+* [STG-2090] Add Azure Entra model auth support ([6c4da28](https://github.com/browserbase/stagehand-kotlin/commit/6c4da28113e658ed6895c729db1c3357c7e08683))
+* **server-v3:** expose OpenAI endpoint format ([90012e3](https://github.com/browserbase/stagehand-kotlin/commit/90012e325989c92fd6c5b77d1ee15887f5a5c168))
+* **stlc:** configurable CI runner and private-production-repo support in workflow templates ([ccc4ffd](https://github.com/browserbase/stagehand-kotlin/commit/ccc4ffdc1bd6a153ce92d8159e74e0f31bc3b7cb))
+
+
+### Bug Fixes
+
+* **docs:** link the javadoc badge so the version stays current after release ([cbdefde](https://github.com/browserbase/stagehand-kotlin/commit/cbdefde6eabb603f92eda2b95921e2e8f385907d))
+
 ## 3.21.0 (2026-05-29)
 
 Full Changelog: [v3.20.0...v3.21.0](https://github.com/browserbase/stagehand-kotlin/compare/v3.20.0...v3.21.0)
