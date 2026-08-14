@@ -74,6 +74,8 @@ internal class ModelConfigTest {
         val modelConfig = ModelConfig.ofVertexModelConfigObject(vertexModelConfigObject)
 
         assertThat(modelConfig.vertexModelConfigObject()).isEqualTo(vertexModelConfigObject)
+        assertThat(modelConfig.azureEntraModelConfigObject()).isNull()
+        assertThat(modelConfig.azureApiKeyModelConfigObject()).isNull()
         assertThat(modelConfig.genericModelConfigObject()).isNull()
     }
 
@@ -147,6 +149,183 @@ internal class ModelConfigTest {
     }
 
     @Test
+    fun ofAzureEntraModelConfigObject() {
+        val azureEntraModelConfigObject =
+            ModelConfig.AzureEntraModelConfigObject.builder()
+                .auth(ModelConfig.AzureEntraModelConfigObject.Auth.builder().token("x").build())
+                .modelName("openai/gpt-5.4-mini")
+                .providerOptions(
+                    ModelConfig.AzureEntraModelConfigObject.ProviderOptions.builder()
+                        .azure(
+                            ModelConfig.AzureEntraModelConfigObject.ProviderOptions.Azure.builder()
+                                .apiVersion("2024-10-01-preview")
+                                .baseUrl("https://example.com")
+                                .headers(
+                                    ModelConfig.AzureEntraModelConfigObject.ProviderOptions.Azure
+                                        .Headers
+                                        .builder()
+                                        .putAdditionalProperty("foo", JsonValue.from("string"))
+                                        .build()
+                                )
+                                .resourceName("my-azure-openai-resource")
+                                .useDeploymentBasedUrls(true)
+                                .build()
+                        )
+                        .build()
+                )
+                .baseUrl("https://api.openai.com/v1")
+                .headers(
+                    ModelConfig.AzureEntraModelConfigObject.Headers.builder()
+                        .putAdditionalProperty("foo", JsonValue.from("string"))
+                        .build()
+                )
+                .build()
+
+        val modelConfig = ModelConfig.ofAzureEntraModelConfigObject(azureEntraModelConfigObject)
+
+        assertThat(modelConfig.vertexModelConfigObject()).isNull()
+        assertThat(modelConfig.azureEntraModelConfigObject()).isEqualTo(azureEntraModelConfigObject)
+        assertThat(modelConfig.azureApiKeyModelConfigObject()).isNull()
+        assertThat(modelConfig.genericModelConfigObject()).isNull()
+    }
+
+    @Test
+    fun ofAzureEntraModelConfigObjectRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val modelConfig =
+            ModelConfig.ofAzureEntraModelConfigObject(
+                ModelConfig.AzureEntraModelConfigObject.builder()
+                    .auth(ModelConfig.AzureEntraModelConfigObject.Auth.builder().token("x").build())
+                    .modelName("openai/gpt-5.4-mini")
+                    .providerOptions(
+                        ModelConfig.AzureEntraModelConfigObject.ProviderOptions.builder()
+                            .azure(
+                                ModelConfig.AzureEntraModelConfigObject.ProviderOptions.Azure
+                                    .builder()
+                                    .apiVersion("2024-10-01-preview")
+                                    .baseUrl("https://example.com")
+                                    .headers(
+                                        ModelConfig.AzureEntraModelConfigObject.ProviderOptions
+                                            .Azure
+                                            .Headers
+                                            .builder()
+                                            .putAdditionalProperty("foo", JsonValue.from("string"))
+                                            .build()
+                                    )
+                                    .resourceName("my-azure-openai-resource")
+                                    .useDeploymentBasedUrls(true)
+                                    .build()
+                            )
+                            .build()
+                    )
+                    .baseUrl("https://api.openai.com/v1")
+                    .headers(
+                        ModelConfig.AzureEntraModelConfigObject.Headers.builder()
+                            .putAdditionalProperty("foo", JsonValue.from("string"))
+                            .build()
+                    )
+                    .build()
+            )
+
+        val roundtrippedModelConfig =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(modelConfig),
+                jacksonTypeRef<ModelConfig>(),
+            )
+
+        assertThat(roundtrippedModelConfig).isEqualTo(modelConfig)
+    }
+
+    @Test
+    fun ofAzureApiKeyModelConfigObject() {
+        val azureApiKeyModelConfigObject =
+            ModelConfig.AzureApiKeyModelConfigObject.builder()
+                .modelName("openai/gpt-5.4-mini")
+                .providerOptions(
+                    ModelConfig.AzureApiKeyModelConfigObject.ProviderOptions.builder()
+                        .azure(
+                            ModelConfig.AzureApiKeyModelConfigObject.ProviderOptions.Azure.builder()
+                                .apiVersion("2024-10-01-preview")
+                                .baseUrl("https://example.com")
+                                .headers(
+                                    ModelConfig.AzureApiKeyModelConfigObject.ProviderOptions.Azure
+                                        .Headers
+                                        .builder()
+                                        .putAdditionalProperty("foo", JsonValue.from("string"))
+                                        .build()
+                                )
+                                .resourceName("my-azure-openai-resource")
+                                .useDeploymentBasedUrls(true)
+                                .build()
+                        )
+                        .build()
+                )
+                .apiKey("sk-some-openai-api-key")
+                .baseUrl("https://api.openai.com/v1")
+                .headers(
+                    ModelConfig.AzureApiKeyModelConfigObject.Headers.builder()
+                        .putAdditionalProperty("foo", JsonValue.from("string"))
+                        .build()
+                )
+                .build()
+
+        val modelConfig = ModelConfig.ofAzureApiKeyModelConfigObject(azureApiKeyModelConfigObject)
+
+        assertThat(modelConfig.vertexModelConfigObject()).isNull()
+        assertThat(modelConfig.azureEntraModelConfigObject()).isNull()
+        assertThat(modelConfig.azureApiKeyModelConfigObject())
+            .isEqualTo(azureApiKeyModelConfigObject)
+        assertThat(modelConfig.genericModelConfigObject()).isNull()
+    }
+
+    @Test
+    fun ofAzureApiKeyModelConfigObjectRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val modelConfig =
+            ModelConfig.ofAzureApiKeyModelConfigObject(
+                ModelConfig.AzureApiKeyModelConfigObject.builder()
+                    .modelName("openai/gpt-5.4-mini")
+                    .providerOptions(
+                        ModelConfig.AzureApiKeyModelConfigObject.ProviderOptions.builder()
+                            .azure(
+                                ModelConfig.AzureApiKeyModelConfigObject.ProviderOptions.Azure
+                                    .builder()
+                                    .apiVersion("2024-10-01-preview")
+                                    .baseUrl("https://example.com")
+                                    .headers(
+                                        ModelConfig.AzureApiKeyModelConfigObject.ProviderOptions
+                                            .Azure
+                                            .Headers
+                                            .builder()
+                                            .putAdditionalProperty("foo", JsonValue.from("string"))
+                                            .build()
+                                    )
+                                    .resourceName("my-azure-openai-resource")
+                                    .useDeploymentBasedUrls(true)
+                                    .build()
+                            )
+                            .build()
+                    )
+                    .apiKey("sk-some-openai-api-key")
+                    .baseUrl("https://api.openai.com/v1")
+                    .headers(
+                        ModelConfig.AzureApiKeyModelConfigObject.Headers.builder()
+                            .putAdditionalProperty("foo", JsonValue.from("string"))
+                            .build()
+                    )
+                    .build()
+            )
+
+        val roundtrippedModelConfig =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(modelConfig),
+                jacksonTypeRef<ModelConfig>(),
+            )
+
+        assertThat(roundtrippedModelConfig).isEqualTo(modelConfig)
+    }
+
+    @Test
     fun ofGenericModelConfigObject() {
         val genericModelConfigObject =
             ModelConfig.GenericModelConfigObject.builder()
@@ -158,12 +337,17 @@ internal class ModelConfigTest {
                         .putAdditionalProperty("foo", JsonValue.from("string"))
                         .build()
                 )
+                .openaiEndpointFormat(
+                    ModelConfig.GenericModelConfigObject.OpenAIEndpointFormat.CHAT
+                )
                 .provider(ModelConfig.GenericModelConfigObject.Provider.OPENAI)
                 .build()
 
         val modelConfig = ModelConfig.ofGenericModelConfigObject(genericModelConfigObject)
 
         assertThat(modelConfig.vertexModelConfigObject()).isNull()
+        assertThat(modelConfig.azureEntraModelConfigObject()).isNull()
+        assertThat(modelConfig.azureApiKeyModelConfigObject()).isNull()
         assertThat(modelConfig.genericModelConfigObject()).isEqualTo(genericModelConfigObject)
     }
 
@@ -180,6 +364,9 @@ internal class ModelConfigTest {
                         ModelConfig.GenericModelConfigObject.Headers.builder()
                             .putAdditionalProperty("foo", JsonValue.from("string"))
                             .build()
+                    )
+                    .openaiEndpointFormat(
+                        ModelConfig.GenericModelConfigObject.OpenAIEndpointFormat.CHAT
                     )
                     .provider(ModelConfig.GenericModelConfigObject.Provider.OPENAI)
                     .build()
